@@ -3,9 +3,9 @@ import { Platform } from "react-native";
 import { createStackNavigator, createDrawerNavigator } from "react-navigation";
 
 import TabBarIcon from "../components/TabBarIcon";
-import HomeScreen from "../screens/HomeScreen";
-import LinksScreen from "../screens/LinksScreen";
-import AccountHomeScreen from "../screens/keigo/AccountHomeScreen";
+import HomeScreen from "../screens/Keigo/HomeScreen";
+import LinksScreen from "../screens/Keigo/LinksScreen";
+import AccountHomeScreen from "../screens/Keigo/AccountHomeScreen";
 import AccountLoginScreen from "../screens/Taiki/AccountLoginScreen";
 import AccountNewScreen from "../screens/Taiki/AccountNewScreen";
 import FavoriteHomeScreen from "../screens/Taiki/FavoriteHomeScreen";

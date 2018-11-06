@@ -64,12 +64,7 @@ class Tab1 extends React.Component {
               borderColor: "red",
               borderWidth: 1
             }}
-          >
-            <Image
-              rkCardImg
-              source={require("../assets/images/robot-dev.png")}
-            />
-          </View>
+          />
           <View rkCardContent>
             <Text> quick brown fox jumps over the lazy dog</Text>
           </View>
@@ -92,7 +87,7 @@ class Tab1 extends React.Component {
           >
             <Image
               rkCardImg
-              source={require("../assets/images/robot-dev.png")}
+              source={require("../../assets/images/robot-dev.png")}
             />
           </View>
           <View rkCardContent>
@@ -117,7 +112,7 @@ class Tab1 extends React.Component {
           >
             <Image
               rkCardImg
-              source={require("../assets/images/robot-dev.png")}
+              source={require("../../assets/images/robot-dev.png")}
             />
           </View>
           <View rkCardContent>

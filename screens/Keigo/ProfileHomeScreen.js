@@ -38,7 +38,7 @@ export default class ProfileHomeScreen extends React.Component {
     return (
       <View style={styles.container}>
         <View style={styles.imgContainer}>
-          <Image source={require("../assets/images/icon.png")} />
+          <Image source={require("../../assets/images/icon.png")} />
           <View style={styles.thumbnail}>
             <Avatar
               large

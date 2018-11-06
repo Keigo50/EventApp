@@ -110,7 +110,7 @@ export default class EventCreateScreen extends Component {
             >
               <Image
                 style={{ width: "100%", height: 180 }}
-                source={require("../assets/images/icon.png")}
+                source={require("../../assets/images/icon.png")}
               />
               <Button title="画像の編集" />
             </View>
