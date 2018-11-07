@@ -27,7 +27,17 @@ export default class AccountLoginScreen extends React.Component {
 
   render() {
     return (
-      <KeyboardAvoidingView behavior="padding" enabled style={styles.container}>
+      <KeyboardAvoidingView
+        behavior="padding"
+        keyboardVerticalOffset={Platform.OS === "android" ? 80 : 0}
+        /*TODO:androidでは、機種ごとにキーボードの高さが違うため80の部分を動的に変更する必要がある
+        解決策
+        1.キーボードの高さを取得する
+        2.AndroidManifest.xmlにwindowSoftInputMode = "adjustResize"を追加する
+        */
+        enabled
+        style={styles.container}
+      >
         <ScrollView>
           <View style={styles.main}>
             <RkText rkType="text">メールアドレス</RkText>
@@ -63,8 +73,8 @@ const styles = StyleSheet.create({
     justifyContent: "center"
   },
   main: {
-    marginTop: 500,
     flex: 1,
+    marginTop: 300,
     backgroundColor: "#fff",
     alignItems: "flex-start",
     paddingTop: Platform.OS === "ios" ? 10 : 30,
