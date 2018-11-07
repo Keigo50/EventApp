@@ -212,7 +212,7 @@ RkTheme.setType("RkButton", "btn", {
   color: "#fff",
   fontSize: 25,
   marginBottom: 10,
-  backgroundColor: 
+  backgroundColor: "#5cb85c"
 });
 
 RkTheme.setType("RkText", "text", {
