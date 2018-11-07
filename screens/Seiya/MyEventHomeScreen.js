@@ -9,9 +9,23 @@ import {
 import { RkButton, RkTheme } from "react-native-ui-kitten";
 import { Constants } from "expo";
 import Entypo from "react-native-vector-icons/Entypo";
-import { SearchBar } from "react-native-elements";
+import Icon from "react-native-vector-icons/FontAwesome";
 
 export default class MyEvents extends React.Component {
+  static navigationOptions = ({ navigation }) => ({
+    title: "Myイベント",
+    headerLeft: (
+      <Icon
+        name="bars"
+        size={24}
+        onPress={() => {
+          navigation.openDrawer();
+        }}
+        style={{ paddingLeft: 20 }}
+      />
+    )
+  });
+
   render() {
     let data = [];
     for (let i = 1; i < 50; i++) {
@@ -20,8 +34,6 @@ export default class MyEvents extends React.Component {
 
     return (
       <View style={styles.container}>
-        <SearchBar placeholder="Type Here..." />
-
         <FlatList
           style={{
             width: "100%"

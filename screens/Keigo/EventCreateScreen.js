@@ -149,7 +149,7 @@ export default class EventCreateScreen extends Component {
                 />
               </View>
             </View>
-            <RkButton rkType="btn">変更</RkButton>
+            <RkButton rkType="btn">作成</RkButton>
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -211,7 +211,8 @@ RkTheme.setType("RkButton", "btn", {
   height: 60,
   color: "#fff",
   fontSize: 25,
-  marginBottom: 10
+  marginBottom: 10,
+  backgroundColor: 
 });
 
 RkTheme.setType("RkText", "text", {

@@ -124,5 +124,6 @@ export default createDrawerNavigator({
   FavoriteHomeStack,
   ProfileHomeStack,
   EventCreateStack,
-  SampleStack
+  SampleStack,
+  MyEventHomeStack
 });
