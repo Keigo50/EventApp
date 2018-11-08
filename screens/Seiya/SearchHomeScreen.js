@@ -1,8 +1,16 @@
 import React from "react";
-import { View, StyleSheet, Text } from "react-native";
-import { SearchBar } from "react-native-elements";
-import { Constants } from "expo";
+import {
+  View,
+  StyleSheet,
+  Text,
+  FlatList,
+  ScrollView,
+  TouchableOpacity
+} from "react-native";
+import { RkText, RkTheme } from "react-native-ui-kitten";
+import { SearchBar, ListItem } from "react-native-elements";
 import Icon from "react-native-vector-icons/FontAwesome";
+import Icons from "react-native-vector-icons/EvilIcons";
 
 export default class SearchHomeScreen extends React.Component {
   static navigationOptions = ({ navigation }) => ({
@@ -28,11 +36,22 @@ export default class SearchHomeScreen extends React.Component {
   }
 
   render() {
+    let data = [];
+    for (let i = 1; i < 50; i++) {
+      data.push(`No.${i}`);
+    }
+    const list = [
+      {
+        title: "Appointments",
+        icon: "av-timer"
+      }
+    ];
+
     const showHistory = this.state.showHistory;
-    let a;
+    let decision;
 
     if (!showHistory) {
-      a = (
+      decision = (
         <View
           style={{ alignItems: "center", justifyContent: "center", flex: 1 }}
         >
@@ -46,21 +65,81 @@ export default class SearchHomeScreen extends React.Component {
         </View>
       );
     } else {
-      a = (
+      decision = (
         <View
-          style={{ alignItems: "center", justifyContent: "center", flex: 1 }}
+          style={{ alignItems: "stretch", justifyContent: "center", flex: 1 }}
         >
-          <Text
-            style={{
-              fontSize: 25
-            }}
-          >
-            該当するぞ！！！
-          </Text>
+          <View style={styles.container}>
+            <View style={styles.detail}>
+              <RkText
+                rkType="common"
+                style={{
+                  fontSize: 40,
+                  justifyContent: "center"
+                }}
+              >
+                検索履歴
+              </RkText>
+            </View>
+            <View style={styles.space}>
+              {list.map((item, i) => (
+                <ListItem
+                  rightIcon={
+                    <TouchableOpacity>
+                      <Icons name="close" size={28} />
+                    </TouchableOpacity>
+                  }
+                  key={i}
+                  title={item.title}
+                  leftIcon={{ name: item.icon }}
+                />
+              ))}
+            </View>
+            <View style={styles.test}>
+              <RkText
+                rkType="common"
+                style={{
+                  fontSize: 40
+                }}
+              >
+                検索結果
+              </RkText>
+            </View>
+            <View style={styles.main}>
+              <FlatList
+                style={{
+                  width: "100%"
+                }}
+                data={data}
+                renderItem={({ item }) => (
+                  <View
+                    style={{
+                      marginBottom: 5,
+                      flex: 2,
+                      flexDirection: "row",
+                      borderWidth: 1,
+                      height: 90,
+                      borderColor: "gray"
+                    }}
+                  >
+                    <View
+                      style={{
+                        flex: 2,
+                        padding: 3,
+                        alignItems: "flex-start"
+                      }}
+                    >
+                      />
+                    </View>
+                  </View>
+                )}
+                keyExtractor={(item, index) => `list-${index}`}
+              />
+            </View>
+          </View>
         </View>
       );
     }
-
     return (
       <View style={styles.container}>
         <View>
@@ -72,17 +151,34 @@ export default class SearchHomeScreen extends React.Component {
             cancelIcon={{ type: "font-awesome", name: "chevron-left" }}
           />
         </View>
-        {a}
+        {decision}
       </View>
     );
   }
 }
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
     alignItems: "stretch",
     justifyContent: "flex-start"
+  },
+  detail: {
+    width: "100%",
+    height: 50,
+    borderWidth: 1
+  },
+  space: {
+    width: "100%",
+    height: 250
+  },
+  test: {
+    width: "100%",
+    height: 50,
+    borderWidth: 1
+  },
+  main: {
+    width: "100%",
+    height: 350
   }
 });
