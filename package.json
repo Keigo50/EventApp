@@ -26,6 +26,7 @@
     "react-navigation": "^2.16.0"
   },
   "devDependencies": {
+    "@types/react-native-vector-icons": "^4.6.4",
     "jest-expo": "30.0.0"
   }
 }
