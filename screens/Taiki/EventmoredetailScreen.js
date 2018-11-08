@@ -49,11 +49,12 @@ export default class EventMoreDetailScreen extends React.Component {
   _changeBtn = () => {
     console.log(`取り消すを押したとき${this.state.changeButton}`);
     this.setState({
-      chageButton: false
+      changeButton: false
     });
   };
 
   render() {
+    console.log("最強");
     const changeDecision = this.state.changeButton;
     let changeBtn;
 
