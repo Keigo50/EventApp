@@ -2,7 +2,23 @@ import React from "react";
 import { View, StyleSheet, Text } from "react-native";
 import { SearchBar } from "react-native-elements";
 import { Constants } from "expo";
-export default class App extends React.Component {
+import Icon from "react-native-vector-icons/FontAwesome";
+
+export default class SearchHomeScreen extends React.Component {
+  static navigationOptions = ({ navigation }) => ({
+    title: "検索",
+    headerLeft: (
+      <Icon
+        name="bars"
+        size={24}
+        onPress={() => {
+          navigation.openDrawer();
+        }}
+        style={{ paddingLeft: 20 }}
+      />
+    )
+  });
+
   constructor(props) {
     super(props);
 
@@ -64,7 +80,6 @@ export default class App extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: Constants.statusBarHeight,
     flex: 1,
     backgroundColor: "#fff",
     alignItems: "stretch",
