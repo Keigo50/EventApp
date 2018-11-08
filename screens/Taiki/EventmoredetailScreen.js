@@ -13,12 +13,24 @@ import {
   RkText,
   RkTheme
 } from "react-native-ui-kitten";
-import { Constants } from "expo";
 import { ScrollView } from "react-native";
 import { Avatar } from "react-native-elements";
 import Entypo from "react-native-vector-icons/Entypo";
 
-export default class EventmoredetailScreen extends React.Component {
+export default class EventMoreDetailScreen extends React.Component {
+  static navigationOptions = ({ navigation }) => ({
+    headerLeft: (
+      <TouchableOpacity
+        onPress={() => {
+          navigation.openDrawer();
+        }}
+        style={{ paddingLeft: 20 }}
+      >
+        <Entypo name="chevron-left" size={40} color="black" />
+      </TouchableOpacity>
+    )
+  });
+
   constructor(props) {
     super(props);
     this.state = {
@@ -44,7 +56,6 @@ export default class EventmoredetailScreen extends React.Component {
   render() {
     const changeDecision = this.state.changeButton;
     let changeBtn;
-    console.log("参加するを押したとき");
 
     if (!changeDecision) {
       changeBtn = (
@@ -74,8 +85,7 @@ export default class EventmoredetailScreen extends React.Component {
             justifyContent: "center"
           }}
         >
-          {" "}
-          取り消す{" "}
+          取り消す
         </RkButton>
       );
     }
@@ -94,7 +104,7 @@ export default class EventmoredetailScreen extends React.Component {
                 width: "100%",
                 height: 180
               }}
-              source={require("./assets/icon.png")}
+              source={require("../../assets/images/icon.png")}
             />
             <Text
               style={{
@@ -179,8 +189,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     alignItems: "stretch",
-    justifyContent: "center",
-    paddingTop: Constants.statusBarHeight
+    justifyContent: "center"
   },
   sub: {
     width: "100%",

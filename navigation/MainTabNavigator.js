@@ -13,6 +13,7 @@ import ProfileHomeScreen from "../screens/Keigo/ProfileHomeScreen";
 import EventCreateScreen from "../screens/Keigo/EventCreateScreen";
 import MyEventHomeScreen from "../screens/Seiya/MyEventHomeScreen";
 import Sample from "../screens/Keigo/Sample";
+import EventMoreDetailScreen from "../screens/Taiki/EventMoreDetailScreen";
 import SearchHomeScreen from "../screens/Seiya/SearchHomeScreen";
 
 const HomeStack = createStackNavigator({
@@ -124,6 +125,14 @@ SampleStack.navigationOptions = {
   title: "Sample"
 };
 
+const EventMoreDetailStack = createStackNavigator({
+  Settings: EventMoreDetailScreen
+});
+
+EventMoreDetailStack.navigationOptions = {
+  title: "イベント詳細画面"
+};
+
 export default createDrawerNavigator({
   HomeStack,
   LinksStack,
@@ -135,5 +144,6 @@ export default createDrawerNavigator({
   EventCreateStack,
   SampleStack,
   SearchHomeStack,
-  MyEventHomeStack
+  MyEventHomeStack,
+  EventMoreDetailStack
 });
