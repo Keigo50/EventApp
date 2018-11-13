@@ -13,12 +13,14 @@ import ProfileHomeScreen from "../screens/Keigo/ProfileHomeScreen";
 import EventCreateScreen from "../screens/Keigo/EventCreateScreen";
 import MyEventHomeScreen from "../screens/Seiya/MyEventHomeScreen";
 import Sample from "../screens/Keigo/Sample";
-import EventMoreDetailScreen from "../screens/Taiki/EventMoreDetailScreen";
+// import EventMoreDetailScreen from "../screens/Taiki/EventMoreDetailScreen";
 import SearchHomeScreen from "../screens/Seiya/SearchHomeScreen";
 import LoginFormScreen from "../screens/Keigo/LoginFormScreen";
+import AScreen from "../screens/Keigo/AScreen";
 
 const HomeStack = createStackNavigator({
-  Home: HomeScreen
+  Home: HomeScreen,
+  Details: AScreen
 });
 
 HomeStack.navigationOptions = {
@@ -31,24 +33,6 @@ HomeStack.navigationOptions = {
         Platform.OS === "ios"
           ? `ios-information-circle${focused ? "" : "-outline"}`
           : "md-information-circle"
-      }
-    />
-  )
-};
-
-const LinksStack = createStackNavigator({
-  Links: LinksScreen
-});
-
-LinksStack.navigationOptions = {
-  tabBarLabel: "Links",
-  tabBarIcon: ({ focused }) => (
-    <TabBarIcon
-      focused={focused}
-      name={
-        Platform.OS === "ios"
-          ? `ios-link${focused ? "" : "-outline"}`
-          : "md-link"
       }
     />
   )
@@ -126,13 +110,13 @@ SampleStack.navigationOptions = {
   title: "Sample"
 };
 
-const EventMoreDetailStack = createStackNavigator({
-  Settings: EventMoreDetailScreen
-});
+// const EventMoreDetailStack = createStackNavigator({
+//   Settings: EventMoreDetailScreen
+// });
 
-EventMoreDetailStack.navigationOptions = {
-  title: "イベント詳細画面"
-};
+// EventMoreDetailStack.navigationOptions = {
+//   title: "イベント詳細画面"
+// };
 
 const LoginFormStack = createStackNavigator({
   Settings: LoginFormScreen
@@ -144,16 +128,16 @@ LoginFormStack.navigationOptions = {
 
 export default createDrawerNavigator({
   HomeStack,
-  LinksStack,
-  AccountHomeStack,
-  AccountLoginStack,
-  AccountNewStack,
-  FavoriteHomeStack,
-  ProfileHomeStack,
   EventCreateStack,
-  SampleStack,
   SearchHomeStack,
   MyEventHomeStack,
-  EventMoreDetailStack,
-  LoginFormStack
+  FavoriteHomeStack,
+  ProfileHomeStack
+  // EventMoreDetailStack,
 });
+
+// AccountHomeStack,
+//   AccountNewStack,
+//   AccountLoginStack,
+//   LoginFormStack,
+//   SampleStack;
