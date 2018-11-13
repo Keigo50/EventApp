@@ -1,11 +1,10 @@
 import React from "react";
 import {
   Image,
-  Platform,
+  Button,
   ScrollView,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View
 } from "react-native";
 import { RkCard, RkTheme } from "react-native-ui-kitten";
@@ -30,6 +29,10 @@ export default class HomeScreen extends React.Component {
   render() {
     return (
       <View style={styles.container}>
+        <Button
+          title="次の画面へ"
+          onPress={() => this.props.navigation.navigate("Details")}
+        />
         <ScrollableTabView style={styles.main}>
           <Tab1 tabLabel="Tab1" />
           <Tab1 tabLabel="Tab2" />
