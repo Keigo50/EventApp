@@ -8,8 +8,23 @@ import {
   ActivityIndicator
 } from "react-native";
 import { changeEmail, changePassword, submitLogin } from "../../app/actions";
+import Icon from "react-native-vector-icons/FontAwesome";
 
 class LoginForm extends Component {
+  static navigationOptions = ({ navigation }) => ({
+    title: "ログインフォーム",
+    headerLeft: (
+      <Icon
+        name="bars"
+        size={24}
+        onPress={() => {
+          navigation.openDrawer();
+        }}
+        style={{ paddingLeft: 20 }}
+      />
+    )
+  });
+
   onButtonPress() {
     console.log(this.props);
     const { email, password } = this.props;
