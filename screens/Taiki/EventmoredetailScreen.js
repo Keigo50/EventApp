@@ -1,5 +1,4 @@
 import React from "react";
-git
 import {
   StyleSheet,
   Text,
