@@ -49,6 +49,10 @@ class LoginForm extends Component {
   render() {
     return (
       <View>
+        <Button
+          title="次の画面へ"
+          onPress={() => this.props.navigation.navigate("Details")}
+        />
         <View style={styles.wrap}>
           <TextInput
             placeholder="user@gmail.com"

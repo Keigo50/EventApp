@@ -158,7 +158,9 @@ export default class EventCreateScreen extends Component {
                   justifyContent: "center"
                 }}
               >
-                <TouchableOpacity onPress={}><Icon name="calendar" size={24} /></TouchableOpacity>
+                <TouchableOpacity>
+                  <Icon name="calendar" size={24} />
+                </TouchableOpacity>
               </View>
             </View>
 
