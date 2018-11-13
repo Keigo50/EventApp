@@ -12,6 +12,8 @@ import { RkButton, RkTextInput, RkTheme, RkText } from "react-native-ui-kitten";
 import { ScrollView } from "react-native-gesture-handler";
 import { Dropdown } from "react-native-material-dropdown";
 import Icon from "react-native-vector-icons/FontAwesome";
+import { Calendar } from "react-native-calendars";
+import { red, blue } from "ansi-colors";
 
 export default class EventCreateScreen extends Component {
   static navigationOptions = ({ navigation }) => ({
@@ -33,6 +35,12 @@ export default class EventCreateScreen extends Component {
   };
 
   render() {
+    const today = new Date();
+    let year = today.getFullYear();
+    let month = today.getMonth() + 1;
+    let date = today.getDate() + 1;
+    const now = `${year}/${month}/${date}`;
+
     let data = [
       {
         value: "Banana"
@@ -65,6 +73,7 @@ export default class EventCreateScreen extends Component {
         value: "１５人以上"
       }
     ];
+
     return (
       <KeyboardAvoidingView
         keyboardVerticalOffset={Platform.select({ ios: 0, android: 80 })}
@@ -98,7 +107,9 @@ export default class EventCreateScreen extends Component {
             </View>
             <View style={{ padding: 40 }} />
 
-            <RkText rkType="text">イベントタイトル</RkText>
+            <View>
+              <RkText rkType="text">イベントタイトル</RkText>
+            </View>
             <RkTextInput
               autoFocus={true}
               rkType="textInput"
@@ -124,21 +135,52 @@ export default class EventCreateScreen extends Component {
               <Button title="画像の編集" onPress={this._sample} />
             </View>
 
-            <RkText rkType="text">開催日時</RkText>
+            <View>
+              <RkText rkType="text">開催日時</RkText>
+            </View>
+
+            <View style={{ flex: 1, flexDirection: "row", marginVertical: 30 }}>
+              <View
+                style={{
+                  flex: 8,
+                  alignItems: "center",
+                  justifyContent: "center"
+                }}
+              >
+                <View>
+                  <RkText style={{ fontSize: 20 }}>2018/11/11</RkText>
+                </View>
+              </View>
+              <View
+                style={{
+                  flex: 2,
+                  alignItems: "center",
+                  justifyContent: "center"
+                }}
+              >
+                <TouchableOpacity onPress={}><Icon name="calendar" size={24} /></TouchableOpacity>
+              </View>
+            </View>
+
+            <Calendar
+              hideExtraDays={true}
+              minDate={now}
+              onDayPress={day => {
+                console.log("selected day", day.dateString);
+              }}
+            />
+            <View>
+              <RkText rkType="text">開催場所</RkText>
+            </View>
             <RkTextInput
               rkType="textInput"
               textContentType="password"
               keyboardType="default"
             />
 
-            <RkText rkType="text">開催場所</RkText>
-            <RkTextInput
-              rkType="textInput"
-              textContentType="password"
-              keyboardType="default"
-            />
-
-            <RkText rkType="text">詳細</RkText>
+            <View>
+              <RkText rkType="text">詳細</RkText>
+            </View>
             <RkTextInput rkType="details" multiline />
 
             <RkButton rkType="btn" style={{ backgroundColor: "#5cb85c" }}>
