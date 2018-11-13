@@ -1,4 +1,5 @@
 import React from "react";
+git
 import {
   StyleSheet,
   Text,
@@ -13,21 +14,37 @@ import {
   RkText,
   RkTheme
 } from "react-native-ui-kitten";
-import { ScrollView } from "react-native";
-import { Avatar } from "react-native-elements";
+import {
+  ScrollView
+} from "react-native";
+import {
+  Avatar
+} from "react-native-elements";
 import Entypo from "react-native-vector-icons/Entypo";
 
 export default class EventMoreDetailScreen extends React.Component {
-  static navigationOptions = ({ navigation }) => ({
-    headerLeft: (
-      <TouchableOpacity
-        onPress={() => {
+  static navigationOptions = ({
+    navigation
+  }) => ({
+    headerLeft: ( <
+      TouchableOpacity onPress = {
+        () => {
           navigation.openDrawer();
-        }}
-        style={{ paddingLeft: 20 }}
-      >
-        <Entypo name="chevron-left" size={40} color="black" />
-      </TouchableOpacity>
+        }
+      }
+      style = {
+        {
+          paddingLeft: 20
+        }
+      } >
+      <
+      Entypo name = "chevron-left"
+      size = {
+        40
+      }
+      color = "black" / >
+      <
+      /TouchableOpacity>
     )
   });
 
@@ -59,35 +76,39 @@ export default class EventMoreDetailScreen extends React.Component {
     let changeBtn;
 
     if (!changeDecision) {
-      changeBtn = (
-        <RkButton
-          onPress={this._changeButton}
-          rkType="rounded"
-          style={{
+      changeBtn = ( <
+        RkButton onPress = {
+          this._changeButton
+        }
+        rkType = "rounded"
+        style = {
+          {
             backgroundColor: "red",
             width: "100%",
             marginTop: 10,
             alignItems: "center",
             justifyContent: "center"
-          }}
-        >
-          参加する
-        </RkButton>
+          }
+        } >
+        参加する <
+        /RkButton>
       );
     } else {
-      changeBtn = (
-        <RkButton
-          onPress={this._changeBtn}
-          rkType="rounded"
-          style={{
+      changeBtn = ( <
+        RkButton onPress = {
+          this._changeBtn
+        }
+        rkType = "rounded"
+        style = {
+          {
             width: "100%",
             marginTop: 10,
             alignItems: "center",
             justifyContent: "center"
-          }}
-        >
-          取り消す
-        </RkButton>
+          }
+        } >
+        取り消す <
+        /RkButton>
       );
     }
 
@@ -96,91 +117,126 @@ export default class EventMoreDetailScreen extends React.Component {
       data.push(`No.${i}`);
     }
 
-    return (
-      <ScrollView>
-        <View style={styles.container}>
-          <View style={styles.sub}>
-            <Image
-              style={{
-                width: "100%",
-                height: 180
-              }}
-              source={require("../../assets/images/icon.png")}
-            />
-            <Text
-              style={{
-                fontSize: 25
-              }}
-            >
-              タイトル
-            </Text>
-          </View>
-          <View style={styles.detail}>
-            <RkText
-              rkType="common"
-              style={{
-                fontSize: 40,
-                justifyContent: "center"
-              }}
-            >
-              詳細
-            </RkText>
-          </View>
-          <View style={styles.space} />
-          <View style={styles.test}>
-            <RkText
-              rkType="common"
-              style={{
-                fontSize: 40
-              }}
-            >
-              参加者
-            </RkText>
-          </View>
-          <View style={styles.main}>
-            <FlatList
-              style={{
-                width: "100%"
-              }}
-              data={data}
-              renderItem={({ item }) => (
-                <View
-                  style={{
-                    marginBottom: 5,
-                    flex: 2,
-                    flexDirection: "row",
-                    borderWidth: 1,
-                    height: 90,
-                    borderColor: "gray"
-                  }}
-                >
-                  <View
-                    style={{
-                      flex: 2,
-                      padding: 3,
-                      alignItems: "flex-start"
-                    }}
-                  >
-                    {/* アイコンを以下に配置*/}
-                    <Avatar
-                      large
-                      rounded
-                      source={{
-                        uri:
-                          "https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg"
-                      }}
-                      onPress={() => console.log("Works!")}
-                      activeOpacity={0.7}
-                    />
-                  </View>
-                </View>
-              )}
-              keyExtractor={(item, index) => `list-${index}`}
-            />
-            {changeBtn}
-          </View>
-        </View>
-      </ScrollView>
+    return ( <
+      ScrollView >
+      <
+      View style = {
+        styles.container
+      } >
+      <
+      View style = {
+        styles.sub
+      } >
+      <
+      Image style = {
+        {
+          width: "100%",
+          height: 180
+        }
+      }
+      source = {
+        require("../../assets/images/icon.png")
+      }
+      /> <
+      Text style = {
+        {
+          fontSize: 25
+        }
+      } >
+      タイトル <
+      /Text> <
+      /View> <
+      View style = {
+        styles.detail
+      } >
+      <
+      RkText rkType = "common"
+      style = {
+        {
+          fontSize: 40,
+          justifyContent: "center"
+        }
+      } >
+      詳細 <
+      /RkText> <
+      /View> <
+      View style = {
+        styles.space
+      }
+      /> <
+      View style = {
+        styles.test
+      } >
+      <
+      RkText rkType = "common"
+      style = {
+        {
+          fontSize: 40
+        }
+      } >
+      参加者 <
+      /RkText> <
+      /View> <
+      View style = {
+        styles.main
+      } >
+      <
+      FlatList style = {
+        {
+          width: "100%"
+        }
+      }
+      data = {
+        data
+      }
+      renderItem = {
+        ({
+          item
+        }) => ( <
+          View style = {
+            {
+              marginBottom: 5,
+              flex: 2,
+              flexDirection: "row",
+              borderWidth: 1,
+              height: 90,
+              borderColor: "gray"
+            }
+          } >
+          <
+          View style = {
+            {
+              flex: 2,
+              padding: 3,
+              alignItems: "flex-start"
+            }
+          } >
+          { /* アイコンを以下に配置*/ } <
+          Avatar large rounded source = {
+            {
+              uri: "https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg"
+            }
+          }
+          onPress = {
+            () => console.log("Works!")
+          }
+          activeOpacity = {
+            0.7
+          }
+          /> <
+          /View> <
+          /View>
+        )
+      }
+      keyExtractor = {
+        (item, index) => `list-${index}`
+      }
+      /> {
+        changeBtn
+      } <
+      /View> <
+      /View> <
+      /ScrollView>
     );
   }
 }
