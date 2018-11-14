@@ -13,7 +13,12 @@ export default class AccountHomeScreen extends React.Component {
     return (
       <View style={styles.container}>
         <View style={styles.button}>
-          <RkButton rkType="success create">新規作成</RkButton>
+          <RkButton
+            rkType="success create"
+            onPress={() => this.props.navigation.navigate("Create")}
+          >
+            新規作成
+          </RkButton>
         </View>
         <View style={styles.select}>
           <View
@@ -42,7 +47,12 @@ export default class AccountHomeScreen extends React.Component {
           />
         </View>
         <View style={styles.button}>
-          <RkButton rkType="danjer create">サインイン</RkButton>
+          <RkButton
+            rkType="danjer create"
+            onPress={() => this.props.navigation.navigate("Login")}
+          >
+            サインイン
+          </RkButton>
         </View>
       </View>
     );
