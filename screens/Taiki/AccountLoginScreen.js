@@ -14,7 +14,7 @@ export default class AccountLoginScreen extends React.Component {
     headerLeft: (
       <TouchableOpacity
         onPress={() => {
-          navigation.openDrawer();
+          navigation.navigate('Home');
         }}
         style={{ paddingLeft: 20 }}
       >
