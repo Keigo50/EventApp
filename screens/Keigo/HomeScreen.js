@@ -5,7 +5,8 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  View
+  View,
+  TouchableOpacity
 } from "react-native";
 import { RkCard, RkTheme } from "react-native-ui-kitten";
 import Icon from "react-native-vector-icons/FontAwesome";
@@ -29,10 +30,6 @@ export default class HomeScreen extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <Button
-          title="次の画面へ"
-          onPress={() => this.props.navigation.navigate("Details")}
-        />
         <ScrollableTabView style={styles.main}>
           <Tab1 tabLabel="Tab1" />
           <Tab1 tabLabel="Tab2" />
@@ -75,7 +72,6 @@ class Tab1 extends React.Component {
             <Text>Footer</Text>
           </View>
         </RkCard>
-
         <RkCard rkType="shadowed events">
           <View rkCardHeader>
             <Text>Header</Text>
