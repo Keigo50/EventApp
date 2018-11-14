@@ -13,7 +13,6 @@ import { ScrollView } from "react-native-gesture-handler";
 import { Dropdown } from "react-native-material-dropdown";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { Calendar } from "react-native-calendars";
-import { red, blue } from "ansi-colors";
 
 export default class EventCreateScreen extends Component {
   static navigationOptions = ({ navigation }) => ({
