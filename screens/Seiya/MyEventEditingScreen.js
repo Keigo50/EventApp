@@ -4,10 +4,17 @@ import {
   View,
   Platform,
   TouchableOpacity,
-  Button
+  Button,
+  Text,
+  Image,
+  KeyboardAvoidingView
 } from "react-native";
-import { RkTheme } from "react-native-ui-kitten";
+import { RkButton, RkTextInput, RkTheme, RkText } from "react-native-ui-kitten";
 import Entypo from "react-native-vector-icons/Entypo";
+import { ScrollView } from "react-native-gesture-handler";
+import { Dropdown } from "react-native-material-dropdown";
+import Icon from "react-native-vector-icons/FontAwesome";
+import { Calendar } from "react-native-calendars";
 
 export default class MyEventEditingScreen extends React.Component {
   static navigationOptions = ({ navigation }) => ({
@@ -24,13 +31,162 @@ export default class MyEventEditingScreen extends React.Component {
   });
 
   render() {
+    const today = new Date();
+    let year = today.getFullYear();
+    let month = today.getMonth() + 1;
+    let date = today.getDate() + 1;
+    const now = `${year}/${month}/${date}`;
+
+    let data = [
+      {
+        value: "Banana"
+      },
+      {
+        value: "Mango"
+      },
+      {
+        value: "Pear"
+      },
+      {
+        value: "apple"
+      }
+    ];
+
+    let people = [
+      {
+        value: " "
+      },
+      {
+        value: "１～５人"
+      },
+      {
+        value: "５～１０人"
+      },
+      {
+        value: "１０～１５人"
+      },
+      {
+        value: "１５人以上"
+      }
+    ];
+
     return (
-      <View style={styles.container}>
-        <Button
-          title="前の画面へ"
-          onPress={() => this.props.navigation.goBack()}
-        />
-      </View>
+      <KeyboardAvoidingView
+        keyboardVerticalOffset={Platform.select({ ios: 0, android: 80 })}
+        behavior="padding"
+        enabled
+        style={styles.container}
+      >
+        <ScrollView>
+          <View style={styles.main}>
+            <View style={{ width: "100%", height: 70, marginVertical: 10 }}>
+              <Dropdown
+                itemCount={3}
+                dropdownPosition={1}
+                label="カテゴリー"
+                data={data}
+              />
+              <View
+                style={{
+                  width: "100%",
+                  height: 70,
+                  marginVertical: 10
+                }}
+              >
+                <Dropdown
+                  itemCount={5}
+                  dropdownPosition={1}
+                  label="人数"
+                  data={people}
+                />
+              </View>
+            </View>
+            <View style={{ padding: 40 }} />
+
+            <View>
+              <RkText rkType="text">イベントタイトル</RkText>
+            </View>
+            <RkTextInput
+              autoFocus={true}
+              rkType="textInput"
+              keyboardType="default"
+            />
+
+            <RkText rkType="text">画像</RkText>
+
+            <View
+              style={{
+                justifyContent: "center",
+                width: "100%",
+                borderWidth: 1,
+                borderColor: "#0000003B",
+                height: 217,
+                marginBottom: 10
+              }}
+            >
+              <Image
+                style={{ width: "100%", height: 180 }}
+                source={require("../../assets/images/icon.png")}
+              />
+              <Button title="画像の編集" onPress={this._sample} />
+            </View>
+
+            <View>
+              <RkText rkType="text">開催日時</RkText>
+            </View>
+
+            <View style={{ flex: 1, flexDirection: "row", marginVertical: 30 }}>
+              <View
+                style={{
+                  flex: 8,
+                  alignItems: "center",
+                  justifyContent: "center"
+                }}
+              >
+                <View>
+                  <RkText style={{ fontSize: 20 }}>2018/11/11</RkText>
+                </View>
+              </View>
+              <View
+                style={{
+                  flex: 2,
+                  alignItems: "center",
+                  justifyContent: "center"
+                }}
+              >
+                <TouchableOpacity>
+                  <Icon name="calendar" size={24} />
+                </TouchableOpacity>
+              </View>
+            </View>
+
+            <Calendar
+              hideExtraDays={true}
+              minDate={now}
+              onDayPress={day => {
+                console.log("selected day", day.dateString);
+              }}
+            />
+            <View>
+              <RkText rkType="text">開催場所</RkText>
+            </View>
+            <RkTextInput
+              rkType="textInput"
+              textContentType="password"
+              keyboardType="default"
+            />
+
+            <View>
+              <RkText rkType="text">詳細</RkText>
+            </View>
+            <RkTextInput rkType="details" multiline />
+
+            <RkButton rkType="btn" style={{ backgroundColor: "#428bca" }}>
+              変更
+            </RkButton>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
     );
   }
 }
@@ -40,16 +196,31 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     alignItems: "stretch",
-    justifyContent: "center"
+    justifyContent: "flex-start"
   },
   main: {
     flex: 1,
-    marginTop: 300,
     backgroundColor: "#fff",
-    alignItems: "flex-start",
-    paddingTop: Platform.OS === "ios" ? 10 : 30,
     paddingLeft: 25,
     paddingRight: 25
+  }
+});
+
+RkTheme.setType("RkTextInput", "details", {
+  marginBottom: 30,
+  underlineWidth: 0,
+  borderWidth: 1,
+  borderBottomWidth: 1,
+  borderBottomColor: "#000",
+  borderColor: "#000",
+  height: "auto",
+  input: {
+    alignSelf: "baseline",
+    paddingHorizontal: 10,
+    marginVertical: 10,
+    marginLeft: 5,
+    fontSize: 20,
+    height: 100
   }
 });
 
@@ -61,6 +232,7 @@ RkTheme.setType("RkTextInput", "textInput", {
   borderWidth: 1,
   borderBottomWidth: 1,
   borderColor: "#000",
+
   input: {
     paddingHorizontal: 10,
     marginVertical: 15,
@@ -68,14 +240,6 @@ RkTheme.setType("RkTextInput", "textInput", {
     fontSize: 20,
     height: 25
   }
-});
-
-RkTheme.setType("RkButton", "btn", {
-  width: "100%",
-  fontSize: 25,
-  height: 60,
-  color: "#fff",
-  marginBottom: 10
 });
 
 RkTheme.setType("RkText", "text", {
