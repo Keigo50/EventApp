@@ -66,7 +66,14 @@ export default class MyEvents extends React.Component {
                 }}
               >
                 {/* 編集・削除ボタンを以下に配置*/}
-                <RkButton rkType="editing"> 編集 </RkButton>
+                <RkButton
+                  rkType="editing"
+                  onPress={() => {
+                    this.props.navigation.navigate("Editing");
+                  }}
+                >
+                  編集
+                </RkButton>
                 <RkButton rkType="delete"> 削除 </RkButton>
               </View>
               <View
@@ -100,7 +107,7 @@ RkTheme.setType("RkButton", "delete", {
 });
 
 RkTheme.setType("RkButton", "editing", {
-  width: 67,
+  width: "100%",
   height: 38,
   color: "#fff",
   fontSize: 20,

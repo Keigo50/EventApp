@@ -16,7 +16,7 @@
     "@expo/samples": "2.1.1",
     "dotenv": "^6.1.0",
     "expo": "^30.0.1",
-    "firebase": "^5.5.7",
+    "firebase": "^5.5.8",
     "react": "16.3.1",
     "react-native": "https://github.com/expo/react-native/archive/sdk-30.0.0.tar.gz",
     "react-native-calendars": "^1.21.0",
