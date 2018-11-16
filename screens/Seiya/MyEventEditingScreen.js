@@ -299,4 +299,3 @@ export default connect(
   { returnDate }
 )(MyEventEditingScreen);
 
-//ff;
