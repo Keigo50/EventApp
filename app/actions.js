@@ -31,3 +31,10 @@ export const submitLogin = ({ email, password }) => {
       });
   };
 };
+
+export const returnDate = day => {
+  return {
+    type: "return_date",
+    payload: day
+  };
+};

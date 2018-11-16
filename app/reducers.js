@@ -4,7 +4,8 @@ const INITIAL_STATE = {
   email: "",
   password: "",
   loading: false,
-  loggedIn: ""
+  loggedIn: "",
+  day: ""
 };
 
 const AuthReducer = (state = INITIAL_STATE, action) => {
@@ -25,7 +26,16 @@ const AuthReducer = (state = INITIAL_STATE, action) => {
       return state;
   }
 };
+const MyEventEditingReducer = (state = INITIAL_STATE, action) => {
+  switch (action.type) {
+    case "return_date":
+      return { ...state, day: action.payload };
+    default:
+      return state;
+  }
+};
 
 export default combineReducers({
-  auth: AuthReducer
+  auth: AuthReducer,
+  editing: MyEventEditingReducer
 });
