@@ -18,6 +18,7 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import { Calendar } from "react-native-calendars";
 import PropTypes from "prop-types";
 import { returnDate } from "../../app/actions";
+import { blue } from "ansi-colors";
 
 class MyEventEditingScreen extends React.Component {
   constructor(props) {
@@ -119,31 +120,35 @@ class MyEventEditingScreen extends React.Component {
       >
         <ScrollView>
           <View style={styles.main}>
-            <View style={{ width: "100%", height: 70, marginVertical: 10 }}>
+            <View
+              style={{
+                width: "100%",
+                height: 70,
+                marginVertical: 10
+              }}
+            >
               <Dropdown
                 itemCount={3}
                 dropdownPosition={1}
                 label="カテゴリー"
                 data={data}
               />
-              <View
-                style={{
-                  width: "100%",
-                  height: 70,
-                  marginVertical: 10
-                }}
-              >
-                <Dropdown
-                  itemCount={5}
-                  dropdownPosition={1}
-                  label="人数"
-                  data={people}
-                />
-              </View>
             </View>
-            <View style={{ padding: 40 }} />
-
-            <View>
+            <View
+              style={{
+                width: "100%",
+                height: 70,
+                marginVertical: 10
+              }}
+            >
+              <Dropdown
+                itemCount={5}
+                dropdownPosition={1}
+                label="人数"
+                data={people}
+              />
+            </View>
+            <View style>
               <RkText rkType="text">イベントタイトル</RkText>
             </View>
             <RkTextInput
