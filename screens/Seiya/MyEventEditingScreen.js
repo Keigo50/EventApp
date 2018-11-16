@@ -1,4 +1,5 @@
 import React from "react";
+import { connect } from "react-redux";
 import {
   StyleSheet,
   View,
@@ -15,8 +16,17 @@ import { ScrollView } from "react-native-gesture-handler";
 import { Dropdown } from "react-native-material-dropdown";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { Calendar } from "react-native-calendars";
+import PropTypes from "prop-types";
+import { returnDate } from "../../app/actions";
 
-export default class MyEventEditingScreen extends React.Component {
+class MyEventEditingScreen extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      calendarDecision: false
+    };
+  }
+
   static navigationOptions = ({ navigation }) => ({
     headerLeft: (
       <TouchableOpacity
@@ -30,13 +40,30 @@ export default class MyEventEditingScreen extends React.Component {
     )
   });
 
+  _sample = () => {
+    console.log("押されました");
+  };
+
+  onCalendarPress = () => {
+    if (!this.state.calendarDecision) {
+      console.log(this.state.calendarDecision);
+      this.setState({
+        calendarDecision: true
+      });
+    } else {
+      console.log(this.state.calendarDecision);
+      this.setState({
+        calendarDecision: false
+      });
+    }
+  };
+
   render() {
     const today = new Date();
     let year = today.getFullYear();
     let month = today.getMonth() + 1;
     let date = today.getDate() + 1;
     const now = `${year}/${month}/${date}`;
-
     let data = [
       {
         value: "Banana"
@@ -69,6 +96,19 @@ export default class MyEventEditingScreen extends React.Component {
         value: "１５人以上"
       }
     ];
+
+    let calendar = this.state.calendarDecision;
+    if (this.state.calendarDecision) {
+      calendar = (
+        <Calendar
+          hideExtraDays={true}
+          minDate={now}
+          onDayPress={day => this.props.returnDate(day.dateString)}
+        />
+      );
+    }
+
+    console.log(this.props);
 
     return (
       <KeyboardAvoidingView
@@ -128,7 +168,7 @@ export default class MyEventEditingScreen extends React.Component {
                 style={{ width: "100%", height: 180 }}
                 source={require("../../assets/images/icon.png")}
               />
-              <Button title="画像の編集" onPress={this._sample} />
+              <Button title="画像の編集" onPress={this._sample.bind(this)} />
             </View>
 
             <View>
@@ -144,7 +184,7 @@ export default class MyEventEditingScreen extends React.Component {
                 }}
               >
                 <View>
-                  <RkText style={{ fontSize: 20 }}>2018/11/11</RkText>
+                  <RkText style={{ fontSize: 20 }}>{this.props.day}</RkText>
                 </View>
               </View>
               <View
@@ -154,19 +194,12 @@ export default class MyEventEditingScreen extends React.Component {
                   justifyContent: "center"
                 }}
               >
-                <TouchableOpacity>
+                <TouchableOpacity onPress={this.onCalendarPress.bind(this)}>
                   <Icon name="calendar" size={24} />
                 </TouchableOpacity>
               </View>
             </View>
-
-            <Calendar
-              hideExtraDays={true}
-              minDate={now}
-              onDayPress={day => {
-                console.log("selected day", day.dateString);
-              }}
-            />
+            {calendar}
             <View>
               <RkText rkType="text">開催場所</RkText>
             </View>
@@ -190,6 +223,10 @@ export default class MyEventEditingScreen extends React.Component {
     );
   }
 }
+
+MyEventEditingScreen.propTypes = {
+  day: PropTypes.string.isRequired
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -245,3 +282,14 @@ RkTheme.setType("RkTextInput", "textInput", {
 RkTheme.setType("RkText", "text", {
   fontSize: 25
 });
+
+const mapStateToProps = state => {
+  return {
+    day: state.editing.day
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  { returnDate }
+)(MyEventEditingScreen);
