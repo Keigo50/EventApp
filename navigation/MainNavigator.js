@@ -4,9 +4,6 @@ import { createStackNavigator, createDrawerNavigator } from "react-navigation";
 
 import TabBarIcon from "../components/TabBarIcon";
 import HomeScreen from "../screens/Keigo/HomeScreen";
-import AccountHomeScreen from "../screens/Keigo/AccountHomeScreen";
-import AccountLoginScreen from "../screens/Taiki/AccountLoginScreen";
-import AccountNewScreen from "../screens/Taiki/AccountNewScreen";
 import FavoriteHomeScreen from "../screens/Taiki/FavoriteHomeScreen";
 import ProfileHomeScreen from "../screens/Keigo/ProfileHomeScreen";
 import EventCreateScreen from "../screens/Keigo/EventCreateScreen";
@@ -21,10 +18,16 @@ import MyEventEditingScreen from "../screens/Seiya/MyEventEditingScreen";
 /*ホーム画面*/
 const HomeStack = createStackNavigator({
   Home: HomeScreen,
-  Details: EventMoreDetailScreen
+  Details: EventMoreDetailScreen,
+  Favorite: FavoriteHomeScreen,
+  Profile: ProfileHomeScreen,
+  Event: EventCreateScreen,
+  MyEvent: MyEventHomeScreen,
+  Search: SearchHomeScreen
 });
 
 HomeStack.navigationOptions = {
+  header: null,
   title: "ホーム",
   tabBarLabel: "Home",
   tabBarIcon: ({ focused }) => (
@@ -37,18 +40,6 @@ HomeStack.navigationOptions = {
       }
     />
   )
-};
-
-/*アカウント関係の画面*/
-
-const AccountHomeStack = createStackNavigator({
-  Home: AccountHomeScreen,
-  Create: AccountNewScreen,
-  Login: AccountLoginScreen
-});
-
-AccountHomeStack.navigationOptions = {
-  title: "新規登録・ログイン画面"
 };
 
 /*お気に入り一覧画面*/
@@ -120,6 +111,5 @@ export default createDrawerNavigator({
   SearchHomeStack,
   MyEventHomeStack,
   FavoriteHomeStack,
-  ProfileHomeStack,
-  AccountHomeStack
+  ProfileHomeStack
 });
