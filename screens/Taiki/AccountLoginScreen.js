@@ -14,7 +14,7 @@ export default class AccountLoginScreen extends React.Component {
     headerLeft: (
       <TouchableOpacity
         onPress={() => {
-          navigation.navigate('Home');
+          navigation.navigate("Home");
         }}
         style={{ paddingLeft: 20 }}
       >
@@ -44,7 +44,12 @@ export default class AccountLoginScreen extends React.Component {
             textContentType="password"
             keyboardType="email-address"
           />
-          <RkButton rkType="btn">ログイン</RkButton>
+          <RkButton
+            rkType="btn"
+            onPress={() => this.props.navigation.navigate("Main")}
+          >
+            ログイン
+          </RkButton>
         </View>
       </View>
     );
