@@ -82,9 +82,6 @@ class MyEventEditingScreen extends React.Component {
 
     let people = [
       {
-        value: " "
-      },
-      {
         value: "１～５人"
       },
       {

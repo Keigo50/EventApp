@@ -1,36 +1,62 @@
-import React, { Component } from "react";
+import React from "react";
+import { connect } from "react-redux";
 import {
   StyleSheet,
   View,
   Platform,
+  TouchableOpacity,
   Button,
+  Text,
   Image,
-  KeyboardAvoidingView,
-  TouchableOpacity
+  KeyboardAvoidingView
 } from "react-native";
 import { RkButton, RkTextInput, RkTheme, RkText } from "react-native-ui-kitten";
+import Entypo from "react-native-vector-icons/Entypo";
 import { ScrollView } from "react-native-gesture-handler";
 import { Dropdown } from "react-native-material-dropdown";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { Calendar } from "react-native-calendars";
+import PropTypes from "prop-types";
+import { returnDate } from "../../app/actions";
+import { blue } from "ansi-colors";
 
-export default class EventCreateScreen extends Component {
+class MyEventEditingScreen extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      calendarDecision: false
+    };
+  }
+
   static navigationOptions = ({ navigation }) => ({
-    title: "イベント作成",
     headerLeft: (
-      <Icon
-        name="bars"
-        size={24}
+      <TouchableOpacity
         onPress={() => {
-          navigation.openDrawer();
+          navigation.goBack();
         }}
         style={{ paddingLeft: 20 }}
-      />
+      >
+        <Entypo name="chevron-left" size={40} color="black" />
+      </TouchableOpacity>
     )
   });
 
   _sample = () => {
-    console.log("aaaaaaa");
+    console.log("押されました");
+  };
+
+  onCalendarPress = () => {
+    if (!this.state.calendarDecision) {
+      console.log(this.state.calendarDecision);
+      this.setState({
+        calendarDecision: true
+      });
+    } else {
+      console.log(this.state.calendarDecision);
+      this.setState({
+        calendarDecision: false
+      });
+    }
   };
 
   render() {
@@ -39,7 +65,6 @@ export default class EventCreateScreen extends Component {
     let month = today.getMonth() + 1;
     let date = today.getDate() + 1;
     const now = `${year}/${month}/${date}`;
-
     let data = [
       {
         value: "Banana"
@@ -57,9 +82,6 @@ export default class EventCreateScreen extends Component {
 
     let people = [
       {
-        value: " "
-      },
-      {
         value: "１～５人"
       },
       {
@@ -73,6 +95,19 @@ export default class EventCreateScreen extends Component {
       }
     ];
 
+    let calendar = this.state.calendarDecision;
+    if (this.state.calendarDecision) {
+      calendar = (
+        <Calendar
+          hideExtraDays={true}
+          minDate={now}
+          onDayPress={day => this.props.returnDate(day.dateString)}
+        />
+      );
+    }
+
+    console.log(this.props);
+
     return (
       <KeyboardAvoidingView
         keyboardVerticalOffset={Platform.select({ ios: 0, android: 80 })}
@@ -82,31 +117,35 @@ export default class EventCreateScreen extends Component {
       >
         <ScrollView>
           <View style={styles.main}>
-            <View style={{ width: "100%", height: 70, marginVertical: 10 }}>
+            <View
+              style={{
+                width: "100%",
+                height: 70,
+                marginVertical: 10
+              }}
+            >
               <Dropdown
                 itemCount={3}
                 dropdownPosition={1}
                 label="カテゴリー"
                 data={data}
               />
-              <View
-                style={{
-                  width: "100%",
-                  height: 70,
-                  marginVertical: 10
-                }}
-              >
-                <Dropdown
-                  itemCount={5}
-                  dropdownPosition={1}
-                  label="人数"
-                  data={people}
-                />
-              </View>
             </View>
-            <View style={{ padding: 40 }} />
-
-            <View>
+            <View
+              style={{
+                width: "100%",
+                height: 70,
+                marginVertical: 10
+              }}
+            >
+              <Dropdown
+                itemCount={5}
+                dropdownPosition={1}
+                label="人数"
+                data={people}
+              />
+            </View>
+            <View style>
               <RkText rkType="text">イベントタイトル</RkText>
             </View>
             <RkTextInput
@@ -131,7 +170,7 @@ export default class EventCreateScreen extends Component {
                 style={{ width: "100%", height: 180 }}
                 source={require("../../assets/images/icon.png")}
               />
-              <Button title="画像の編集" onPress={this._sample} />
+              <Button title="画像の編集" onPress={this._sample.bind(this)} />
             </View>
 
             <View>
@@ -147,7 +186,7 @@ export default class EventCreateScreen extends Component {
                 }}
               >
                 <View>
-                  <RkText style={{ fontSize: 20 }}>2018/11/11</RkText>
+                  <RkText style={{ fontSize: 20 }}>{this.props.day}</RkText>
                 </View>
               </View>
               <View
@@ -157,19 +196,12 @@ export default class EventCreateScreen extends Component {
                   justifyContent: "center"
                 }}
               >
-                <TouchableOpacity>
+                <TouchableOpacity onPress={this.onCalendarPress.bind(this)}>
                   <Icon name="calendar" size={24} />
                 </TouchableOpacity>
               </View>
             </View>
-
-            <Calendar
-              hideExtraDays={true}
-              minDate={now}
-              onDayPress={day => {
-                console.log("selected day", day.dateString);
-              }}
-            />
+            {calendar}
             <View>
               <RkText rkType="text">開催場所</RkText>
             </View>
@@ -184,7 +216,7 @@ export default class EventCreateScreen extends Component {
             </View>
             <RkTextInput rkType="details" multiline />
 
-            <RkButton rkType="btn" style={{ backgroundColor: "#5cb85c" }}>
+            <RkButton rkType="btn" style={{ backgroundColor: "#428bca" }}>
               作成
             </RkButton>
           </View>
@@ -193,6 +225,10 @@ export default class EventCreateScreen extends Component {
     );
   }
 }
+
+MyEventEditingScreen.propTypes = {
+  day: PropTypes.string.isRequired
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -245,14 +281,17 @@ RkTheme.setType("RkTextInput", "textInput", {
   }
 });
 
-RkTheme.setType("RkButton", "btn", {
-  width: "100%",
-  height: 60,
-  color: "#fff",
-  fontSize: 25,
-  paddingVertical: 30
-});
-
 RkTheme.setType("RkText", "text", {
   fontSize: 25
 });
+
+const mapStateToProps = state => {
+  return {
+    day: state.editing.day
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  { returnDate }
+)(MyEventEditingScreen);
