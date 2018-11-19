@@ -3,16 +3,9 @@ import { Platform, StatusBar, StyleSheet, View } from "react-native";
 import { AppLoading, Asset, Font, Icon } from "expo";
 import AppNavigator from "./navigation/AppNavigator";
 import firebase from "firebase";
-import ReduxThunk from "redux-thunk";
-import { createStore, applyMiddleware } from "redux";
 import { Provider } from "react-redux";
-import { composeWithDevTools } from "remote-redux-devtools";
-import reducer from "./app/reducers";
-
-const store = createStore(
-  reducer,
-  composeWithDevTools(applyMiddleware(ReduxThunk))
-);
+import store, { persistor } from "./app/store";
+import { PersistGate } from "redux-persist/integration/react";
 
 export default class App extends React.Component {
   state = {
@@ -42,10 +35,12 @@ export default class App extends React.Component {
     } else {
       return (
         <Provider store={store}>
-          <View style={styles.container}>
-            {Platform.OS === "ios" && <StatusBar barStyle="default" />}
-            <AppNavigator />
-          </View>
+          <PersistGate loading={null} persistor={persistor}>
+            <View style={styles.container}>
+              {Platform.OS === "ios" && <StatusBar barStyle="default" />}
+              <AppNavigator />
+            </View>
+          </PersistGate>
         </Provider>
       );
     }

@@ -16,7 +16,7 @@ export default class AccountNewScreen extends React.Component {
     headerLeft: (
       <TouchableOpacity
         onPress={() => {
-          navigation.navigate('Home');
+          navigation.navigate("Home");
         }}
         style={{ paddingLeft: 20 }}
       >
@@ -55,7 +55,12 @@ export default class AccountNewScreen extends React.Component {
         <RkText rkType="text">パスワード</RkText>
         <RkTextInput returnKeyType="done" rkType="textInput" />
 
-        <RkButton rkType="btn">送信</RkButton>
+        <RkButton
+          rkType="btn"
+          onPress={() => this.props.navigation.navigate("Home")}
+        >
+          送信
+        </RkButton>
       </View>
     );
   }
