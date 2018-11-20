@@ -67,15 +67,18 @@ export default class SearchHomeScreen extends React.Component {
     } else {
       decision = (
         <View
-          style={{ alignItems: "stretch", justifyContent: "center", flex: 1 }}
+          style={{
+            alignItems: "stretch",
+            justifyContent: "flex-start",
+            flex: 1
+          }}
         >
           <View style={styles.container}>
             <View style={styles.detail}>
               <RkText
                 rkType="common"
                 style={{
-                  fontSize: 40,
-                  justifyContent: "center"
+                  fontSize: 25
                 }}
               >
                 検索履歴
@@ -99,7 +102,7 @@ export default class SearchHomeScreen extends React.Component {
               <RkText
                 rkType="common"
                 style={{
-                  fontSize: 40
+                  fontSize: 25
                 }}
               >
                 検索結果
@@ -114,8 +117,8 @@ export default class SearchHomeScreen extends React.Component {
                 renderItem={({ item }) => (
                   <View
                     style={{
-                      marginBottom: 5,
                       flex: 2,
+                      marginBottom: 5,
                       flexDirection: "row",
                       borderWidth: 1,
                       height: 90,
@@ -128,9 +131,7 @@ export default class SearchHomeScreen extends React.Component {
                         padding: 3,
                         alignItems: "flex-start"
                       }}
-                    >
-                      />
-                    </View>
+                    />
                   </View>
                 )}
                 keyExtractor={(item, index) => `list-${index}`}
@@ -165,20 +166,21 @@ const styles = StyleSheet.create({
   },
   detail: {
     width: "100%",
-    height: 50,
+    height: 40,
+    padding: 5,
     borderWidth: 1
   },
   space: {
-    width: "100%",
-    height: 250
+    flex: 1
   },
   test: {
     width: "100%",
-    height: 50,
+    height: 40,
+    padding: 5,
     borderWidth: 1
   },
   main: {
-    width: "100%",
-    height: 350
+    flex: 2,
+    padding: 5
   }
 });

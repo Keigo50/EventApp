@@ -32,9 +32,43 @@ export const submitLogin = ({ email, password }) => {
   };
 };
 
+/*イベント */
 export const returnDate = day => {
   return {
     type: "return_date",
     payload: day
+  };
+};
+
+export const returnEname = ename => {
+  return {
+    type: "return_ename",
+    payload: ename
+  };
+};
+
+export const returnPlace = place => {
+  return {
+    type: "return_place",
+    payload: place
+  };
+};
+
+export const returnDetails = details => {
+  return {
+    type: "return_details",
+    payload: details
+  };
+};
+
+export const returnSubmit = (date, details, eimage, ename, place, rnumbers) => {
+  return {
+    type: "return_submit",
+    payload: date,
+    details,
+    eimage,
+    ename,
+    place,
+    rnumbers
   };
 };

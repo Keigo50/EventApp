@@ -1,45 +1,101 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
 import {
   StyleSheet,
   View,
   Platform,
+  TouchableOpacity,
   Button,
+  Text,
   Image,
-  KeyboardAvoidingView,
-  TouchableOpacity
+  KeyboardAvoidingView
 } from "react-native";
+import firebase from "firebase";
+import "firebase/firestore";
 import { RkButton, RkTextInput, RkTheme, RkText } from "react-native-ui-kitten";
+import Entypo from "react-native-vector-icons/Entypo";
 import { ScrollView } from "react-native-gesture-handler";
 import { Dropdown } from "react-native-material-dropdown";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { Calendar } from "react-native-calendars";
 
-export default class EventCreateScreen extends Component {
+import {
+  returnSubmit,
+  returnEname,
+  returnDetails,
+  returnPlace,
+  returnDate
+} from "../../app/actions";
+import PropTypes from "prop-types";
+class EventCreateScreen extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      calendarDecision: false
+    };
+  }
+
+
   static navigationOptions = ({ navigation }) => ({
-    title: "イベント作成",
     headerLeft: (
-      <Icon
-        name="bars"
-        size={24}
+      <TouchableOpacity
         onPress={() => {
-          navigation.openDrawer();
+          navigation.goBack();
         }}
         style={{ paddingLeft: 20 }}
-      />
+      >
+        <Entypo name="chevron-left" size={40} color="black" />
+      </TouchableOpacity>
     )
   });
 
-  _sample = () => {
+  _onPressSubmit = () => {
     console.log("aaaaaaa");
-  };
+    /*決まったコード*/
+    const { date, details, eimage, ename, place, rnumbers } = this.props;
+    this.props.returnSubmit({ date, details, eimage, ename, place, rnumbers });
 
+    const firestore = firebase.firestore();
+    const settings = { timestampsInSnapshots: true };
+    firestore.settings(settings);
+
+    onCalendarPress = () => {
+      if (!this.state.calendarDecision) {
+        console.log(this.state.calendarDecision);
+        this.setState({
+          calendarDecision: true
+        });
+      } else {
+        console.log(this.state.calendarDecision);
+        this.setState({
+          calendarDecision: false
+        });
+      }
+    };
+
+    let docRef = firestore.collection("events");
+
+    return docRef
+      .add({
+        ename: this.props.ename,
+        place: this.props.place,
+        details: this.props.details
+      })
+      .then(function() {
+        console.log("Document successfully updated!");
+      })
+      .catch(function(error) {
+        // The document probably doesn't exist.
+        console.error("Error updating document: ", error);
+      });
+  };
   render() {
+    console.log(this.props);
     const today = new Date();
     let year = today.getFullYear();
     let month = today.getMonth() + 1;
     let date = today.getDate() + 1;
     const now = `${year}/${month}/${date}`;
-
     let data = [
       {
         value: "Banana"
@@ -57,9 +113,6 @@ export default class EventCreateScreen extends Component {
 
     let people = [
       {
-        value: " "
-      },
-      {
         value: "１～５人"
       },
       {
@@ -73,6 +126,19 @@ export default class EventCreateScreen extends Component {
       }
     ];
 
+    let calendar = this.state.calendarDecision;
+    if (this.state.calendarDecision) {
+      calendar = (
+        <Calendar
+          hideExtraDays={true}
+          minDate={now}
+          onDayPress={day => this.props.returnDate(day.dateString)}
+        />
+      );
+    }
+
+    console.log(this.props);
+
     return (
       <KeyboardAvoidingView
         keyboardVerticalOffset={Platform.select({ ios: 0, android: 80 })}
@@ -82,37 +148,42 @@ export default class EventCreateScreen extends Component {
       >
         <ScrollView>
           <View style={styles.main}>
-            <View style={{ width: "100%", height: 70, marginVertical: 10 }}>
+            <View
+              style={{
+                width: "100%",
+                height: 70,
+                marginVertical: 10
+              }}
+            >
               <Dropdown
                 itemCount={3}
                 dropdownPosition={1}
                 label="カテゴリー"
                 data={data}
               />
-              <View
-                style={{
-                  width: "100%",
-                  height: 70,
-                  marginVertical: 10
-                }}
-              >
-                <Dropdown
-                  itemCount={5}
-                  dropdownPosition={1}
-                  label="人数"
-                  data={people}
-                />
-              </View>
             </View>
-            <View style={{ padding: 40 }} />
-
-            <View>
+            <View
+              style={{
+                width: "100%",
+                height: 70,
+                marginVertical: 10
+              }}
+            >
+              <Dropdown
+                itemCount={5}
+                dropdownPosition={1}
+                label="人数"
+                data={people}
+              />
+            </View>
+            <View style>
               <RkText rkType="text">イベントタイトル</RkText>
             </View>
             <RkTextInput
               autoFocus={true}
               rkType="textInput"
               keyboardType="default"
+              onChangeText={ename => this.props.returnEname(ename)}
             />
 
             <RkText rkType="text">画像</RkText>
@@ -131,7 +202,7 @@ export default class EventCreateScreen extends Component {
                 style={{ width: "100%", height: 180 }}
                 source={require("../../assets/images/icon.png")}
               />
-              <Button title="画像の編集" onPress={this._sample} />
+              <Button title="画像の編集" onPress={this._sample.bind(this)} />
             </View>
 
             <View>
@@ -147,7 +218,7 @@ export default class EventCreateScreen extends Component {
                 }}
               >
                 <View>
-                  <RkText style={{ fontSize: 20 }}>2018/11/11</RkText>
+                  <RkText style={{ fontSize: 20 }}>{this.props.day}</RkText>
                 </View>
               </View>
               <View
@@ -157,19 +228,12 @@ export default class EventCreateScreen extends Component {
                   justifyContent: "center"
                 }}
               >
-                <TouchableOpacity>
+                <TouchableOpacity onPress={this.onCalendarPress.bind(this)}>
                   <Icon name="calendar" size={24} />
                 </TouchableOpacity>
               </View>
             </View>
-
-            <Calendar
-              hideExtraDays={true}
-              minDate={now}
-              onDayPress={day => {
-                console.log("selected day", day.dateString);
-              }}
-            />
+            {calendar}
             <View>
               <RkText rkType="text">開催場所</RkText>
             </View>
@@ -177,14 +241,24 @@ export default class EventCreateScreen extends Component {
               rkType="textInput"
               textContentType="password"
               keyboardType="default"
+              onChangeText={place => this.props.returnPlace(place)}
             />
 
             <View>
               <RkText rkType="text">詳細</RkText>
             </View>
-            <RkTextInput rkType="details" multiline />
+            <RkTextInput
+              rkType="details"
+              multiline
+              onChangeText={details => this.props.returnDetails(details)}
+            />
 
-            <RkButton rkType="btn" style={{ backgroundColor: "#5cb85c" }}>
+            
+            <RkButton
+              rkType="btn"
+              onPress={this._onPressSubmit}
+              style={{ backgroundColor: "#5cb85c" }}
+            >
               作成
             </RkButton>
           </View>
@@ -193,6 +267,10 @@ export default class EventCreateScreen extends Component {
     );
   }
 }
+
+MyEventEditingScreen.propTypes = {
+  day: PropTypes.string.isRequired
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -245,14 +323,23 @@ RkTheme.setType("RkTextInput", "textInput", {
   }
 });
 
-RkTheme.setType("RkButton", "btn", {
-  width: "100%",
-  height: 60,
-  color: "#fff",
-  fontSize: 25,
-  paddingVertical: 30
-});
-
 RkTheme.setType("RkText", "text", {
   fontSize: 25
 });
+
+const mapStateToProps = state => {
+  return {
+    date: state.create.date,
+    details: state.create.details,
+    eimage: state.create.eimage,
+    ename: state.create.ename,
+    place: state.create.place,
+    rnumbers: state.create.rnumbers
+    day: state.editing.day
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  { returnDate, returnSubmit, returnDetails, returnEname, returnPlace }
+)(EventCreateScreen);
