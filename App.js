@@ -3,16 +3,9 @@ import { Platform, StatusBar, StyleSheet, View } from "react-native";
 import { AppLoading, Asset, Font, Icon } from "expo";
 import AppNavigator from "./navigation/AppNavigator";
 import firebase from "firebase";
-import ReduxThunk from "redux-thunk";
-import { createStore, applyMiddleware } from "redux";
 import { Provider } from "react-redux";
-import { composeWithDevTools } from "remote-redux-devtools";
-import reducer from "./app/reducers";
-
-const store = createStore(
-  reducer,
-  composeWithDevTools(applyMiddleware(ReduxThunk))
-);
+import store, { persistor } from "./app/store";
+import { PersistGate } from "redux-persist/integration/react";
 
 export default class App extends React.Component {
   state = {
@@ -21,12 +14,12 @@ export default class App extends React.Component {
 
   componentWillMount() {
     firebase.initializeApp({
-      apiKey: "AIzaSyB8su0M_fX8NLSrFvk9-OAHM5HNPEta8wo",
-      authDomain: "mltest-f4ca5.firebaseapp.com",
-      databaseURL: "https://mltest-f4ca5.firebaseio.com",
-      projectId: "mltest-f4ca5",
-      storageBucket: "mltest-f4ca5.appspot.com",
-      messagingSenderId: "437468585885"
+      apiKey: "AIzaSyDIE9Pox0PbZS18FIhFPH38quhXxCa86bU",
+      authDomain: "eventapp-888ac.firebaseapp.com",
+      databaseURL: "https://eventapp-888ac.firebaseio.com",
+      projectId: "eventapp-888ac",
+      storageBucket: "eventapp-888ac.appspot.com",
+      messagingSenderId: "1067680483596"
     });
   }
 
@@ -42,10 +35,12 @@ export default class App extends React.Component {
     } else {
       return (
         <Provider store={store}>
-          <View style={styles.container}>
-            {Platform.OS === "ios" && <StatusBar barStyle="default" />}
-            <AppNavigator />
-          </View>
+          <PersistGate loading={null} persistor={persistor}>
+            <View style={styles.container}>
+              {Platform.OS === "ios" && <StatusBar barStyle="default" />}
+              <AppNavigator />
+            </View>
+          </PersistGate>
         </Provider>
       );
     }

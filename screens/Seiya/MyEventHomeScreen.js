@@ -97,7 +97,7 @@ export default class MyEvents extends React.Component {
 }
 
 RkTheme.setType("RkButton", "delete", {
-  width: 67,
+  width: "100%",
   height: 38,
   color: "#fff",
   fontSize: 20,
@@ -115,6 +115,7 @@ RkTheme.setType("RkButton", "editing", {
   marginTop: 2,
   backgroundColor: "green"
 });
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
