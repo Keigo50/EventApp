@@ -1,3 +1,4 @@
+
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import {
@@ -35,6 +36,10 @@ class EventCreateScreen extends Component {
     };
   }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> abf410ca2a428e783e383f14a53400ff5ffc9168
   static navigationOptions = ({ navigation }) => ({
     headerLeft: (
       <TouchableOpacity
@@ -57,6 +62,7 @@ class EventCreateScreen extends Component {
     const firestore = firebase.firestore();
     const settings = { timestampsInSnapshots: true };
     firestore.settings(settings);
+<<<<<<< HEAD
 
     onCalendarPress = () => {
       if (!this.state.calendarDecision) {
@@ -72,6 +78,23 @@ class EventCreateScreen extends Component {
       }
     };
 
+=======
+
+  onCalendarPress = () => {
+    if (!this.state.calendarDecision) {
+      console.log(this.state.calendarDecision);
+      this.setState({
+        calendarDecision: true
+      });
+    } else {
+      console.log(this.state.calendarDecision);
+      this.setState({
+        calendarDecision: false
+      });
+    }
+  };
+
+>>>>>>> abf410ca2a428e783e383f14a53400ff5ffc9168
     let docRef = firestore.collection("events");
 
     return docRef
@@ -251,6 +274,10 @@ class EventCreateScreen extends Component {
               multiline
               onChangeText={details => this.props.returnDetails(details)}
             />
+<<<<<<< HEAD
+=======
+
+>>>>>>> abf410ca2a428e783e383f14a53400ff5ffc9168
 
             <RkButton
               rkType="btn"
