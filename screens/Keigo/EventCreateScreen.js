@@ -335,7 +335,7 @@ const mapStateToProps = state => {
     eimage: state.create.eimage,
     ename: state.create.ename,
     place: state.create.place,
-    rnumbers: state.create.rnumbers
+    rnumbers: state.create.rnumbers,
     day: state.editing.day
   };
 };
