@@ -1,4 +1,5 @@
-import React from "react";
+
+import React, { Component } from "react";
 import { connect } from "react-redux";
 import {
   StyleSheet,
@@ -10,23 +11,31 @@ import {
   Image,
   KeyboardAvoidingView
 } from "react-native";
+import firebase from "firebase";
+import "firebase/firestore";
 import { RkButton, RkTextInput, RkTheme, RkText } from "react-native-ui-kitten";
 import Entypo from "react-native-vector-icons/Entypo";
 import { ScrollView } from "react-native-gesture-handler";
 import { Dropdown } from "react-native-material-dropdown";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { Calendar } from "react-native-calendars";
-import PropTypes from "prop-types";
-import { returnDate } from "../../app/actions";
-import { blue } from "ansi-colors";
 
-class MyEventEditingScreen extends React.Component {
+import {
+  returnSubmit,
+  returnEname,
+  returnDetails,
+  returnPlace,
+  returnDate
+} from "../../app/actions";
+import PropTypes from "prop-types";
+class EventCreateScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
       calendarDecision: false
     };
   }
+
 
   static navigationOptions = ({ navigation }) => ({
     headerLeft: (
@@ -41,9 +50,15 @@ class MyEventEditingScreen extends React.Component {
     )
   });
 
-  _sample = () => {
-    console.log("押されました");
-  };
+  _onPressSubmit = () => {
+    console.log("aaaaaaa");
+    /*決まったコード*/
+    const { date, details, eimage, ename, place, rnumbers } = this.props;
+    this.props.returnSubmit({ date, details, eimage, ename, place, rnumbers });
+
+    const firestore = firebase.firestore();
+    const settings = { timestampsInSnapshots: true };
+    firestore.settings(settings);
 
   onCalendarPress = () => {
     if (!this.state.calendarDecision) {
@@ -59,7 +74,24 @@ class MyEventEditingScreen extends React.Component {
     }
   };
 
+    let docRef = firestore.collection("events");
+
+    return docRef
+      .add({
+        ename: this.props.ename,
+        place: this.props.place,
+        details: this.props.details
+      })
+      .then(function() {
+        console.log("Document successfully updated!");
+      })
+      .catch(function(error) {
+        // The document probably doesn't exist.
+        console.error("Error updating document: ", error);
+      });
+  };
   render() {
+    console.log(this.props);
     const today = new Date();
     let year = today.getFullYear();
     let month = today.getMonth() + 1;
@@ -152,6 +184,7 @@ class MyEventEditingScreen extends React.Component {
               autoFocus={true}
               rkType="textInput"
               keyboardType="default"
+              onChangeText={ename => this.props.returnEname(ename)}
             />
 
             <RkText rkType="text">画像</RkText>
@@ -209,14 +242,24 @@ class MyEventEditingScreen extends React.Component {
               rkType="textInput"
               textContentType="password"
               keyboardType="default"
+              onChangeText={place => this.props.returnPlace(place)}
             />
 
             <View>
               <RkText rkType="text">詳細</RkText>
             </View>
-            <RkTextInput rkType="details" multiline />
+            <RkTextInput
+              rkType="details"
+              multiline
+              onChangeText={details => this.props.returnDetails(details)}
+            />
 
-            <RkButton rkType="btn" style={{ backgroundColor: "#428bca" }}>
+
+            <RkButton
+              rkType="btn"
+              onPress={this._onPressSubmit}
+              style={{ backgroundColor: "#5cb85c" }}
+            >
               作成
             </RkButton>
           </View>
@@ -287,11 +330,17 @@ RkTheme.setType("RkText", "text", {
 
 const mapStateToProps = state => {
   return {
+    date: state.create.date,
+    details: state.create.details,
+    eimage: state.create.eimage,
+    ename: state.create.ename,
+    place: state.create.place,
+    rnumbers: state.create.rnumbers,
     day: state.editing.day
   };
 };
 
 export default connect(
   mapStateToProps,
-  { returnDate }
-)(MyEventEditingScreen);
+  { returnDate,returnSubmit, returnDetails, returnEname, returnPlace }
+)(EventCreateScreen);
