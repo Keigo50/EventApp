@@ -35,7 +35,6 @@ class EventCreateScreen extends Component {
     };
   }
 
-
   static navigationOptions = ({ navigation }) => ({
     headerLeft: (
       <TouchableOpacity
@@ -253,7 +252,6 @@ class EventCreateScreen extends Component {
               onChangeText={details => this.props.returnDetails(details)}
             />
 
-            
             <RkButton
               rkType="btn"
               onPress={this._onPressSubmit}
@@ -334,7 +332,7 @@ const mapStateToProps = state => {
     eimage: state.create.eimage,
     ename: state.create.ename,
     place: state.create.place,
-    rnumbers: state.create.rnumbers
+    rnumbers: state.create.rnumbers,
     day: state.editing.day
   };
 };
