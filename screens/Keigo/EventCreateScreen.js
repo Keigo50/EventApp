@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
 import {
   StyleSheet,
   View,
@@ -8,13 +9,21 @@ import {
   KeyboardAvoidingView,
   TouchableOpacity
 } from "react-native";
+import firebase from "firebase";
+import "firebase/firestore";
 import { RkButton, RkTextInput, RkTheme, RkText } from "react-native-ui-kitten";
 import { ScrollView } from "react-native-gesture-handler";
 import { Dropdown } from "react-native-material-dropdown";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { Calendar } from "react-native-calendars";
+import {
+  returnSubmit,
+  returnEname,
+  returnDetails,
+  returnPlace
+} from "../../app/actions";
 
-export default class EventCreateScreen extends Component {
+class EventCreateScreen extends Component {
   static navigationOptions = ({ navigation }) => ({
     title: "イベント作成",
     headerLeft: (
@@ -29,11 +38,34 @@ export default class EventCreateScreen extends Component {
     )
   });
 
-  _sample = () => {
+  _onPressSubmit = () => {
     console.log("aaaaaaa");
-  };
+    /*決まったコード*/
+    const { date, details, eimage, ename, place, rnumbers } = this.props;
+    this.props.returnSubmit({ date, details, eimage, ename, place, rnumbers });
 
+    const firestore = firebase.firestore();
+    const settings = { timestampsInSnapshots: true };
+    firestore.settings(settings);
+
+    let docRef = firestore.collection("events");
+
+    return docRef
+      .add({
+        ename: this.props.ename,
+        place: this.props.place,
+        details: this.props.details
+      })
+      .then(function() {
+        console.log("Document successfully updated!");
+      })
+      .catch(function(error) {
+        // The document probably doesn't exist.
+        console.error("Error updating document: ", error);
+      });
+  };
   render() {
+    console.log(this.props);
     const today = new Date();
     let year = today.getFullYear();
     let month = today.getMonth() + 1;
@@ -113,6 +145,7 @@ export default class EventCreateScreen extends Component {
               autoFocus={true}
               rkType="textInput"
               keyboardType="default"
+              onChangeText={ename => this.props.returnEname(ename)}
             />
 
             <RkText rkType="text">画像</RkText>
@@ -177,14 +210,23 @@ export default class EventCreateScreen extends Component {
               rkType="textInput"
               textContentType="password"
               keyboardType="default"
+              onChangeText={place => this.props.returnPlace(place)}
             />
 
             <View>
               <RkText rkType="text">詳細</RkText>
             </View>
-            <RkTextInput rkType="details" multiline />
+            <RkTextInput
+              rkType="details"
+              multiline
+              onChangeText={details => this.props.returnDetails(details)}
+            />
 
-            <RkButton rkType="btn" style={{ backgroundColor: "#5cb85c" }}>
+            <RkButton
+              rkType="btn"
+              onPress={this._onPressSubmit}
+              style={{ backgroundColor: "#5cb85c" }}
+            >
               作成
             </RkButton>
           </View>
@@ -256,3 +298,19 @@ RkTheme.setType("RkButton", "btn", {
 RkTheme.setType("RkText", "text", {
   fontSize: 25
 });
+
+const mapStateToProps = state => {
+  return {
+    date: state.create.date,
+    details: state.create.details,
+    eimage: state.create.eimage,
+    ename: state.create.ename,
+    place: state.create.place,
+    rnumbers: state.create.rnumbers
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  { returnSubmit, returnDetails, returnEname, returnPlace }
+)(EventCreateScreen);

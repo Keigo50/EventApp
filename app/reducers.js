@@ -5,7 +5,19 @@ const INITIAL_STATE = {
   password: "",
   loading: false,
   loggedIn: "",
-  day: ""
+  day: "",
+  /*イベント*/
+  arriving: "" /*参加者データ*/,
+  date: "" /*日付*/,
+  details: "" /*詳細*/,
+  eimage: "" /*イベント画像*/,
+  ename: "" /*イベントタイトル*/,
+  place: "" /*開催場所*/,
+  rnumbers: "" /**/,
+  smethod: ""
+  /*生徒*/
+
+  /*教師*/
 };
 
 const AuthReducer = (state = INITIAL_STATE, action) => {
@@ -26,6 +38,44 @@ const AuthReducer = (state = INITIAL_STATE, action) => {
       return state;
   }
 };
+
+/*イベント作成画面 */
+const EventCreateReducer = (state = INITIAL_STATE, action) => {
+  switch (action.type) {
+    case "return_submit":
+      return {
+        ...state,
+        date: action.payload,
+        details: action.payload,
+        eimage: action.payload,
+        ename: action.payload,
+        place: action.payload,
+        rnumbers: action.payload
+      };
+    case "return_ename":
+      return {
+        ...state,
+        ename: action.payload
+      };
+
+    case "return_place":
+      return {
+        ...state,
+        place: action.payload
+      };
+
+    case "return_details":
+      return {
+        ...state,
+        details: action.payload
+      };
+
+    default:
+      return state;
+  }
+};
+
+/*イベント編集画面 */
 const MyEventEditingReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case "return_date":
@@ -37,5 +87,6 @@ const MyEventEditingReducer = (state = INITIAL_STATE, action) => {
 
 export default combineReducers({
   auth: AuthReducer,
-  editing: MyEventEditingReducer
+  editing: MyEventEditingReducer,
+  create: EventCreateReducer
 });

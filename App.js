@@ -14,12 +14,12 @@ export default class App extends React.Component {
 
   componentWillMount() {
     firebase.initializeApp({
-      apiKey: "AIzaSyB8su0M_fX8NLSrFvk9-OAHM5HNPEta8wo",
-      authDomain: "mltest-f4ca5.firebaseapp.com",
-      databaseURL: "https://mltest-f4ca5.firebaseio.com",
-      projectId: "mltest-f4ca5",
-      storageBucket: "mltest-f4ca5.appspot.com",
-      messagingSenderId: "437468585885"
+      apiKey: "AIzaSyDIE9Pox0PbZS18FIhFPH38quhXxCa86bU",
+      authDomain: "eventapp-888ac.firebaseapp.com",
+      databaseURL: "https://eventapp-888ac.firebaseio.com",
+      projectId: "eventapp-888ac",
+      storageBucket: "eventapp-888ac.appspot.com",
+      messagingSenderId: "1067680483596"
     });
   }
 

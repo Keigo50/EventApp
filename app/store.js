@@ -18,5 +18,5 @@ const store = createStore(
   composeWithDevTools(applyMiddleware(ReduxThunk))
 );
 
-export const presistor = persistStore(store);
+export const persistor = persistStore(store);
 export default store;
