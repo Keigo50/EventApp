@@ -8,7 +8,7 @@ import reducer from "./reducers";
 const persistConfig = {
   key: "root", // Storageに保存されるキー名を指定する
   storage, // 保存先としてlocalStorageがここで設定される
-  whitelist: ["email"] // Stateは`todos`のみStorageに保存する
+  whitelist: ["ename"] // Stateは`todos`のみStorageに保存する
   // blacklist: ['visibilityFilter'] // `visibilityFilter`は保存しない
 };
 const persistedReducer = persistReducer(persistConfig, reducer);

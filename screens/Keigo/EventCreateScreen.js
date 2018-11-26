@@ -1,4 +1,3 @@
-
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import {
@@ -36,29 +35,47 @@ class EventCreateScreen extends Component {
     };
   }
 
-
   static navigationOptions = ({ navigation }) => ({
+    title: "イベント作成",
     headerLeft: (
-      <TouchableOpacity
+      <Icon
+        name="bars"
+        size={24}
         onPress={() => {
-          navigation.goBack();
+          navigation.openDrawer();
         }}
         style={{ paddingLeft: 20 }}
-      >
-        <Entypo name="chevron-left" size={40} color="black" />
-      </TouchableOpacity>
+      />
     )
   });
 
-  _onPressSubmit = () => {
-    console.log("aaaaaaa");
-    /*決まったコード*/
-    const { date, details, eimage, ename, place, rnumbers } = this.props;
-    this.props.returnSubmit({ date, details, eimage, ename, place, rnumbers });
+  _onEditingImage = () => {
+    console.log("Pushされました。");
+  };
 
+  _onPressSubmit = () => {
     const firestore = firebase.firestore();
     const settings = { timestampsInSnapshots: true };
     firestore.settings(settings);
+
+    const { day, details, eimage, ename, place, rnumbers } = this.props;
+    this.props.returnSubmit({ day, details, eimage, ename, place, rnumbers });
+
+    let docRef = firestore.collection("events");
+    return docRef
+      .add({
+        ename: this.props.ename,
+        place: this.props.place,
+        details: this.props.details
+      })
+      .then(function() {
+        console.log("Document successfully updated!");
+      })
+      .catch(function(error) {
+        // The document probably doesn't exist.
+        console.error("Error updating document: ", error);
+      });
+  };
 
   onCalendarPress = () => {
     if (!this.state.calendarDecision) {
@@ -74,22 +91,6 @@ class EventCreateScreen extends Component {
     }
   };
 
-    let docRef = firestore.collection("events");
-
-    return docRef
-      .add({
-        ename: this.props.ename,
-        place: this.props.place,
-        details: this.props.details
-      })
-      .then(function() {
-        console.log("Document successfully updated!");
-      })
-      .catch(function(error) {
-        // The document probably doesn't exist.
-        console.error("Error updating document: ", error);
-      });
-  };
   render() {
     console.log(this.props);
     const today = new Date();
@@ -177,7 +178,7 @@ class EventCreateScreen extends Component {
                 data={people}
               />
             </View>
-            <View style>
+            <View>
               <RkText rkType="text">イベントタイトル</RkText>
             </View>
             <RkTextInput
@@ -203,7 +204,10 @@ class EventCreateScreen extends Component {
                 style={{ width: "100%", height: 180 }}
                 source={require("../../assets/images/icon.png")}
               />
-              <Button title="画像の編集" onPress={this._sample.bind(this)} />
+              <Button
+                title="画像の編集"
+                onPress={() => this._onEditingImage()}
+              />
             </View>
 
             <View>
@@ -229,7 +233,7 @@ class EventCreateScreen extends Component {
                   justifyContent: "center"
                 }}
               >
-                <TouchableOpacity onPress={this.onCalendarPress.bind(this)}>
+                <TouchableOpacity onPress={() => this.onCalendarPress()}>
                   <Icon name="calendar" size={24} />
                 </TouchableOpacity>
               </View>
@@ -254,10 +258,9 @@ class EventCreateScreen extends Component {
               onChangeText={details => this.props.returnDetails(details)}
             />
 
-
             <RkButton
               rkType="btn"
-              onPress={this._onPressSubmit}
+              onPress={() => this._onPressSubmit()}
               style={{ backgroundColor: "#5cb85c" }}
             >
               作成
@@ -269,7 +272,7 @@ class EventCreateScreen extends Component {
   }
 }
 
-MyEventEditingScreen.propTypes = {
+EventCreateScreen.propTypes = {
   day: PropTypes.string.isRequired
 };
 
@@ -330,17 +333,22 @@ RkTheme.setType("RkText", "text", {
 
 const mapStateToProps = state => {
   return {
-    date: state.create.date,
+    day: state.create.day,
     details: state.create.details,
     eimage: state.create.eimage,
     ename: state.create.ename,
     place: state.create.place,
-    rnumbers: state.create.rnumbers,
-    day: state.editing.day
+    rnumbers: state.create.rnumbers
   };
 };
 
 export default connect(
   mapStateToProps,
-  { returnDate,returnSubmit, returnDetails, returnEname, returnPlace }
+  {
+    returnDate,
+    returnSubmit,
+    returnDetails,
+    returnEname,
+    returnPlace
+  }
 )(EventCreateScreen);
