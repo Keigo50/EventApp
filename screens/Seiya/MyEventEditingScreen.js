@@ -18,7 +18,6 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import { Calendar } from "react-native-calendars";
 import PropTypes from "prop-types";
 import { returnDate } from "../../app/actions";
-import { blue } from "ansi-colors";
 
 class MyEventEditingScreen extends React.Component {
   constructor(props) {
@@ -29,6 +28,7 @@ class MyEventEditingScreen extends React.Component {
   }
 
   static navigationOptions = ({ navigation }) => ({
+    title: "イベント編集",
     headerLeft: (
       <TouchableOpacity
         onPress={() => {
@@ -287,7 +287,7 @@ RkTheme.setType("RkText", "text", {
 
 const mapStateToProps = state => {
   return {
-    day: state.editing.day
+    day: state.create.day
   };
 };
 

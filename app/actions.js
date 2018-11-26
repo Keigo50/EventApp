@@ -35,7 +35,7 @@ export const submitLogin = ({ email, password }) => {
 /*イベント */
 export const returnDate = day => {
   return {
-    type: "return_date",
+    type: "return_day",
     payload: day
   };
 };
