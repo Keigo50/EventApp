@@ -7,6 +7,8 @@ import {
   Button,
   View
 } from "react-native";
+import firebase from "firebase";
+import "firebase/firestore";
 import { RkText } from "react-native-ui-kitten";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { Avatar } from "react-native-elements";
@@ -16,7 +18,8 @@ export default class ProfileHomeScreen extends React.Component {
     super(props);
 
     this.state = {
-      mailAddress: "sample@gmail.com"
+      mailAddress: "sample@gmail.com",
+      img: null
     };
   }
 
@@ -41,7 +44,7 @@ export default class ProfileHomeScreen extends React.Component {
           <Image source={require("../../assets/images/icon.png")} />
           <View style={styles.thumbnail}>
             <Avatar
-              large
+              xlarge
               rounded
               source={{
                 uri:
