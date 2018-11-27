@@ -1,12 +1,8 @@
 import { combineReducers } from "redux";
-const INITIAL_STATE = {
-  email: "",
-  password: "",
-  loading: false,
-  loggedIn: "",
+const CREATE_INITIAL_STATE = {
   /*イベント*/
   arriving: "" /*参加者データ*/,
-  day: "" /*日付*/,
+  date: "" /*日付*/,
   details: "" /*詳細*/,
   eimage: null /*イベント画像*/,
   ename: "" /*イベントタイトル*/,
@@ -18,7 +14,14 @@ const INITIAL_STATE = {
   /*教師*/
 };
 
-const AuthReducer = (state = INITIAL_STATE, action) => {
+const AUTH_INITIAL_STATE = {
+  email: "",
+  password: "",
+  loading: false,
+  loggedIn: ""
+};
+
+const AuthReducer = (state = AUTH_INITIAL_STATE, action) => {
   switch (action.type) {
     case "change_email":
       return { ...state, email: action.payload };
@@ -38,12 +41,12 @@ const AuthReducer = (state = INITIAL_STATE, action) => {
 };
 
 /*イベント作成・編集画面 */
-const EventCreateReducer = (state = INITIAL_STATE, action) => {
+const EventCreateReducer = (state = CREATE_INITIAL_STATE, action) => {
   switch (action.type) {
     case "return_submit":
       return {
         ...state,
-        day,
+        date,
         details,
         eimage,
         ename,
@@ -51,10 +54,22 @@ const EventCreateReducer = (state = INITIAL_STATE, action) => {
         rnumbers
       };
 
-    case "return_day":
+    case "return_date":
       return {
         ...state,
-        day: action.payload
+        date: action.payload
+      };
+
+    case "return_rnumbers":
+      return {
+        ...state,
+        rnumbers: action.payload
+      };
+
+    case "return_eimage":
+      return {
+        ...state,
+        eimage: action.payload
       };
 
     case "return_ename":
