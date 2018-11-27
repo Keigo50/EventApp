@@ -18,7 +18,7 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import { Calendar } from "react-native-calendars";
 import PropTypes from "prop-types";
 import { returnDate } from "../../app/actions";
-
+import { ImagePicker } from "expo";
 class MyEventEditingScreen extends React.Component {
   constructor(props) {
     super(props);
@@ -28,7 +28,6 @@ class MyEventEditingScreen extends React.Component {
   }
 
   static navigationOptions = ({ navigation }) => ({
-    title: "イベント編集",
     headerLeft: (
       <TouchableOpacity
         onPress={() => {
@@ -287,7 +286,7 @@ RkTheme.setType("RkText", "text", {
 
 const mapStateToProps = state => {
   return {
-    day: state.create.day
+    day: state.editing.day
   };
 };
 
