@@ -19,7 +19,7 @@ import { ScrollView } from "react-native-gesture-handler";
 import { Dropdown } from "react-native-material-dropdown";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { Calendar } from "react-native-calendars";
-import { ImagePicker } from "expo";
+import { ImagePicker, Permissions } from "expo";
 import * as Actions from "../../app/actions";
 import PropTypes from "prop-types";
 class MyEventEditingScreen extends Component {
@@ -27,7 +27,8 @@ class MyEventEditingScreen extends Component {
     super(props);
     this.state = {
       calendarDecision: false,
-      image: null
+      image: null,
+      hasCameraRollPermission: null
     };
 
     this._onEditingImage = this._onEditingImage.bind(this);
@@ -47,6 +48,12 @@ class MyEventEditingScreen extends Component {
       />
     )
   });
+
+  async componentWillMount() {
+    // カメラロールに対するPermissionを許可
+    const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+    this.setState({ hasCameraRollPermission: status === "granted" });
+  }
 
   _onEditingImage = () => {
     console.log("Pushされました。");
@@ -220,7 +227,7 @@ class MyEventEditingScreen extends Component {
               {image && (
                 <Image
                   source={{ uri: image }}
-                  style={{ width: 200, height: 200 }}
+                  style={{ width: "100%", height: "84%" }}
                 />
               )}
             </View>
