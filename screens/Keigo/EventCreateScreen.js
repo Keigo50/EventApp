@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
 import {
   StyleSheet,
   View,
@@ -19,13 +20,7 @@ import { Dropdown } from "react-native-material-dropdown";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { Calendar } from "react-native-calendars";
 
-import {
-  returnSubmit,
-  returnEname,
-  returnDetails,
-  returnPlace,
-  returnDate
-} from "../../app/actions";
+import * as Actions from "../../app/actions";
 import PropTypes from "prop-types";
 class EventCreateScreen extends Component {
   constructor(props) {
@@ -33,6 +28,9 @@ class EventCreateScreen extends Component {
     this.state = {
       calendarDecision: false
     };
+    this._onEditingImage = this._onEditingImage.bind(this);
+    this._onCalendarPress = this._onCalendarPress.bind(this);
+    this._onPressSubmit = this._onPressSubmit.bind(this);
   }
 
   static navigationOptions = ({ navigation }) => ({
@@ -58,26 +56,44 @@ class EventCreateScreen extends Component {
     const settings = { timestampsInSnapshots: true };
     firestore.settings(settings);
 
-    const { day, details, eimage, ename, place, rnumbers } = this.props;
-    this.props.returnSubmit({ day, details, eimage, ename, place, rnumbers });
+    _onCalendarPress = () => {
+      if (!this.state.calendarDecision) {
+        console.log(this.state.calendarDecision);
+        this.setState({
+          calendarDecision: true
+        });
+      } else {
+        console.log(this.state.calendarDecision);
+        this.setState({
+          calendarDecision: false
+        });
+      }
+    };
+
+    const { date, details, eimage, ename, place, rnumbers } = this.props;
+    this.props.returnSubmit({ date, details, eimage, ename, place, rnumbers });
 
     let docRef = firestore.collection("events");
     return docRef
       .add({
+        date: this.props.date,
         ename: this.props.ename,
+        eimage: this.props.eimage,
         place: this.props.place,
-        details: this.props.details
+        details: this.props.details,
+        rnumbers: this.props.rnumbers
       })
+
       .then(function() {
-        console.log("Document successfully updated!");
+        console.log("firebaseにデータ到着！");
       })
-      .catch(function(error) {
+      .catch(function (error) {
         // The document probably doesn't exist.
-        console.error("Error updating document: ", error);
+        console.error("firebaseにデータ来てないぞ！！ ", error);
       });
   };
 
-  onCalendarPress = () => {
+  _onCalendarPress = () => {
     if (!this.state.calendarDecision) {
       console.log(this.state.calendarDecision);
       this.setState({
@@ -96,8 +112,8 @@ class EventCreateScreen extends Component {
     const today = new Date();
     let year = today.getFullYear();
     let month = today.getMonth() + 1;
-    let date = today.getDate() + 1;
-    const now = `${year}/${month}/${date}`;
+    let dates = today.getDate() + 1;
+    const now = `${year}/${month}/${dates}`;
     let data = [
       {
         value: "Banana"
@@ -202,12 +218,9 @@ class EventCreateScreen extends Component {
             >
               <Image
                 style={{ width: "100%", height: 180 }}
-                source={require("../../assets/images/icon.png")}
+                source={require("../../assets/images/jyobifes.jpg")}
               />
-              <Button
-                title="画像の編集"
-                onPress={() => this._onEditingImage()}
-              />
+              <Button title="画像の編集" onPress={this._onEditingImage} />
             </View>
 
             <View>
@@ -223,7 +236,7 @@ class EventCreateScreen extends Component {
                 }}
               >
                 <View>
-                  <RkText style={{ fontSize: 20 }}>{this.props.day}</RkText>
+                  <RkText style={{ fontSize: 20 }}>{this.props.date}</RkText>
                 </View>
               </View>
               <View
@@ -233,7 +246,7 @@ class EventCreateScreen extends Component {
                   justifyContent: "center"
                 }}
               >
-                <TouchableOpacity onPress={() => this.onCalendarPress()}>
+                <TouchableOpacity onPress={this._onCalendarPress}>
                   <Icon name="calendar" size={24} />
                 </TouchableOpacity>
               </View>
@@ -260,7 +273,7 @@ class EventCreateScreen extends Component {
 
             <RkButton
               rkType="btn"
-              onPress={() => this._onPressSubmit()}
+              onPress={this._onPressSubmit}
               style={{ backgroundColor: "#5cb85c" }}
             >
               作成
@@ -273,8 +286,14 @@ class EventCreateScreen extends Component {
 }
 
 EventCreateScreen.propTypes = {
-  day: PropTypes.string.isRequired
+  date: PropTypes.string.isRequired,
+  ename: PropTypes.string.isRequired,
+  eimage: PropTypes.string.isRequired,
+  rnumbers: PropTypes.string.isRequired,
+  place: PropTypes.string.isRequired,
+  details: PropTypes.string.isRequired
 };
+
 
 const styles = StyleSheet.create({
   container: {
@@ -333,7 +352,7 @@ RkTheme.setType("RkText", "text", {
 
 const mapStateToProps = state => {
   return {
-    day: state.create.day,
+    date: state.create.date,
     details: state.create.details,
     eimage: state.create.eimage,
     ename: state.create.ename,
@@ -342,13 +361,13 @@ const mapStateToProps = state => {
   };
 };
 
+const mapDispatchToProps = dispatch => {
+  return {
+    ...bindActionCreators(Actions, dispatch)
+  };
+};
+
 export default connect(
   mapStateToProps,
-  {
-    returnDate,
-    returnSubmit,
-    returnDetails,
-    returnEname,
-    returnPlace
-  }
+  mapDispatchToProps,
 )(EventCreateScreen);
