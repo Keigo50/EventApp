@@ -56,6 +56,20 @@ class EventCreateScreen extends Component {
     const settings = { timestampsInSnapshots: true };
     firestore.settings(settings);
 
+    _onCalendarPress = () => {
+      if (!this.state.calendarDecision) {
+        console.log(this.state.calendarDecision);
+        this.setState({
+          calendarDecision: true
+        });
+      } else {
+        console.log(this.state.calendarDecision);
+        this.setState({
+          calendarDecision: false
+        });
+      }
+    };
+
     const { date, details, eimage, ename, place, rnumbers } = this.props;
     this.props.returnSubmit({ date, details, eimage, ename, place, rnumbers });
 
@@ -69,10 +83,11 @@ class EventCreateScreen extends Component {
         details: this.props.details,
         rnumbers: this.props.rnumbers
       })
+
       .then(function() {
         console.log("firebaseにデータ到着！");
       })
-      .catch(function(error) {
+      .catch(function (error) {
         // The document probably doesn't exist.
         console.error("firebaseにデータ来てないぞ！！ ", error);
       });
@@ -279,6 +294,7 @@ EventCreateScreen.propTypes = {
   details: PropTypes.string.isRequired
 };
 
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -353,5 +369,5 @@ const mapDispatchToProps = dispatch => {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(EventCreateScreen);
