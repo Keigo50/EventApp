@@ -1,6 +1,11 @@
 import React from "react";
-import { Platform } from "react-native";
-import { createStackNavigator, createDrawerNavigator } from "react-navigation";
+import {
+  Platform
+} from "react-native";
+import {
+  createStackNavigator,
+  createDrawerNavigator
+} from "react-navigation";
 
 import TabBarIcon from "../components/TabBarIcon";
 import HomeScreen from "../screens/Keigo/HomeScreen";
@@ -30,14 +35,17 @@ HomeStack.navigationOptions = {
   header: null,
   title: "ホーム",
   tabBarLabel: "Home",
-  tabBarIcon: ({ focused }) => (
-    <TabBarIcon
-      focused={focused}
-      name={
-        Platform.OS === "ios"
-          ? `ios-information-circle${focused ? "" : "-outline"}`
-          : "md-information-circle"
-      }
+  tabBarIcon: ({
+    focused
+  }) => ( <
+    TabBarIcon focused = {
+      focused
+    }
+    name = {
+      Platform.OS === "ios" ?
+      `ios-information-circle${focused ? "" : "-outline"}` :
+        "md-information-circle"
+    }
     />
   )
 };
@@ -54,7 +62,8 @@ FavoriteHomeStack.navigationOptions = {
 /*プロフィール画面*/
 
 const ProfileHomeStack = createStackNavigator({
-  Home: ProfileHomeScreen
+  Home: ProfileHomeScreen,
+  Details: EventMoreDetailScreen
 });
 
 ProfileHomeStack.navigationOptions = {

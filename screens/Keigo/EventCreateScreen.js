@@ -60,19 +60,19 @@ class EventCreateScreen extends Component {
     const settings = { timestampsInSnapshots: true };
     firestore.settings(settings);
 
-  onCalendarPress = () => {
-    if (!this.state.calendarDecision) {
-      console.log(this.state.calendarDecision);
-      this.setState({
-        calendarDecision: true
-      });
-    } else {
-      console.log(this.state.calendarDecision);
-      this.setState({
-        calendarDecision: false
-      });
-    }
-  };
+    onCalendarPress = () => {
+      if (!this.state.calendarDecision) {
+        console.log(this.state.calendarDecision);
+        this.setState({
+          calendarDecision: true
+        });
+      } else {
+        console.log(this.state.calendarDecision);
+        this.setState({
+          calendarDecision: false
+        });
+      }
+    };
 
     let docRef = firestore.collection("events");
 
@@ -82,10 +82,10 @@ class EventCreateScreen extends Component {
         place: this.props.place,
         details: this.props.details
       })
-      .then(function() {
+      .then(function () {
         console.log("Document successfully updated!");
       })
-      .catch(function(error) {
+      .catch(function (error) {
         // The document probably doesn't exist.
         console.error("Error updating document: ", error);
       });
@@ -269,9 +269,9 @@ class EventCreateScreen extends Component {
   }
 }
 
-MyEventEditingScreen.propTypes = {
-  day: PropTypes.string.isRequired
-};
+// EventCreateScreen.propTypes = {
+//   day: PropTypes.string.isRequired
+// };
 
 const styles = StyleSheet.create({
   container: {
@@ -342,5 +342,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { returnDate,returnSubmit, returnDetails, returnEname, returnPlace }
+  { returnDate, returnSubmit, returnDetails, returnEname, returnPlace }
 )(EventCreateScreen);
