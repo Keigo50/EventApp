@@ -1,5 +1,6 @@
-import React from "react";
+import React, { Component } from "react";
 import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
 import {
   StyleSheet,
   View,
@@ -10,42 +11,74 @@ import {
   Image,
   KeyboardAvoidingView
 } from "react-native";
+import firebase from "firebase";
+import "firebase/firestore";
 import { RkButton, RkTextInput, RkTheme, RkText } from "react-native-ui-kitten";
 import Entypo from "react-native-vector-icons/Entypo";
 import { ScrollView } from "react-native-gesture-handler";
 import { Dropdown } from "react-native-material-dropdown";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { Calendar } from "react-native-calendars";
-import PropTypes from "prop-types";
-import { returnDate } from "../../app/actions";
-import { blue } from "ansi-colors";
 
-class MyEventEditingScreen extends React.Component {
+import * as Actions from "../../app/actions";
+import PropTypes from "prop-types";
+class MyEventEditingScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
       calendarDecision: false
     };
+    this._onEditingImage = this._onEditingImage.bind(this);
+    this._onCalendarPress = this._onCalendarPress.bind(this);
+    this._onPressSubmit = this._onPressSubmit.bind(this);
   }
 
   static navigationOptions = ({ navigation }) => ({
+    title: "イベント編集",
     headerLeft: (
-      <TouchableOpacity
+      <Icon
+        name="bars"
+        size={24}
         onPress={() => {
-          navigation.goBack();
+          navigation.navigate("Home");
         }}
         style={{ paddingLeft: 20 }}
-      >
-        <Entypo name="chevron-left" size={40} color="black" />
-      </TouchableOpacity>
+      />
     )
   });
 
-  _sample = () => {
-    console.log("押されました");
+  _onEditingImage = () => {
+    console.log("Pushされました。");
   };
 
-  onCalendarPress = () => {
+  _onPressSubmit = () => {
+    const firestore = firebase.firestore();
+    const settings = { timestampsInSnapshots: true };
+    firestore.settings(settings);
+
+    const { date, details, eimage, ename, place, rnumbers } = this.props;
+    this.props.returnSubmit({ date, details, eimage, ename, place, rnumbers });
+
+    let docRef = firestore.collection("events");
+    return docRef
+      .add({
+        date: this.props.date,
+        ename: this.props.ename,
+        eimage: this.props.eimage,
+        place: this.props.place,
+        details: this.props.details,
+        rnumbers: this.props.rnumbers
+      })
+      .then(function() {
+        console.log("firebaseにデータ到着！");
+      })
+      .catch(function(error) {
+        // The document probably doesn't exist.
+        console.error("firebaseにデータ来てないぞ！！ ", error);
+      });
+  };
+
+  _onCalendarPress = () => {
     if (!this.state.calendarDecision) {
       console.log(this.state.calendarDecision);
       this.setState({
@@ -60,11 +93,12 @@ class MyEventEditingScreen extends React.Component {
   };
 
   render() {
+    console.log(this.props);
     const today = new Date();
     let year = today.getFullYear();
     let month = today.getMonth() + 1;
-    let date = today.getDate() + 1;
-    const now = `${year}/${month}/${date}`;
+    let dates = today.getDate() + 1;
+    const now = `${year}/${month}/${dates}`;
     let data = [
       {
         value: "Banana"
@@ -145,13 +179,14 @@ class MyEventEditingScreen extends React.Component {
                 data={people}
               />
             </View>
-            <View style>
+            <View>
               <RkText rkType="text">イベントタイトル</RkText>
             </View>
             <RkTextInput
               autoFocus={true}
               rkType="textInput"
               keyboardType="default"
+              onChangeText={ename => this.props.returnEname(ename)}
             />
 
             <RkText rkType="text">画像</RkText>
@@ -168,9 +203,9 @@ class MyEventEditingScreen extends React.Component {
             >
               <Image
                 style={{ width: "100%", height: 180 }}
-                source={require("../../assets/images/icon.png")}
+                source={require("../../assets/images/jyobifes.jpg")}
               />
-              <Button title="画像の編集" onPress={this._sample.bind(this)} />
+              <Button title="画像の編集" onPress={this._onEditingImage} />
             </View>
 
             <View>
@@ -186,7 +221,7 @@ class MyEventEditingScreen extends React.Component {
                 }}
               >
                 <View>
-                  <RkText style={{ fontSize: 20 }}>{this.props.day}</RkText>
+                  <RkText style={{ fontSize: 20 }}>{this.props.date}</RkText>
                 </View>
               </View>
               <View
@@ -196,7 +231,7 @@ class MyEventEditingScreen extends React.Component {
                   justifyContent: "center"
                 }}
               >
-                <TouchableOpacity onPress={this.onCalendarPress.bind(this)}>
+                <TouchableOpacity onPress={this._onCalendarPress}>
                   <Icon name="calendar" size={24} />
                 </TouchableOpacity>
               </View>
@@ -209,14 +244,23 @@ class MyEventEditingScreen extends React.Component {
               rkType="textInput"
               textContentType="password"
               keyboardType="default"
+              onChangeText={place => this.props.returnPlace(place)}
             />
 
             <View>
               <RkText rkType="text">詳細</RkText>
             </View>
-            <RkTextInput rkType="details" multiline />
+            <RkTextInput
+              rkType="details"
+              multiline
+              onChangeText={details => this.props.returnDetails(details)}
+            />
 
-            <RkButton rkType="btn" style={{ backgroundColor: "#428bca" }}>
+            <RkButton
+              rkType="btn"
+              onPress={this._onPressSubmit}
+              style={{ backgroundColor: "#428bca" }}
+            >
               変更
             </RkButton>
           </View>
@@ -227,7 +271,12 @@ class MyEventEditingScreen extends React.Component {
 }
 
 MyEventEditingScreen.propTypes = {
-  day: PropTypes.string.isRequired
+  date: PropTypes.string.isRequired,
+  ename: PropTypes.string.isRequired,
+  eimage: PropTypes.string.isRequired,
+  rnumbers: PropTypes.string.isRequired,
+  place: PropTypes.string.isRequired,
+  details: PropTypes.string.isRequired
 };
 
 const styles = StyleSheet.create({
@@ -287,11 +336,22 @@ RkTheme.setType("RkText", "text", {
 
 const mapStateToProps = state => {
   return {
-    day: state.editing.day
+    date: state.create.date,
+    details: state.create.details,
+    eimage: state.create.eimage,
+    ename: state.create.ename,
+    place: state.create.place,
+    rnumbers: state.create.rnumbers
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    ...bindActionCreators(Actions, dispatch)
   };
 };
 
 export default connect(
   mapStateToProps,
-  { returnDate }
+  mapDispatchToProps
 )(MyEventEditingScreen);

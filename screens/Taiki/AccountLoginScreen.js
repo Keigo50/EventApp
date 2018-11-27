@@ -1,15 +1,26 @@
 import React from "react";
+import { connect } from "react-redux";
 import {
   StyleSheet,
   View,
   Platform,
   TouchableOpacity,
-  PropTypes
+  ActivityIndicator
 } from "react-native";
 import { RkButton, RkTextInput, RkTheme, RkText } from "react-native-ui-kitten";
+import {
+  changeEmail,
+  changePassword,
+  submitLogin,
+  loginCheck
+} from "../../app/actions";
 import Entypo from "react-native-vector-icons/Entypo";
-
-export default class AccountLoginScreen extends React.Component {
+import firebase from "firebase";
+class AccountLoginScreen extends React.Component {
+  constructor(props) {
+    super(props);
+    this.onButtonPress = this.onButtonPress.bind(this);
+  }
   static navigationOptions = ({ navigation }) => ({
     headerLeft: (
       <TouchableOpacity
@@ -23,6 +34,32 @@ export default class AccountLoginScreen extends React.Component {
     )
   });
 
+  onButtonPress() {
+    console.log(this.props);
+    const { email, password } = this.props;
+    this.props.submitLogin({ email, password });
+    this.props.navigation.navigate("Main");
+  }
+
+  loginCheck() {
+    firebase.auth().onAuthStateChanged(user => {
+      if (!user) {
+        // サインインしていない状態
+        console.log("サインインしてません");
+      } else {
+        // サインイン済み
+        console.log("サインインしてます");
+        return this.props.navigation.navigate("Main");
+      }
+    });
+  }
+
+  loadSpinner() {
+    if (this.props.loading) {
+      return <ActivityIndicator size="small" />;
+    }
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -35,21 +72,26 @@ export default class AccountLoginScreen extends React.Component {
             autoFocus={true}
             rkType="textInput"
             keyboardType="email-address"
+            onChangeText={email => this.props.changeEmail(email)}
           />
 
           <RkText rkType="text">パスワード</RkText>
           <RkTextInput
+            secureTextEntry
             placeholder="password"
             rkType="textInput"
             textContentType="password"
             keyboardType="email-address"
+            onChangeText={password => this.props.changePassword(password)}
           />
           <RkButton
             rkType="btn"
-            onPress={() => this.props.navigation.navigate("Main")}
+            // onPress={() => this.props.navigation.navigate("Main")}
+            onPress={this.onButtonPress}
           >
             ログイン
           </RkButton>
+          <View>{this.loadSpinner}</View>
         </View>
       </View>
     );
@@ -101,3 +143,17 @@ RkTheme.setType("RkButton", "btn", {
 RkTheme.setType("RkText", "text", {
   fontSize: 25
 });
+
+const mapStateToProps = state => {
+  return {
+    email: state.auth.email,
+    password: state.auth.password,
+    loading: state.auth.loading,
+    loggedIn: state.auth.loggedIn
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  { changeEmail, changePassword, submitLogin }
+)(AccountLoginScreen);
