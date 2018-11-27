@@ -12,6 +12,14 @@ import Entypo from "react-native-vector-icons/Entypo";
 import Icon from "react-native-vector-icons/FontAwesome";
 
 export default class MyEvents extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      title: ["ジョビフェス", "いしがきMS", "よさこいさんさ", "街中ハロウィン"],
+      date: ["2018/7/30", "2018/6/20", "2018/5/21", "2018/10/31"]
+    };
+  }
+
   static navigationOptions = ({ navigation }) => ({
     title: "Myイベント",
     headerLeft: (
@@ -28,8 +36,15 @@ export default class MyEvents extends React.Component {
 
   render() {
     let data = [];
-    for (let i = 1; i < 50; i++) {
-      data.push(`No.${i}`);
+    let contents;
+    contents = (
+      <View>
+        <Text style={{ fontSize: 25 }}>{this.state.title}</Text>
+        <Text style={{ fontSize: 20 }}>{this.state.date}</Text>
+      </View>
+    );
+    for (let i = 1; i < 5; i++) {
+      data.push(contents);
     }
 
     return (
