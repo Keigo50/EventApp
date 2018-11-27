@@ -22,7 +22,7 @@ export default class EventMoreDetailScreen extends React.Component {
         headerLeft: (
             <TouchableOpacity
                 onPress={() => {
-                    navigation.navigate('Home');
+                    navigation.navigate('ProfileHomeScreen');
                 }}
                 style={{ paddingLeft: 20 }}
             >

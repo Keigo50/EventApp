@@ -75,7 +75,7 @@ export default class ProfileHomeScreen extends React.Component {
           <Button
             title="参加イベントの確認"
             onPress={() => {
-              this.props.navigation.navigate("Details");
+              this.props.navigation.navigate("EventMoreDetailScreen");
             }}
           />
         </View>
