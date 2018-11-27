@@ -32,7 +32,21 @@ export const submitLogin = ({ email, password }) => {
   };
 };
 
-/*イベント */
+/*イベント作成画面*/
+export const returnRnumbers = rnumbers => {
+  return {
+    type: "return_rnumbers",
+    payload: rnumbers
+  };
+};
+
+export const returnEimage = eimage => {
+  return {
+    type: "return_eimage",
+    payload: eimage
+  };
+};
+
 export const returnDate = day => {
   return {
     type: "return_date",

@@ -18,7 +18,6 @@ import EventMoreDetailScreen from "../screens/Taiki/EventMoreDetailScreen";
 import SearchHomeScreen from "../screens/Seiya/SearchHomeScreen";
 import LoginFormScreen from "../screens/Keigo/LoginFormScreen";
 import MyEventEditingScreen from "../screens/Seiya/MyEventEditingScreen";
-// import DetailScreen from "../screens/Keigo/DetailScreen";
 
 /*ホーム画面*/
 const HomeStack = createStackNavigator({

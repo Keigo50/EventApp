@@ -14,7 +14,7 @@ import Icons from "react-native-vector-icons/EvilIcons";
 
 export default class SearchHomeScreen extends React.Component {
   static navigationOptions = ({ navigation }) => ({
-    title: "検索",
+    title: "イベント検索",
     headerLeft: (
       <Icon
         name="bars"
