@@ -8,9 +8,14 @@ import {
   ActivityIndicator
 } from "react-native";
 import { RkButton, RkTextInput, RkTheme, RkText } from "react-native-ui-kitten";
-import { changeEmail, changePassword, submitLogin } from "../../app/actions";
+import {
+  changeEmail,
+  changePassword,
+  submitLogin,
+  loginCheck
+} from "../../app/actions";
 import Entypo from "react-native-vector-icons/Entypo";
-
+import firebase from "firebase";
 class AccountLoginScreen extends React.Component {
   constructor(props) {
     super(props);
@@ -30,12 +35,23 @@ class AccountLoginScreen extends React.Component {
   });
 
   onButtonPress() {
-    if (this.props.loggedIn === "ログイン中") {
-      this.props.navigation.navigate("Main");
-    }
     console.log(this.props);
     const { email, password } = this.props;
     this.props.submitLogin({ email, password });
+    this.props.navigation.navigate("Main");
+  }
+
+  loginCheck() {
+    firebase.auth().onAuthStateChanged(user => {
+      if (!user) {
+        // サインインしていない状態
+        console.log("サインインしてません");
+      } else {
+        // サインイン済み
+        console.log("サインインしてます");
+        return this.props.navigation.navigate("Main");
+      }
+    });
   }
 
   loadSpinner() {
@@ -61,6 +77,7 @@ class AccountLoginScreen extends React.Component {
 
           <RkText rkType="text">パスワード</RkText>
           <RkTextInput
+            secureTextEntry
             placeholder="password"
             rkType="textInput"
             textContentType="password"
@@ -74,7 +91,7 @@ class AccountLoginScreen extends React.Component {
           >
             ログイン
           </RkButton>
-          <View>{this.loadSpinner()}</View>
+          <View>{this.loadSpinner}</View>
         </View>
       </View>
     );
