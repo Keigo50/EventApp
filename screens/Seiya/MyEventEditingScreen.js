@@ -32,7 +32,7 @@ class MyEventEditingScreen extends React.Component {
     headerLeft: (
       <TouchableOpacity
         onPress={() => {
-          navigation.goBack();
+          navigation.navigate("Home");
         }}
         style={{ paddingLeft: 20 }}
       >
