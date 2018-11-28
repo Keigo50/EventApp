@@ -19,33 +19,41 @@ import { ScrollView } from "react-native-gesture-handler";
 import { Dropdown } from "react-native-material-dropdown";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { Calendar } from "react-native-calendars";
-
+import { ImagePicker, Permissions } from "expo";
 import * as Actions from "../../app/actions";
 import PropTypes from "prop-types";
 class EventCreateScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      calendarDecision: false
+      calendarDecision: false,
+      image: null,
+      hasCameraRollPermission: null
     };
+
     this._onEditingImage = this._onEditingImage.bind(this);
     this._onCalendarPress = this._onCalendarPress.bind(this);
     this._onPressSubmit = this._onPressSubmit.bind(this);
   }
 
   static navigationOptions = ({ navigation }) => ({
-    title: "イベント作成",
     headerLeft: (
       <Icon
         name="bars"
         size={24}
         onPress={() => {
-          navigation.openDrawer();
+          navigation.navigate("Home");
         }}
         style={{ paddingLeft: 20 }}
       />
     )
   });
+
+  async componentWillMount() {
+    // カメラロールに対するPermissionを許可
+    const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+    this.setState({ hasCameraRollPermission: status === "granted" });
+  }
 
   _onEditingImage = () => {
     console.log("Pushされました。");
@@ -55,20 +63,6 @@ class EventCreateScreen extends Component {
     const firestore = firebase.firestore();
     const settings = { timestampsInSnapshots: true };
     firestore.settings(settings);
-
-    _onCalendarPress = () => {
-      if (!this.state.calendarDecision) {
-        console.log(this.state.calendarDecision);
-        this.setState({
-          calendarDecision: true
-        });
-      } else {
-        console.log(this.state.calendarDecision);
-        this.setState({
-          calendarDecision: false
-        });
-      }
-    };
 
     const { date, details, eimage, ename, place, rnumbers } = this.props;
     this.props.returnSubmit({ date, details, eimage, ename, place, rnumbers });
@@ -84,10 +78,10 @@ class EventCreateScreen extends Component {
         rnumbers: this.props.rnumbers
       })
 
-      .then(function () {
+      .then(function() {
         console.log("firebaseにデータ到着！");
       })
-      .catch(function (error) {
+      .catch(function(error) {
         // The document probably doesn't exist.
         console.error("firebaseにデータ来てないぞ！！ ", error);
       });
@@ -107,7 +101,21 @@ class EventCreateScreen extends Component {
     }
   };
 
+  _pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      allowsEditing: true,
+      aspect: [4, 3]
+    });
+
+    console.log(result);
+
+    if (!result.cancelled) {
+      this.setState({ image: result.uri });
+    }
+  };
+
   render() {
+    let { image } = this.state;
     console.log(this.props);
     const today = new Date();
     let year = today.getFullYear();
@@ -216,11 +224,13 @@ class EventCreateScreen extends Component {
                 marginBottom: 10
               }}
             >
-              <Image
-                style={{ width: "100%", height: 180 }}
-                source={require("../../assets/images/jyobifes.jpg")}
-              />
-              <Button title="画像の編集" onPress={this._onEditingImage} />
+              <Button title="画像の選択" onPress={this._pickImage} />
+              {image && (
+                <Image
+                  source={{ uri: image }}
+                  style={{ width: "100%", height: "84%" }}
+                />
+              )}
             </View>
 
             <View>
@@ -293,7 +303,6 @@ EventCreateScreen.propTypes = {
   place: PropTypes.string.isRequired,
   details: PropTypes.string.isRequired
 };
-
 
 const styles = StyleSheet.create({
   container: {
@@ -369,5 +378,5 @@ const mapDispatchToProps = dispatch => {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps,
+  mapDispatchToProps
 )(EventCreateScreen);
