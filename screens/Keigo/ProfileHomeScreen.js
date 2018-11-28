@@ -25,8 +25,8 @@ export default class ProfileHomeScreen extends React.Component {
     };
   }
 
+  // カメラロールに対するPermissionを許可
   async componentWillMount() {
-    // カメラロールに対するPermissionを許可
     const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
     this.setState({ hasCameraRollPermission: status === "granted" });
   }
@@ -44,7 +44,6 @@ export default class ProfileHomeScreen extends React.Component {
   _pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       allowsEditing: true,
-
       aspect: [4, 3]
     });
 
