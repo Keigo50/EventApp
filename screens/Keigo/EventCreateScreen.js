@@ -77,6 +77,7 @@ class EventCreateScreen extends Component {
         details: this.props.details,
         rnumbers: this.props.rnumbers
       })
+
       .then(function() {
         console.log("firebaseにデータ到着！");
       })
@@ -283,9 +284,9 @@ class EventCreateScreen extends Component {
             <RkButton
               rkType="btn"
               onPress={this._onPressSubmit}
-              style={{ backgroundColor: "#428bca" }}
+              style={{ backgroundColor: "#5cb85c" }}
             >
-              変更
+              作成
             </RkButton>
           </View>
         </ScrollView>
