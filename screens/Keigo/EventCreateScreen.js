@@ -22,7 +22,7 @@ import { Calendar } from "react-native-calendars";
 import { ImagePicker, Permissions } from "expo";
 import * as Actions from "../../app/actions";
 import PropTypes from "prop-types";
-class MyEventEditingScreen extends Component {
+class EventCreateScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -294,7 +294,7 @@ class MyEventEditingScreen extends Component {
   }
 }
 
-MyEventEditingScreen.propTypes = {
+EventCreateScreen.propTypes = {
   date: PropTypes.string.isRequired,
   ename: PropTypes.string.isRequired,
   eimage: PropTypes.string.isRequired,
@@ -378,4 +378,4 @@ const mapDispatchToProps = dispatch => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(MyEventEditingScreen);
+)(EventCreateScreen);

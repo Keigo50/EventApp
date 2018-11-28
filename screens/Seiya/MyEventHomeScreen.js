@@ -4,7 +4,8 @@ import {
   Text,
   View,
   FlatList,
-  TouchableOpacity
+  TouchableOpacity,
+  Alert
 } from "react-native";
 import { RkButton, RkTheme } from "react-native-ui-kitten";
 import { Constants } from "expo";
@@ -18,6 +19,7 @@ export default class MyEvents extends React.Component {
       title: ["ジョビフェス", "いしがきMS", "よさこいさんさ", "街中ハロウィン"],
       date: ["2018/7/30", "2018/6/20", "2018/5/21", "2018/10/31"]
     };
+    this._onPressDeleteButton = this._onPressDeleteButton.bind(this);
   }
 
   static navigationOptions = ({ navigation }) => ({
@@ -33,6 +35,25 @@ export default class MyEvents extends React.Component {
       />
     )
   });
+
+  _onPressDeleteButton = () => {
+    return Alert.alert(
+      "本当に削除しますがよろしいですか？",
+      "",
+      [
+        {
+          text: "はい",
+          onPress: () => console.log("Cancel Pressed")
+        },
+        {
+          text: "いいえ",
+          style: "cancel",
+          onPress: () => console.log("OK Pressed")
+        }
+      ],
+      { cancelable: false }
+    );
+  };
 
   render() {
     let data = [];
@@ -98,7 +119,9 @@ export default class MyEvents extends React.Component {
                 >
                   編集
                 </RkButton>
-                <RkButton rkType="delete"> 削除 </RkButton>
+                <RkButton rkType="delete" onPress={this._onPressDeleteButton}>
+                  削除
+                </RkButton>
               </View>
               <View
                 style={{

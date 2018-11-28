@@ -5,7 +5,8 @@ import {
   View,
   Platform,
   TouchableOpacity,
-  ActivityIndicator
+  ActivityIndicator,
+  Text
 } from "react-native";
 import { RkButton, RkTextInput, RkTheme, RkText } from "react-native-ui-kitten";
 import {
@@ -19,7 +20,10 @@ import firebase from "firebase";
 class AccountLoginScreen extends React.Component {
   constructor(props) {
     super(props);
-    this.onButtonPress = this.onButtonPress.bind(this);
+
+    firebase.auth().signOut();
+    this._onButtonPress = this._onButtonPress.bind(this);
+    // this.loadSpinner = this.loadSpinner.bind(this);
   }
   static navigationOptions = ({ navigation }) => ({
     headerLeft: (
@@ -34,31 +38,29 @@ class AccountLoginScreen extends React.Component {
     )
   });
 
-  onButtonPress() {
-    console.log(this.props);
+  _onButtonPress = async () => {
+    // console.log(this.props);
+
     const { email, password } = this.props;
-    this.props.submitLogin({ email, password });
+    await this.props.submitLogin({ email, password });
     this.props.navigation.navigate("Main");
-  }
+    // firebase.auth().onAuthStateChanged(user => {
+    //   if (!user) {
+    //     // サインインしていない状態
+    //     console.log("サインインしてません");
+    //   } else {
+    //     // サインイン済み
+    //     console.log("サインインしてます");
+    //     return this.props.navigation.navigate("Main");
+    //   }
+    // });
+  };
 
-  loginCheck() {
-    firebase.auth().onAuthStateChanged(user => {
-      if (!user) {
-        // サインインしていない状態
-        console.log("サインインしてません");
-      } else {
-        // サインイン済み
-        console.log("サインインしてます");
-        return this.props.navigation.navigate("Main");
-      }
-    });
-  }
-
-  loadSpinner() {
+  loadSpinner = () => {
     if (this.props.loading) {
       return <ActivityIndicator size="small" />;
     }
-  }
+  };
 
   render() {
     return (
@@ -84,14 +86,9 @@ class AccountLoginScreen extends React.Component {
             keyboardType="email-address"
             onChangeText={password => this.props.changePassword(password)}
           />
-          <RkButton
-            rkType="btn"
-            // onPress={() => this.props.navigation.navigate("Main")}
-            onPress={this.onButtonPress}
-          >
+          <RkButton rkType="btn" onPress={this._onButtonPress}>
             ログイン
           </RkButton>
-          <View>{this.loadSpinner}</View>
         </View>
       </View>
     );
