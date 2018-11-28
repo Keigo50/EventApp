@@ -36,22 +36,23 @@ HomeStack.navigationOptions = {
   tabBarLabel: "Home",
   tabBarIcon: ({
     focused
-  }) => ( <
-    TabBarIcon focused = {
+  }) => (<
+    TabBarIcon focused={
       focused
     }
-    name = {
+    name={
       Platform.OS === "ios" ?
-      `ios-information-circle${focused ? "" : "-outline"}` :
+        `ios-information-circle${focused ? "" : "-outline"}` :
         "md-information-circle"
     }
-    />
-  )
+  />
+    )
 };
 
 /*お気に入り一覧画面*/
 const FavoriteHomeStack = createStackNavigator({
-  Home: FavoriteHomeScreen
+  Home: FavoriteHomeScreen,
+  Details: EventMoreDetailScreen
 });
 
 FavoriteHomeStack.navigationOptions = {
@@ -81,7 +82,8 @@ EventCreateStack.navigationOptions = {
 /*Myイベント一覧画面*/
 const MyEventHomeStack = createStackNavigator({
   Home: MyEventHomeScreen,
-  Editing: MyEventEditingScreen
+  Editing: MyEventEditingScreen,
+  Details: EventMoreDetailScreen
 });
 
 MyEventHomeStack.navigationOptions = {

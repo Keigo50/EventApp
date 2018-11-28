@@ -22,6 +22,7 @@ class AccountLoginScreen extends React.Component {
     this.onButtonPress = this.onButtonPress.bind(this);
   }
   static navigationOptions = ({ navigation }) => ({
+    title: "ログイン画面",
     headerLeft: (
       <TouchableOpacity
         onPress={() => {

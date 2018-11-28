@@ -19,6 +19,7 @@ import Entypo from "react-native-vector-icons/Entypo";
 
 export default class EventMoreDetailScreen extends React.Component {
     static navigationOptions = ({ navigation }) => ({
+        title: "イベント詳細",
         headerLeft: (
             <TouchableOpacity
                 onPress={() => {
