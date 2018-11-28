@@ -31,7 +31,8 @@ export default class SearchHomeScreen extends React.Component {
     super(props);
 
     this.state = {
-      showHistory: true
+      showHistory: true,
+      text: ""
     };
   }
 
@@ -42,7 +43,7 @@ export default class SearchHomeScreen extends React.Component {
     }
     const list = [
       {
-        title: "Appointments",
+        title: this.state.text,
         icon: "av-timer"
       }
     ];
@@ -150,6 +151,7 @@ export default class SearchHomeScreen extends React.Component {
             placeholder="検索"
             lightTheme
             cancelIcon={{ type: "font-awesome", name: "chevron-left" }}
+            onChangeText={text => this.setState({ text })}
           />
         </View>
         {decision}
