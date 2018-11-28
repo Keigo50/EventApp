@@ -131,7 +131,11 @@ export default class MyEvents extends React.Component {
               >
                 {/*遷移マークを以下に配置*/}
                 <TouchableOpacity>
-                  <Entypo name="chevron-right" size={40} color="black" />
+                  <Entypo name="chevron-right" size={40} color="black"
+                    onPress={() => {
+                      this.props.navigation.navigate("Details");
+                    }}
+                  />
                 </TouchableOpacity>
               </View>
             </View>

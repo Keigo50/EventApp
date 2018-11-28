@@ -13,6 +13,7 @@ import "firebase/firestore";
 import { RkText } from "react-native-ui-kitten";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { Avatar } from "react-native-elements";
+import { ImagePicker, Permissions } from "expo";
 
 export default class ProfileHomeScreen extends React.Component {
   constructor(props) {
@@ -20,11 +21,42 @@ export default class ProfileHomeScreen extends React.Component {
 
     this.state = {
       mailAddress: "sample@gmail.com",
-      img: null
+      image: null,
+      hasCameraRollPermission: null
     };
 
     this._onPressLogoutAlert = this._onPressLogoutAlert.bind(this);
   }
+
+  async componentWillMount() {
+    // カメラロールに対するPermissionを許可
+    const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+    this.setState({ hasCameraRollPermission: status === "granted" });
+  }
+
+  _camera = async () => {
+    let result = await ImagePicker.launchCameraAsync();
+
+    console.log(result);
+
+    if (!result.cancelled) {
+      this.setState({ image: result.uri });
+    }
+  };
+
+  _pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      allowsEditing: true,
+
+      aspect: [4, 3]
+    });
+
+    console.log(result);
+
+    if (!result.cancelled) {
+      this.setState({ image: result.uri });
+    }
+  };
 
   static navigationOptions = ({ navigation }) => ({
     title: "プロフィール",
@@ -60,25 +92,26 @@ export default class ProfileHomeScreen extends React.Component {
   };
 
   render() {
+    let { image } = this.state;
     return (
       <View style={styles.container}>
         <View style={styles.imgContainer}>
-          <Image source={require("../../assets/images/icon.png")} />
           <View style={styles.thumbnail}>
-            <Avatar
-              xlarge
-              rounded
-              source={{
-                uri:
-                  "https://s3.amazonaws.com/uifaces/faces/twitter/kfriedson/128.jpg"
-              }}
-              onPress={() => console.log("Works!")}
-              activeOpacity={0.7}
-            />
+            {image && (
+              <Avatar
+                xlarge
+                rounded
+                source={{
+                  uri: image
+                }}
+                onPress={() => console.log("Works!")}
+                activeOpacity={0.7}
+              />
+            )}
           </View>
 
           <View style={styles.button}>
-            <Button title="プロフィール画像の編集" />
+            <Button title="プロフィール画像の編集" onPress={this._pickImage} />
           </View>
         </View>
         <View>
@@ -163,12 +196,13 @@ const styles = StyleSheet.create({
   },
   thumbnail: {
     position: "absolute",
-    zIndex: 9999
+    zIndex: 9999,
+    top: 7
   },
   button: {
     position: "absolute",
     zIndex: 9999,
-    top: 140,
+    top: 158,
     justifyContent: "flex-end"
   },
   mailAddress: {
