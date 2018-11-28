@@ -108,13 +108,13 @@ export default class EventMoreDetailScreen extends React.Component {
                             }}
                             source={require("../../assets/images/icon.png")}
                         />
-                        <Text
-                            style={{
-                                fontSize: 25
-                            }}
-                        >
-                            タイトル
-            </Text>
+                        <Text style={{ fontSize: 25 }}>
+                            いしがきMS</Text>
+                        <Text style={{ fontSize: 25 }}>
+                            日時：9/24 9:00</Text>
+                        <Text style={{ fontSize: 25 }}>
+                            場所：盛岡城跡公園</Text>
+
                     </View>
                     <View style={styles.detail}>
                         <RkText
@@ -122,11 +122,13 @@ export default class EventMoreDetailScreen extends React.Component {
                             style={{
                                 fontSize: 40,
                                 justifyContent: "center"
-                            }}
-                        >
+                            }}>
                             詳細
             </RkText>
                     </View>
+                    <Text style={{ fontSize: 25 }}>
+                        いしがきミュージックフェスティバルの設営・撤去
+                    </Text>
                     <View style={styles.space} />
                     <View style={styles.test}>
                         <RkText

@@ -84,7 +84,7 @@ class EventCreateScreen extends Component {
         rnumbers: this.props.rnumbers
       })
 
-      .then(function() {
+      .then(function () {
         console.log("firebaseにデータ到着！");
       })
       .catch(function (error) {
