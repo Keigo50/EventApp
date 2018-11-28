@@ -11,6 +11,14 @@ import Entypo from "react-native-vector-icons/Entypo";
 import Icon from "react-native-vector-icons/FontAwesome";
 
 export default class FavoriteHomeScreen extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      title: ["ジョビフェス", "いしがきMS"],
+      date: ["2018/7/30", "2018/6/20"]
+    };
+  }
+
   static navigationOptions = ({ navigation }) => ({
     title: "お気に入り一覧",
     headerLeft: (
@@ -27,8 +35,24 @@ export default class FavoriteHomeScreen extends React.Component {
 
   render() {
     let data = [];
-    for (let i = 1; i < 50; i++) {
-      data.push(`No.${i}`);
+    for (let i = 0; i < 2; i++) {
+      let contents;
+      contents = (
+        <View
+          style={{
+            paddingLeft: 5,
+            justifyContent: "flex-start"
+          }}
+        >
+          <Text style={{ fontSize: 25, paddingBottom: 5 }}>
+            {this.state.title[i]}
+          </Text>
+          <Text style={{ alignSelf: "flex-end", fontSize: 20 }}>
+            {this.state.date[i]}
+          </Text>
+        </View>
+      );
+      data.push(contents);
     }
     return (
       <View style={styles.container}>

@@ -5,7 +5,8 @@ import {
   StyleSheet,
   Text,
   Button,
-  View
+  View,
+  Alert
 } from "react-native";
 import firebase from "firebase";
 import "firebase/firestore";
@@ -23,6 +24,8 @@ export default class ProfileHomeScreen extends React.Component {
       image: null,
       hasCameraRollPermission: null
     };
+
+    this._onPressLogoutAlert = this._onPressLogoutAlert.bind(this);
   }
 
   async componentWillMount() {
@@ -69,6 +72,25 @@ export default class ProfileHomeScreen extends React.Component {
     )
   });
 
+  _onPressLogoutAlert = () => {
+    return Alert.alert(
+      "ログアウトしますか？",
+      "",
+      [
+        {
+          text: "はい",
+          onPress: () => console.log("OK")
+        },
+        {
+          text: "いいえ",
+          style: "cancel",
+          onPress: () => console.log("キャンセル")
+        }
+      ],
+      { cancelable: false }
+    );
+  };
+
   render() {
     let { image } = this.state;
     return (
@@ -99,7 +121,7 @@ export default class ProfileHomeScreen extends React.Component {
         <View
           style={{
             width: "100%",
-            height: 60,
+            height: 40,
             borderColor: "red",
             borderWidth: 1,
             justifyContent: "center"
@@ -111,6 +133,18 @@ export default class ProfileHomeScreen extends React.Component {
               this.props.navigation.navigate("Details");
             }}
           />
+        </View>
+
+        <View
+          style={{
+            width: "100%",
+            height: 40,
+            borderColor: "red",
+            borderWidth: 1,
+            justifyContent: "center"
+          }}
+        >
+          <Button title="ログアウト" onPress={this._onPressLogoutAlert} />
         </View>
         <View style={{ borderTopWidth: 1, borderBottomWidth: 1 }}>
           <Text style={{ fontSize: 25, paddingLeft: 25 }}>通知</Text>
