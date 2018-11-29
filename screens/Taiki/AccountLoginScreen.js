@@ -43,17 +43,16 @@ class AccountLoginScreen extends React.Component {
 
     const { email, password } = this.props;
     await this.props.submitLogin({ email, password });
-    this.props.navigation.navigate("Main");
-    // firebase.auth().onAuthStateChanged(user => {
-    //   if (!user) {
-    //     // サインインしていない状態
-    //     console.log("サインインしてません");
-    //   } else {
-    //     // サインイン済み
-    //     console.log("サインインしてます");
-    //     return this.props.navigation.navigate("Main");
-    //   }
-    // });
+    firebase.auth().onAuthStateChanged(user => {
+      if (!user) {
+        // サインインしていない状態
+        console.log("サインインしてません");
+      } else {
+        // サインイン済み
+        console.log("サインインしてます");
+        return this.props.navigation.navigate("Main");
+      }
+    });
   };
 
   loadSpinner = () => {
