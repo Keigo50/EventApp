@@ -94,7 +94,7 @@ export class Tab1 extends React.Component {
               <Text>{this.state.details[i]}</Text>
             </View>
             <View rkCardFooter>
-              <Text>Footer</Text>
+              <Text>{this.state.date[i]}</Text>
             </View>
           </RkCard>
         </TouchableOpacity>
@@ -145,7 +145,7 @@ class Tab2 extends React.Component {
               height: 180
             }}
           >
-            <Image source={this.state.img[i]} />
+            <Image rkCardImg source={this.state.img[i]} />
           </View>
           <View rkCardContent>
             <Text>石垣マラソンのボランティアメンバー募集しています。</Text>
@@ -203,7 +203,7 @@ class Tab3 extends React.Component {
               borderWidth: 1
             }}
           >
-            <Image source={this.state.img[i]} />
+            <Image rkCardImg source={this.state.img[i]} />
           </View>
           <View rkCardContent>
             <Text> quick brown fox jumps over the lazy dog</Text>

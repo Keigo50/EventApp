@@ -37,12 +37,13 @@ class EventCreateScreen extends Component {
   }
 
   static navigationOptions = ({ navigation }) => ({
+    title: "イベント作成",
     headerLeft: (
       <Icon
         name="bars"
         size={24}
         onPress={() => {
-          navigation.navigate("Home");
+          navigation.openDrawer();
         }}
         style={{ paddingLeft: 20 }}
       />
