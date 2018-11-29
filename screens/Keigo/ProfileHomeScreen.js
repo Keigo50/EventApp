@@ -8,15 +8,24 @@ import {
   View,
   Alert
 } from "react-native";
+import { connect } from "react-redux";
 import firebase from "firebase";
 import "firebase/firestore";
 import { RkText } from "react-native-ui-kitten";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { Avatar } from "react-native-elements";
 import { ImagePicker, Permissions } from "expo";
+
+import {
+  changeEmail,
+  changePassword,
+  submitLogin,
+  loginCheck
+} from "../../app/actions";
+
 import { FlatList } from "react-native-gesture-handler";
 
-export default class ProfileHomeScreen extends React.Component {
+class ProfileHomeScreen extends React.Component {
   constructor(props) {
     super(props);
 
@@ -108,6 +117,7 @@ export default class ProfileHomeScreen extends React.Component {
   };
 
   render() {
+    console.log(this.props);
     let { image } = this.state;
     return (
       <View style={styles.container}>
@@ -132,7 +142,7 @@ export default class ProfileHomeScreen extends React.Component {
         </View>
         <View>
           <RkText style={styles.mailAddress}>メールアドレス</RkText>
-          <RkText style={styles.mailAddress}>{this.state.mailAddress}</RkText>
+          <RkText style={styles.mailAddress}>{this.props.email}</RkText>
         </View>
         <View
           style={{
@@ -223,3 +233,17 @@ const styles = StyleSheet.create({
     height: 350
   }
 });
+
+const mapStateToProps = state => {
+  return {
+    email: state.auth.email,
+    password: state.auth.password,
+    loading: state.auth.loading,
+    loggedIn: state.auth.loggedIn
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  { changeEmail, changePassword, submitLogin }
+)(ProfileHomeScreen);

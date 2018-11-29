@@ -1,63 +1,63 @@
 import React from "react";
 import {
-    StyleSheet,
-    Text,
-    View,
-    Image,
-    FlatList,
-    TouchableOpacity
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  FlatList,
+  TouchableOpacity
 } from "react-native";
 import {
-    RkButton,
-    RkGalleryImage,
-    RkText,
-    RkTheme
+  RkButton,
+  RkGalleryImage,
+  RkText,
+  RkTheme
 } from "react-native-ui-kitten";
 import { ScrollView } from "react-native";
 import { Avatar } from "react-native-elements";
 import Entypo from "react-native-vector-icons/Entypo";
 
 export default class EventMoreDetailScreen extends React.Component {
-    static navigationOptions = ({ navigation }) => ({
-        title: "イベント詳細",
-        headerLeft: (
-            <TouchableOpacity
-                onPress={() => {
-                    navigation.navigate('Home');
-                }}
-                style={{ paddingLeft: 20 }}
-            >
-                <Entypo name="chevron-left" size={40} color="black" />
-            </TouchableOpacity>
-        )
+  static navigationOptions = ({ navigation }) => ({
+    title: "イベント詳細",
+    headerLeft: (
+      <TouchableOpacity
+        onPress={() => {
+          navigation.navigate("Home");
+        }}
+        style={{ paddingLeft: 20 }}
+      >
+        <Entypo name="chevron-left" size={40} color="black" />
+      </TouchableOpacity>
+    )
+  });
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      changeButton: false
+    };
+    this._changeButton = this._changeButton.bind(this);
+    this._changeBtn = this._changeBtn.bind(this);
+  }
+
+  _changeButton = () => {
+    console.log(`参加するを押したとき${this.state.changeButton}`);
+    this.setState({
+      changeButton: true
     });
+  };
+  _changeBtn = () => {
+    console.log(`取り消すを押したとき${this.state.changeButton}`);
+    this.setState({
+      changeButton: false
+    });
+  };
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            changeButton: false
-        };
-        this._changeButton = this._changeButton.bind(this);
-        this._changeBtn = this._changeBtn.bind(this);
-    }
-
-    _changeButton = () => {
-        console.log(`参加するを押したとき${this.state.changeButton}`);
-        this.setState({
-            changeButton: true
-        });
-    };
-    _changeBtn = () => {
-        console.log(`取り消すを押したとき${this.state.changeButton}`);
-        this.setState({
-            changeButton: false
-        });
-    };
-
-    render() {
-        console.log("最強");
-        const changeDecision = this.state.changeButton;
-        let changeBtn;
+  render() {
+    console.log("最強");
+    const changeDecision = this.state.changeButton;
+    let changeBtn;
 
         if (!changeDecision) {
             changeBtn = (
@@ -90,56 +90,55 @@ export default class EventMoreDetailScreen extends React.Component {
                     }}
                 >
                     参加する
+
         </RkButton>
-            );
-        }
+      );
+    }
 
-        let data = [];
-        for (let i = 1; i < 50; i++) {
-            data.push(`No.${i}`);
-        }
 
-        return (
-            <ScrollView>
-                <View style={styles.container}>
-                    <View style={styles.sub}>
-                        <Image
-                            style={{
-                                width: "100%",
-                                height: 180
-                            }}
-                            source={require("../../assets/images/jyobifes.jpg")}
-                        />
-                        <Text style={{ fontSize: 25 }}>
-                            いしがきMS</Text>
-                        <Text style={{ fontSize: 25 }}>
-                            日時：9/24 9:00～</Text>
-                        <Text style={{ fontSize: 25 }}>
-                            場所：盛岡城跡公園</Text>
+    let data = [];
+    for (let i = 1; i < 50; i++) {
+      data.push(`No.${i}`);
+    }
 
-                    </View>
-                    <View style={styles.detail}>
-                        <RkText
-                            rkType="common"
-                            style={{
-                                fontSize: 40,
-                                justifyContent: "center"
-                            }}>
-                            詳細
+    return (
+      <ScrollView>
+        <View style={styles.container}>
+          <View style={styles.sub}>
+            <Image
+              style={{
+                width: "100%",
+                height: 180
+              }}
+              source={require("../../assets/images/MSfes.png")}
+            />
+            <Text style={{ fontSize: 25 }}>いしがきMS</Text>
+            <Text style={{ fontSize: 25 }}>日時：9/24 9:00</Text>
+            <Text style={{ fontSize: 25 }}>場所：盛岡城跡公園</Text>
+          </View>
+          <View style={styles.detail}>
+            <RkText
+              rkType="common"
+              style={{
+                fontSize: 40,
+                justifyContent: "center"
+              }}
+            >
+              詳細
             </RkText>
-                    </View>
-                    <Text style={{ fontSize: 25 }}>
-                        いしがきミュージックフェスティバルの設営・撤去
-                    </Text>
-                    <View style={styles.space} />
-                    <View style={styles.test}>
-                        <RkText
-                            rkType="common"
-                            style={{
-                                fontSize: 40
-                            }}
-                        >
-                            参加者
+          </View>
+          <Text style={{ fontSize: 25 }}>
+            いしがきミュージックフェスティバルの設営・撤去
+          </Text>
+          <View style={styles.space} />
+          <View style={styles.test}>
+            <RkText
+              rkType="common"
+              style={{
+                fontSize: 40
+              }}
+            >
+              参加者
             </RkText>
                     </View>
                     <View style={styles.main}>
@@ -189,45 +188,51 @@ export default class EventMoreDetailScreen extends React.Component {
                         />
                         {changeBtn}
                     </View>
+
                 </View>
-            </ScrollView>
-        );
-    }
+              )}
+              keyExtractor={(item, index) => `list-${index}`}
+            />
+            {changeBtn}
+          </View>
+        </View>
+      </ScrollView>
+    );
+  }
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: "#fff",
-        alignItems: "stretch",
-        justifyContent: "center"
-    },
-    sub: {
-        width: "100%",
-        height: 300,
-        borderWidth: 1,
-        borderColor: "red"
-    },
-    detail: {
-        width: "100%",
-        height: 50,
-        borderWidth: 1
-    },
-    space: {
-        width: "100%",
-        height: 250
-    },
-    test: {
-        width: "100%",
-        height: 50,
-        borderWidth: 1
-    },
-    main: {
-        width: "100%",
-        height: 350
-    }
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
+    alignItems: "stretch",
+    justifyContent: "center"
+  },
+  sub: {
+    width: "100%",
+    height: 300,
+    borderWidth: 1
+  },
+  detail: {
+    width: "100%",
+    height: 50,
+    borderWidth: 1
+  },
+  space: {
+    width: "100%",
+    height: 250
+  },
+  test: {
+    width: "100%",
+    height: 50,
+    borderWidth: 1
+  },
+  main: {
+    width: "100%",
+    height: 350
+  }
 });
 
 RkTheme.setType("RkText", "common", {
-    alignItems: "center"
+  alignItems: "center"
 });
