@@ -14,6 +14,7 @@ import { RkText } from "react-native-ui-kitten";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { Avatar } from "react-native-elements";
 import { ImagePicker, Permissions } from "expo";
+import { FlatList } from "react-native-gesture-handler";
 
 export default class ProfileHomeScreen extends React.Component {
   constructor(props) {
@@ -149,31 +150,23 @@ export default class ProfileHomeScreen extends React.Component {
         <View style={{ borderTopWidth: 1, borderBottomWidth: 1 }}>
           <Text style={{ fontSize: 25, paddingLeft: 25 }}>通知</Text>
         </View>
-        <ScrollView style={{ paddingLeft: 25 }}>
-          <Text>aaaaaa</Text>
-          <Text>aaaaaa</Text>
-          <Text>aaaaaa</Text>
-          <Text>aaaaaa</Text>
-          <Text>aaaaaa</Text>
-          <Text>aaaaaa</Text>
-          <Text>aaaaaa</Text>
-          <Text>aaaaaa</Text>
-          <Text>aaaaaa</Text>
-          <Text>aaaaaa</Text>
-          <Text>aaaaaa</Text>
-          <Text>aaaaaa</Text>
-          <Text>aaaaaa</Text>
-          <Text>aaaaaa</Text>
-          <Text>aaaaaa</Text>
-          <Text>aaaaaa</Text>
-          <Text>aaaaaa</Text>
-          <Text>aaaaaa</Text>
-          <Text>aaaaaa</Text>
-          <Text>aaaaaa</Text>
-          <Text>aaaaaa</Text>
-          <Text>aaaaaa</Text>
-          <Text>aaaaaa</Text>
+
+        <ScrollView>
+          <Text style={{ fontSize: 15 }}>参加イベントの内容が変更されました。</Text>
+          <Text style={{ fontSize: 15 }}>イベントが追加されました。</Text>
+          <Text style={{ fontSize: 15 }}>お気に入りイベントの内容が変更されました。</Text>
+          <Text style={{ fontSize: 15 }}>参加イベントの内容が変更されました。</Text>
+          <Text style={{ fontSize: 15 }}>お気に入りイベントが削除されました。</Text>
+          <Text style={{ fontSize: 15 }}>参加イベントの内容が変更されました。</Text>
+          <Text style={{ fontSize: 15 }}>参加イベントが開催されました。</Text>
+          <Text style={{ fontSize: 15 }}>参加イベントが明日開催です。</Text>
+          <Text style={{ fontSize: 15 }}>お気に入りイベントの内容が変更されました。</Text>
+          <Text style={{ fontSize: 15 }}>参加イベントの内容が変更されました。</Text>
+          <Text style={{ fontSize: 15 }}>イベントが追加されました。</Text>
+          <Text style={{ fontSize: 15 }}>イベントが追加されました。</Text>
         </ScrollView>
+
+
       </View>
     );
   }
@@ -209,5 +202,9 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     fontSize: 25,
     paddingLeft: 25
+  },
+  main: {
+    width: "100%",
+    height: 350
   }
 });
