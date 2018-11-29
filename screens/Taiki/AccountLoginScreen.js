@@ -26,6 +26,7 @@ class AccountLoginScreen extends React.Component {
     // this.loadSpinner = this.loadSpinner.bind(this);
   }
   static navigationOptions = ({ navigation }) => ({
+    title: "ログイン画面",
     headerLeft: (
       <TouchableOpacity
         onPress={() => {

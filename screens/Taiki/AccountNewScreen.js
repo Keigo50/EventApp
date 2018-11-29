@@ -5,7 +5,7 @@ import {
   View,
   TextInput,
   Platform,
-  TouchableOpacity
+  TouchableOpacity,
 } from "react-native";
 import { RkButton, RkTextInput, RkTheme, RkText } from "react-native-ui-kitten";
 import { Constants } from "expo";
@@ -13,6 +13,7 @@ import Entypo from "react-native-vector-icons/Entypo";
 
 export default class AccountNewScreen extends React.Component {
   static navigationOptions = ({ navigation }) => ({
+    title: "アカウント作成",
     headerLeft: (
       <TouchableOpacity
         onPress={() => {

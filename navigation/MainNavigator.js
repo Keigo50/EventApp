@@ -43,7 +43,8 @@ HomeStack.navigationOptions = {
 
 /*お気に入り一覧画面*/
 const FavoriteHomeStack = createStackNavigator({
-  Home: FavoriteHomeScreen
+  Home: FavoriteHomeScreen,
+  Details: EventMoreDetailScreen
 });
 
 FavoriteHomeStack.navigationOptions = {
@@ -73,7 +74,8 @@ EventCreateStack.navigationOptions = {
 /*Myイベント一覧画面*/
 const MyEventHomeStack = createStackNavigator({
   Home: MyEventHomeScreen,
-  Editing: MyEventEditingScreen
+  Editing: MyEventEditingScreen,
+  Details: EventMoreDetailScreen
 });
 
 MyEventHomeStack.navigationOptions = {

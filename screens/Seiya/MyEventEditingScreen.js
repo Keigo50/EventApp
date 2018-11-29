@@ -38,14 +38,14 @@ class MyEventEditingScreen extends Component {
 
   static navigationOptions = ({ navigation }) => ({
     headerLeft: (
-      <Icon
-        name="bars"
-        size={24}
+      <TouchableOpacity
         onPress={() => {
-          navigation.navigate("Home");
+          navigation.navigate('Home');
         }}
         style={{ paddingLeft: 20 }}
-      />
+      >
+        <Entypo name="chevron-left" size={40} color="black" />
+      </TouchableOpacity>
     )
   });
 
@@ -77,10 +77,10 @@ class MyEventEditingScreen extends Component {
         details: this.props.details,
         rnumbers: this.props.rnumbers
       })
-      .then(function() {
+      .then(function () {
         console.log("firebaseにデータ到着！");
       })
-      .catch(function(error) {
+      .catch(function (error) {
         // The document probably doesn't exist.
         console.error("firebaseにデータ来てないぞ！！ ", error);
       });
