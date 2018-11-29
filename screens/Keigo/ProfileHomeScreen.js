@@ -24,7 +24,7 @@ export default class ProfileHomeScreen extends React.Component {
       image: null,
       hasCameraRollPermission: null
     };
-
+    this.onPressOk = this.onPressOk.bind(this);
     this._onPressLogoutAlert = this._onPressLogoutAlert.bind(this);
   }
 
@@ -72,6 +72,21 @@ export default class ProfileHomeScreen extends React.Component {
     )
   });
 
+  onPressOk = () => {
+    console.log("発動しました！");
+    firebase.auth().onAuthStateChanged(user => {
+      if (!user) {
+        // サインインしていない状態
+        console.log("サインインしてません");
+      } else {
+        // サインイン済み
+        console.log("サインインしてます");
+        firebase.auth().signOut();
+        return this.props.navigation.navigate("App");
+      }
+    });
+  };
+
   _onPressLogoutAlert = () => {
     return Alert.alert(
       "ログアウトしますか？",
@@ -79,7 +94,7 @@ export default class ProfileHomeScreen extends React.Component {
       [
         {
           text: "はい",
-          onPress: () => console.log("OK")
+          onPress: () => this.onPressOk()
         },
         {
           text: "いいえ",
