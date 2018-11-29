@@ -59,42 +59,40 @@ export default class EventMoreDetailScreen extends React.Component {
     const changeDecision = this.state.changeButton;
     let changeBtn;
 
-        if (!changeDecision) {
-            changeBtn = (
-                <RkButton
-                    onPress={this._changeButton}
-                    rkType="rounded"
-                    style={{
-                        width: "100%",
-                        marginTop: 10,
-                        alignItems: "center",
-                        justifyContent: "center",
-                        fontSize: 20
-                    }}
-                >
-                    取り消す
+    if (!changeDecision) {
+      changeBtn = (
+        <RkButton
+          onPress={this._changeButton}
+          rkType="rounded"
+          style={{
+            width: "100%",
+            marginTop: 10,
+            alignItems: "center",
+            justifyContent: "center",
+            fontSize: 20
+          }}
+        >
+          取り消す
         </RkButton>
-            );
-        } else {
-            changeBtn = (
-                <RkButton
-                    onPress={this._changeBtn}
-                    rkType="rounded"
-                    style={{
-                        backgroundColor: "red",
-                        width: "100%",
-                        marginTop: 10,
-                        alignItems: "center",
-                        justifyContent: "center",
-                        fontSize: 20
-                    }}
-                >
-                    参加する
-
+      );
+    } else {
+      changeBtn = (
+        <RkButton
+          onPress={this._changeBtn}
+          rkType="rounded"
+          style={{
+            backgroundColor: "red",
+            width: "100%",
+            marginTop: 10,
+            alignItems: "center",
+            justifyContent: "center",
+            fontSize: 20
+          }}
+        >
+          参加する
         </RkButton>
       );
     }
-
 
     let data = [];
     for (let i = 1; i < 50; i++) {
@@ -140,55 +138,50 @@ export default class EventMoreDetailScreen extends React.Component {
             >
               参加者
             </RkText>
-                    </View>
-                    <View style={styles.main}>
-                        <FlatList
-                            style={{
-                                width: "100%"
-                            }}
-                            data={data}
-                            renderItem={({ item }) => (
-                                <View
-                                    style={{
-                                        marginBottom: 5,
-                                        flex: 2,
-                                        flexDirection: "row",
-                                        borderWidth: 1,
-                                        height: 90,
-                                        borderColor: "gray"
-                                    }}
-                                >
-
-                                    {/* アイコンを以下に配置*/}
-                                    <Avatar
-                                        large
-                                        rounded
-                                        source={{
-                                            uri:
-                                                "https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg"
-                                        }}
-                                        onPress={() => console.log("Works!")}
-                                        activeOpacity={0.7}
-                                    />
-                                    <View
-                                        style={{
-                                            flex: 2,
-                                            padding: 3,
-                                            alignItems: "flex-start"
-                                        }}>
-                                        <Text
-                                            style={{
-                                                fontSize: 50
-                                            }}>佐藤慶吾</Text>
-
-                                    </View>
-                                </View>
-                            )}
-                            keyExtractor={(item, index) => `list-${index}`}
-                        />
-                        {changeBtn}
-                    </View>
-
+          </View>
+          <View style={styles.main}>
+            <FlatList
+              style={{
+                width: "100%"
+              }}
+              data={data}
+              renderItem={({ item }) => (
+                <View
+                  style={{
+                    marginBottom: 5,
+                    flex: 2,
+                    flexDirection: "row",
+                    borderWidth: 1,
+                    height: 90,
+                    borderColor: "gray"
+                  }}
+                >
+                  {/* アイコンを以下に配置*/}
+                  <Avatar
+                    large
+                    rounded
+                    source={{
+                      uri:
+                        "https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg"
+                    }}
+                    onPress={() => console.log("Works!")}
+                    activeOpacity={0.7}
+                  />
+                  <View
+                    style={{
+                      flex: 2,
+                      padding: 3,
+                      alignItems: "flex-start"
+                    }}
+                  >
+                    <Text
+                      style={{
+                        fontSize: 50
+                      }}
+                    >
+                      佐藤慶吾
+                    </Text>
+                  </View>
                 </View>
               )}
               keyExtractor={(item, index) => `list-${index}`}

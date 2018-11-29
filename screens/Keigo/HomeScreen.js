@@ -151,7 +151,7 @@ class Tab2 extends React.Component {
             <Text>石垣マラソンのボランティアメンバー募集しています。</Text>
           </View>
           <View rkCardFooter>
-            <Text>Footer</Text>
+            <Text>{this.state.date}</Text>
           </View>
         </RkCard>
       );
@@ -206,10 +206,10 @@ class Tab3 extends React.Component {
             <Image rkCardImg source={this.state.img[i]} />
           </View>
           <View rkCardContent>
-            <Text> quick brown fox jumps over the lazy dog</Text>
+            <Text>ゲームサークル部員募集中！！</Text>
           </View>
           <View rkCardFooter>
-            <Text>Footer</Text>
+            <Text>{this.state.date}</Text>
           </View>
         </RkCard>
       );
