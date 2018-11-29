@@ -65,14 +65,14 @@ export default class EventMoreDetailScreen extends React.Component {
                     onPress={this._changeButton}
                     rkType="rounded"
                     style={{
-                        backgroundColor: "red",
                         width: "100%",
                         marginTop: 10,
                         alignItems: "center",
-                        justifyContent: "center"
+                        justifyContent: "center",
+                        fontSize: 20
                     }}
                 >
-                    参加する
+                    取り消す
         </RkButton>
             );
         } else {
@@ -81,13 +81,15 @@ export default class EventMoreDetailScreen extends React.Component {
                     onPress={this._changeBtn}
                     rkType="rounded"
                     style={{
+                        backgroundColor: "red",
                         width: "100%",
                         marginTop: 10,
                         alignItems: "center",
-                        justifyContent: "center"
+                        justifyContent: "center",
+                        fontSize: 20
                     }}
                 >
-                    取り消す
+                    参加する
         </RkButton>
             );
         }
@@ -106,12 +108,12 @@ export default class EventMoreDetailScreen extends React.Component {
                                 width: "100%",
                                 height: 180
                             }}
-                            source={require("../../assets/images/icon.png")}
+                            source={require("../../assets/images/jyobifes.jpg")}
                         />
                         <Text style={{ fontSize: 25 }}>
                             いしがきMS</Text>
                         <Text style={{ fontSize: 25 }}>
-                            日時：9/24 9:00</Text>
+                            日時：9/24 9:00～</Text>
                         <Text style={{ fontSize: 25 }}>
                             場所：盛岡城跡公園</Text>
 
@@ -157,24 +159,29 @@ export default class EventMoreDetailScreen extends React.Component {
                                         borderColor: "gray"
                                     }}
                                 >
+
+                                    {/* アイコンを以下に配置*/}
+                                    <Avatar
+                                        large
+                                        rounded
+                                        source={{
+                                            uri:
+                                                "https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg"
+                                        }}
+                                        onPress={() => console.log("Works!")}
+                                        activeOpacity={0.7}
+                                    />
                                     <View
                                         style={{
                                             flex: 2,
                                             padding: 3,
                                             alignItems: "flex-start"
-                                        }}
-                                    >
-                                        {/* アイコンを以下に配置*/}
-                                        <Avatar
-                                            large
-                                            rounded
-                                            source={{
-                                                uri:
-                                                    "https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg"
-                                            }}
-                                            onPress={() => console.log("Works!")}
-                                            activeOpacity={0.7}
-                                        />
+                                        }}>
+                                        <Text
+                                            style={{
+                                                fontSize: 50
+                                            }}>佐藤慶吾</Text>
+
                                     </View>
                                 </View>
                             )}
