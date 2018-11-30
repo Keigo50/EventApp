@@ -40,7 +40,7 @@ class MyEventEditingScreen extends Component {
     headerLeft: (
       <TouchableOpacity
         onPress={() => {
-          navigation.navigate('Home');
+          navigation.navigate("Home");
         }}
         style={{ paddingLeft: 20 }}
       >
@@ -77,10 +77,10 @@ class MyEventEditingScreen extends Component {
         details: this.props.details,
         rnumbers: this.props.rnumbers
       })
-      .then(function () {
+      .then(function() {
         console.log("firebaseにデータ到着！");
       })
-      .catch(function (error) {
+      .catch(function(error) {
         // The document probably doesn't exist.
         console.error("firebaseにデータ来てないぞ！！ ", error);
       });
@@ -123,16 +123,16 @@ class MyEventEditingScreen extends Component {
     const now = `${year}/${month}/${dates}`;
     let data = [
       {
-        value: "Banana"
+        value: "スポーツ"
       },
       {
-        value: "Mango"
+        value: "サークル"
       },
       {
-        value: "Pear"
+        value: "行事"
       },
       {
-        value: "apple"
+        value: "フェス"
       }
     ];
 
