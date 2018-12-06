@@ -8,24 +8,39 @@ import {
   View,
   Alert
 } from "react-native";
+import { connect } from "react-redux";
 import firebase from "firebase";
 import "firebase/firestore";
 import { RkText } from "react-native-ui-kitten";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { Avatar } from "react-native-elements";
 import { ImagePicker, Permissions } from "expo";
+
+import { changeEmail, changePassword, submitLogin } from "../../app/actions";
+
 import { FlatList } from "react-native-gesture-handler";
 
-export default class ProfileHomeScreen extends React.Component {
+class ProfileHomeScreen extends React.Component {
   constructor(props) {
     super(props);
 
+    firebase.auth().onAuthStateChanged(user => {
+      if (!user) {
+        // サインインしていない状態
+        console.log("サインインしてません");
+        this.props.navigation.setParams({ before: "Profile" });
+        return this.props.navigation.navigate("App");
+      } else {
+        // サインイン済
+        console.log("サインインしてます");
+      }
+    });
+
     this.state = {
-      mailAddress: "sample@gmail.com",
       image: null,
       hasCameraRollPermission: null
     };
-
+    this.onPressOk = this.onPressOk.bind(this);
     this._onPressLogoutAlert = this._onPressLogoutAlert.bind(this);
   }
 
@@ -48,7 +63,6 @@ export default class ProfileHomeScreen extends React.Component {
   _pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       allowsEditing: true,
-
       aspect: [4, 3]
     });
 
@@ -73,6 +87,21 @@ export default class ProfileHomeScreen extends React.Component {
     )
   });
 
+  onPressOk = () => {
+    console.log("発動しました！");
+    firebase.auth().onAuthStateChanged(user => {
+      if (!user) {
+        // サインインしていない状態
+        console.log("サインインしてません");
+      } else {
+        // サインイン済み
+        console.log("サインインしてます");
+        firebase.auth().signOut();
+        return this.props.navigation.navigate("App");
+      }
+    });
+  };
+
   _onPressLogoutAlert = () => {
     return Alert.alert(
       "ログアウトしますか？",
@@ -80,7 +109,7 @@ export default class ProfileHomeScreen extends React.Component {
       [
         {
           text: "はい",
-          onPress: () => console.log("OK")
+          onPress: () => this.onPressOk()
         },
         {
           text: "いいえ",
@@ -93,6 +122,7 @@ export default class ProfileHomeScreen extends React.Component {
   };
 
   render() {
+    console.log(this.props);
     let { image } = this.state;
     return (
       <View style={styles.container}>
@@ -117,7 +147,7 @@ export default class ProfileHomeScreen extends React.Component {
         </View>
         <View>
           <RkText style={styles.mailAddress}>メールアドレス</RkText>
-          <RkText style={styles.mailAddress}>{this.state.mailAddress}</RkText>
+          <RkText style={styles.mailAddress}>{this.props.email}</RkText>
         </View>
         <View
           style={{
@@ -152,21 +182,33 @@ export default class ProfileHomeScreen extends React.Component {
         </View>
 
         <ScrollView>
-          <Text style={{ fontSize: 15 }}>参加イベントの内容が変更されました。</Text>
+          <Text style={{ fontSize: 15 }}>
+            参加イベントの内容が変更されました。
+          </Text>
           <Text style={{ fontSize: 15 }}>イベントが追加されました。</Text>
-          <Text style={{ fontSize: 15 }}>お気に入りイベントの内容が変更されました。</Text>
-          <Text style={{ fontSize: 15 }}>参加イベントの内容が変更されました。</Text>
-          <Text style={{ fontSize: 15 }}>お気に入りイベントが削除されました。</Text>
-          <Text style={{ fontSize: 15 }}>参加イベントの内容が変更されました。</Text>
+          <Text style={{ fontSize: 15 }}>
+            お気に入りイベントの内容が変更されました。
+          </Text>
+          <Text style={{ fontSize: 15 }}>
+            参加イベントの内容が変更されました。
+          </Text>
+          <Text style={{ fontSize: 15 }}>
+            お気に入りイベントが削除されました。
+          </Text>
+          <Text style={{ fontSize: 15 }}>
+            参加イベントの内容が変更されました。
+          </Text>
           <Text style={{ fontSize: 15 }}>参加イベントが開催されました。</Text>
           <Text style={{ fontSize: 15 }}>参加イベントが明日開催です。</Text>
-          <Text style={{ fontSize: 15 }}>お気に入りイベントの内容が変更されました。</Text>
-          <Text style={{ fontSize: 15 }}>参加イベントの内容が変更されました。</Text>
+          <Text style={{ fontSize: 15 }}>
+            お気に入りイベントの内容が変更されました。
+          </Text>
+          <Text style={{ fontSize: 15 }}>
+            参加イベントの内容が変更されました。
+          </Text>
           <Text style={{ fontSize: 15 }}>イベントが追加されました。</Text>
           <Text style={{ fontSize: 15 }}>イベントが追加されました。</Text>
         </ScrollView>
-
-
       </View>
     );
   }
@@ -208,3 +250,17 @@ const styles = StyleSheet.create({
     height: 350
   }
 });
+
+const mapStateToProps = state => {
+  return {
+    email: state.auth.email,
+    password: state.auth.password,
+    loading: state.auth.loading,
+    loggedIn: state.auth.loggedIn
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  { changeEmail, changePassword, submitLogin }
+)(ProfileHomeScreen);

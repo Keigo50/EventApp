@@ -37,12 +37,13 @@ class EventCreateScreen extends Component {
   }
 
   static navigationOptions = ({ navigation }) => ({
+    title: "イベント作成",
     headerLeft: (
       <Icon
         name="bars"
         size={24}
         onPress={() => {
-          navigation.navigate("Home");
+          navigation.openDrawer();
         }}
         style={{ paddingLeft: 20 }}
       />
@@ -78,10 +79,10 @@ class EventCreateScreen extends Component {
         rnumbers: this.props.rnumbers
       })
 
-      .then(function() {
+      .then(function () {
         console.log("firebaseにデータ到着！");
       })
-      .catch(function(error) {
+      .catch(function (error) {
         // The document probably doesn't exist.
         console.error("firebaseにデータ来てないぞ！！ ", error);
       });
@@ -124,16 +125,16 @@ class EventCreateScreen extends Component {
     const now = `${year}/${month}/${dates}`;
     let data = [
       {
-        value: "Banana"
+        value: "スポーツ"
       },
       {
-        value: "Mango"
+        value: "サークル"
       },
       {
-        value: "Pear"
+        value: "行事"
       },
       {
-        value: "apple"
+        value: "フェス"
       }
     ];
 
