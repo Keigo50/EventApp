@@ -125,16 +125,16 @@ class EventCreateScreen extends Component {
     const now = `${year}/${month}/${dates}`;
     let data = [
       {
-        value: "Banana"
+        value: "スポーツ"
       },
       {
-        value: "Mango"
+        value: "サークル"
       },
       {
-        value: "Pear"
+        value: "行事"
       },
       {
-        value: "apple"
+        value: "フェス"
       }
     ];
 
