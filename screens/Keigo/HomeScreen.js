@@ -80,9 +80,9 @@ export default class HomeScreen extends React.Component {
           </View>
           <View style={styles.sub2}>
             <Button
-            onPress={() => {
-              navigation.navigate('App');
-          }}
+              onPress={() => {
+                navigation.navigate('App');
+              }}
               title="ログイン" />
           </View>
         </View>
