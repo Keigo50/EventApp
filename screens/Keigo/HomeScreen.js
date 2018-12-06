@@ -9,10 +9,12 @@ import {
   TouchableOpacity,
   FlatList
 } from "react-native";
-import firebase from "firebase";
-import { RkCard, RkTheme } from "react-native-ui-kitten";
+import { RkCard, RkTheme, RkButton } from "react-native-ui-kitten";
+import { SearchBar } from "react-native-elements";
 import Icon from "react-native-vector-icons/FontAwesome";
 import ScrollableTabView from "react-native-scrollable-tab-view";
+import { Constants } from "expo";
+import firebase from "firebase";
 
 export default class HomeScreen extends React.Component {
   constructor(props) {
@@ -23,29 +25,82 @@ export default class HomeScreen extends React.Component {
     };
   }
   static navigationOptions = ({ navigation }) => ({
-    title: "ホーム",
-    headerLeft: (
+    headernull: (
       <Icon
-        name="bars"
+        name="bell"
         size={24}
         onPress={() => {
           navigation.navigate("App");
         }}
         style={{ paddingLeft: 20 }}
       />
-    )
+    ),
+    headernull: (
+      <SearchBar
+        round
+        onChangeText={someMethod => this.setState({ todoText: someMethod })}
+        onClearText={someMethod => this.setState({ todoText: someMethod })}
+        placeholder='Type Here...' />
+    ),
+    headernull: (
+      <Icon
+        name="star"
+        size={24}
+        onPress={() => {
+          navigation.openDrawer();
+        }}
+        style={{ paddingRight: 20 }}
+      />
+    ),
+    header: null
   });
 
   render() {
     return (
       <View style={styles.container}>
+        <View style={styles.sub3}>
+          <View style={styles.sub}>
+            <Icon
+              name="plus-circle"
+              size={30}
+              onPress={() => {
+                navigation.openDrawer();
+              }}
+            />
+          </View>
+          <View style={styles.sub4}>
+            <SearchBar
+              containerStyle={{
+                borderTopWidth: 1,
+                borderBottomWidth: 1,
+                borderBottomColor: "#fff",
+                borderTopColor: "#fff",
+                backgroundColor: "#fff",
+              }}
+              round
+              lightTheme
+              showLoading
+              platform="ios"
+              cancelButtonTitle="Cancel"
+              onChangeText={someMethod => this.setState({ todoText: someMethod })}
+              onClearText={someMethod => this.setState({ todoText: someMethod })}
+              placeholder='Search' />
+          </View>
+          <View style={styles.sub2}>
+            <Button
+              onPress={() => {
+                navigation.navigate('App');
+              }}
+              title="ログイン" />
+          </View>
+        </View>
         <ScrollableTabView style={styles.main}>
           <Tab1 tabLabel="すべて" />
           <Tab2 tabLabel="参加中" />
           <Tab3 tabLabel="Myイベント" />
           <Tab4 tabLabel="お気に入り" />
         </ScrollableTabView>
-      </View>
+      </View >
     );
   }
 }
@@ -294,12 +349,40 @@ class Tab4 extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: "#fff"
+    flex: 9,
+    backgroundColor: "#fff",
+    paddingTop: Constants.statusBarHeight
   },
 
   main: {
     backgroundColor: "#fff"
+  },
+  sub: {
+    flex: 1,
+    flexDirection: "column",
+    backgroundColor: "#fff",
+    alignItems: "flex-start",
+    justifyContent: "center",
+    paddingLeft: 10
+
+  },
+  sub2: {
+    flex: 3,
+    flexDirection: "column",
+    backgroundColor: "#fff",
+    alignItems: "flex-start",
+    justifyContent: "center"
+  },
+  sub4: {
+    flex: 9,
+    flexDirection: "column",
+    backgroundColor: "#fff",
+    justifyContent: "center"
+  },
+  sub3: {
+    flexDirection: "row",
+    backgroundColor: "#fff",
+    alignItems: "stretch"
   }
 });
 
