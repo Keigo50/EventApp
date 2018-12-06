@@ -1,74 +1,51 @@
 import React from "react";
 import {
   Image,
-  ScrollView,
   StyleSheet,
   Text,
   Button,
   View,
   Alert,
-  CameraRoll,
+  CameraRoll
 } from "react-native";
-import { connect } from "react-redux";
 import firebase from "firebase";
 import "firebase/firestore";
-import { RkText } from "react-native-ui-kitten";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { Avatar } from "react-native-elements";
 import { ImagePicker, Permissions } from "expo";
 import ActionSheet from "react-native-zhb-actionsheet";
 
-import {
-  changeEmail,
-  changePassword,
-  submitLogin,
-  loginCheck
-} from "../../app/actions";
-
-import { FlatList } from "react-native-gesture-handler";
-
-class ProfileHomeScreen extends React.Component {
+export default class ProfileHomeScreen extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      mailAddress: "sample@gmail.com",
-      image: null,
-      hasCameraRollPermission: null
+      titles: (defaultTitles = [
+        ({
+          title: "カメラ",
+          action: this._takePhoto
+        },
+        {
+          title: "ライブラリー",
+          action: this._pickImage
+        },
+        {
+          title: "キャンセル",
+          actionStyle: "cancel",
+          action: () => {
+            console.log("click Cancel");
+          }
+        })
+      ]),
+      hasCameraRollPermission: null,
+      hasCameraPermission: null,
+      image: null
     };
+
+    this._takePhoto = this._takePhoto.bind(this);
     this.onPressOk = this.onPressOk.bind(this);
     this._onPressLogoutAlert = this._onPressLogoutAlert.bind(this);
   }
-
-  // カメラロールに対するPermissionを許可
-  async componentWillMount() {
-    const { status } = await Permissions.askAsync(Permissions.CAMERA);
-    const { status2 } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
-    this.setState({ hasCameraPermission: status === "granted" });
-    this.setState({ hasCameraRollPermission: status2 === "granted" });
-
-  _camera = async () => {
-    let result = await ImagePicker.launchCameraAsync();
-
-    console.log(result);
-
-    if (!result.cancelled) {
-      this.setState({ image: result.uri });
-    }
-  };
-
-  _pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      allowsEditing: true,
-      aspect: [4, 3]
-    });
-
-    console.log(result);
-
-    if (!result.cancelled) {
-      this.setState({ image: result.uri });
-    }
-  };
 
   static navigationOptions = ({ navigation }) => ({
     title: "プロフィール",
@@ -83,6 +60,41 @@ class ProfileHomeScreen extends React.Component {
       />
     )
   });
+
+  // カメラロールに対するPermissionを許可
+  async componentWillMount() {
+    const { status } = await Permissions.askAsync(Permissions.CAMERA);
+    const { status2 } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+    this.setState({ hasCameraPermission: status === "granted" });
+    this.setState({ hasCameraRollPermission: status2 === "granted" });
+  }
+  // カメラを起動
+  _takePhoto = async () => {
+    let result = await ImagePicker.launchCameraAsync({
+      allowsEditing: false
+    });
+
+    console.log(result);
+
+    if (!result.cancelled) {
+      this.setState({ image: result.uri });
+    }
+    CameraRoll.saveToCameraRoll(result.uri);
+  };
+
+  // カメラロールから選択
+  _pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      allowsEditing: true,
+      aspect: [16, 9]
+    });
+
+    console.log(result);
+
+    if (!result.cancelled) {
+      this.setState({ image: result.uri });
+    }
+  };
 
   onPressOk = () => {
     console.log("発動しました！");
@@ -125,6 +137,20 @@ class ProfileHomeScreen extends React.Component {
       <View style={styles.container}>
         <View style={styles.imgContainer}>
           <View style={styles.thumbnail}>
+            <ActionSheet
+              ref="picker"
+              titles={this.state.titles}
+              separateHeight={3}
+              separateColor="#dddddd"
+              backgroundColor="rgba(0, 0, 0, 0.3)"
+              containerStyle={{ margin: 10, borderRadius: 5 }}
+              onClose={obj => {
+                console.log(
+                  "action sheet closed! clicked:" + JSON.stringify(obj)
+                );
+              }}
+            />
+
             {image && (
               <Avatar
                 xlarge
@@ -136,16 +162,20 @@ class ProfileHomeScreen extends React.Component {
                 activeOpacity={0.7}
               />
             )}
-          </View>
 
-          <View style={styles.button}>
-            <Button title="プロフィール画像の編集" onPress={this._pickImage} />
+            <View style={styles.button}>
+              <Button
+                title="プロフィール画像の編集"
+                onPress={() => {
+                  this.setState({ titles: this.defaultTitles }, () => {
+                    this.refs.picker.show();
+                  });
+                }}
+              />
+            </View>
           </View>
         </View>
-        <View>
-          <RkText style={styles.mailAddress}>メールアドレス</RkText>
-          <RkText style={styles.mailAddress}>{this.props.email}</RkText>
-        </View>
+
         <View
           style={{
             width: "100%",
@@ -196,27 +226,8 @@ const styles = StyleSheet.create({
     top: 158,
     justifyContent: "flex-end"
   },
-  mailAddress: {
-    alignItems: "flex-start",
-    fontSize: 25,
-    paddingLeft: 25
-  },
   main: {
     width: "100%",
     height: 350
   }
 });
-
-const mapStateToProps = state => {
-  return {
-    email: state.auth.email,
-    password: state.auth.password,
-    loading: state.auth.loading,
-    loggedIn: state.auth.loggedIn
-  };
-};
-
-export default connect(
-  mapStateToProps,
-  { changeEmail, changePassword, submitLogin }
-)(ProfileHomeScreen);
