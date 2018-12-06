@@ -6,7 +6,8 @@ import {
   Text,
   Button,
   View,
-  Alert
+  Alert,
+  CameraRoll,
 } from "react-native";
 import { connect } from "react-redux";
 import firebase from "firebase";
@@ -15,6 +16,7 @@ import { RkText } from "react-native-ui-kitten";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { Avatar } from "react-native-elements";
 import { ImagePicker, Permissions } from "expo";
+import ActionSheet from "react-native-zhb-actionsheet";
 
 import {
   changeEmail,
@@ -40,9 +42,10 @@ class ProfileHomeScreen extends React.Component {
 
   // カメラロールに対するPermissionを許可
   async componentWillMount() {
-    const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
-    this.setState({ hasCameraRollPermission: status === "granted" });
-  }
+    const { status } = await Permissions.askAsync(Permissions.CAMERA);
+    const { status2 } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+    this.setState({ hasCameraPermission: status === "granted" });
+    this.setState({ hasCameraRollPermission: status2 === "granted" });
 
   _camera = async () => {
     let result = await ImagePicker.launchCameraAsync();
@@ -147,50 +150,22 @@ class ProfileHomeScreen extends React.Component {
           style={{
             width: "100%",
             height: 40,
-            borderColor: "red",
             borderWidth: 1,
             justifyContent: "center"
           }}
-        >
-          <Button
-            title="参加イベントの確認"
-            onPress={() => {
-              this.props.navigation.navigate("Details");
-            }}
-          />
-        </View>
+        />
 
         <View
           style={{
             width: "100%",
             height: 40,
-            borderColor: "red",
             borderWidth: 1,
             justifyContent: "center"
           }}
         >
           <Button title="ログアウト" onPress={this._onPressLogoutAlert} />
         </View>
-        <View style={{ borderTopWidth: 1, borderBottomWidth: 1 }}>
-          <Text style={{ fontSize: 25, paddingLeft: 25 }}>通知</Text>
-        </View>
-
-        <ScrollView>
-          <Text style={{ fontSize: 15 }}>参加イベントの内容が変更されました。</Text>
-          <Text style={{ fontSize: 15 }}>イベントが追加されました。</Text>
-          <Text style={{ fontSize: 15 }}>お気に入りイベントの内容が変更されました。</Text>
-          <Text style={{ fontSize: 15 }}>参加イベントの内容が変更されました。</Text>
-          <Text style={{ fontSize: 15 }}>お気に入りイベントが削除されました。</Text>
-          <Text style={{ fontSize: 15 }}>参加イベントの内容が変更されました。</Text>
-          <Text style={{ fontSize: 15 }}>参加イベントが開催されました。</Text>
-          <Text style={{ fontSize: 15 }}>参加イベントが明日開催です。</Text>
-          <Text style={{ fontSize: 15 }}>お気に入りイベントの内容が変更されました。</Text>
-          <Text style={{ fontSize: 15 }}>参加イベントの内容が変更されました。</Text>
-          <Text style={{ fontSize: 15 }}>イベントが追加されました。</Text>
-          <Text style={{ fontSize: 15 }}>イベントが追加されました。</Text>
-        </ScrollView>
-
-
+        <View style={{ borderTopWidth: 1, borderBottomWidth: 1 }} />
       </View>
     );
   }
@@ -205,7 +180,6 @@ const styles = StyleSheet.create({
   imgContainer: {
     width: "100%",
     height: 200,
-    borderColor: "red",
     borderWidth: 1,
     alignItems: "center",
     justifyContent: "center",

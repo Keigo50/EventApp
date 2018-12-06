@@ -6291,6 +6291,10 @@ react-native-vector-icons@^6.0.2:
     prop-types "^15.6.2"
     yargs "^8.0.2"
 
+react-native-zhb-actionsheet@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/react-native-zhb-actionsheet/-/react-native-zhb-actionsheet-1.2.0.tgz#789c64565966c24eb7b98718ecf2aa14a1192134"
+
 "react-native@https://github.com/expo/react-native/archive/sdk-30.0.0.tar.gz":
   version "0.55.4"
   resolved "https://github.com/expo/react-native/archive/sdk-30.0.0.tar.gz#17d148956ad91ab745fdca830ac3d193564fce5c"
