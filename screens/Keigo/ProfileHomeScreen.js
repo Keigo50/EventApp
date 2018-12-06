@@ -16,12 +16,7 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import { Avatar } from "react-native-elements";
 import { ImagePicker, Permissions } from "expo";
 
-import {
-  changeEmail,
-  changePassword,
-  submitLogin,
-  loginCheck
-} from "../../app/actions";
+import { changeEmail, changePassword, submitLogin } from "../../app/actions";
 
 import { FlatList } from "react-native-gesture-handler";
 
@@ -29,8 +24,19 @@ class ProfileHomeScreen extends React.Component {
   constructor(props) {
     super(props);
 
+    firebase.auth().onAuthStateChanged(user => {
+      if (!user) {
+        // サインインしていない状態
+        console.log("サインインしてません");
+        this.props.navigation.setParams({ before: "Profile" });
+        return this.props.navigation.navigate("App");
+      } else {
+        // サインイン済
+        console.log("サインインしてます");
+      }
+    });
+
     this.state = {
-      mailAddress: "sample@gmail.com",
       image: null,
       hasCameraRollPermission: null
     };
@@ -57,7 +63,6 @@ class ProfileHomeScreen extends React.Component {
   _pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       allowsEditing: true,
-
       aspect: [4, 3]
     });
 
@@ -177,21 +182,33 @@ class ProfileHomeScreen extends React.Component {
         </View>
 
         <ScrollView>
-          <Text style={{ fontSize: 15 }}>参加イベントの内容が変更されました。</Text>
+          <Text style={{ fontSize: 15 }}>
+            参加イベントの内容が変更されました。
+          </Text>
           <Text style={{ fontSize: 15 }}>イベントが追加されました。</Text>
-          <Text style={{ fontSize: 15 }}>お気に入りイベントの内容が変更されました。</Text>
-          <Text style={{ fontSize: 15 }}>参加イベントの内容が変更されました。</Text>
-          <Text style={{ fontSize: 15 }}>お気に入りイベントが削除されました。</Text>
-          <Text style={{ fontSize: 15 }}>参加イベントの内容が変更されました。</Text>
+          <Text style={{ fontSize: 15 }}>
+            お気に入りイベントの内容が変更されました。
+          </Text>
+          <Text style={{ fontSize: 15 }}>
+            参加イベントの内容が変更されました。
+          </Text>
+          <Text style={{ fontSize: 15 }}>
+            お気に入りイベントが削除されました。
+          </Text>
+          <Text style={{ fontSize: 15 }}>
+            参加イベントの内容が変更されました。
+          </Text>
           <Text style={{ fontSize: 15 }}>参加イベントが開催されました。</Text>
           <Text style={{ fontSize: 15 }}>参加イベントが明日開催です。</Text>
-          <Text style={{ fontSize: 15 }}>お気に入りイベントの内容が変更されました。</Text>
-          <Text style={{ fontSize: 15 }}>参加イベントの内容が変更されました。</Text>
+          <Text style={{ fontSize: 15 }}>
+            お気に入りイベントの内容が変更されました。
+          </Text>
+          <Text style={{ fontSize: 15 }}>
+            参加イベントの内容が変更されました。
+          </Text>
           <Text style={{ fontSize: 15 }}>イベントが追加されました。</Text>
           <Text style={{ fontSize: 15 }}>イベントが追加されました。</Text>
         </ScrollView>
-
-
       </View>
     );
   }

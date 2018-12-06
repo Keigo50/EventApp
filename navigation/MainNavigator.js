@@ -1,8 +1,12 @@
 import React from "react";
 import { Platform } from "react-native";
-import { createStackNavigator, createDrawerNavigator } from "react-navigation";
+import {
+  createStackNavigator,
+  createBottomTabNavigator
+} from "react-navigation";
 
 import TabBarIcon from "../components/TabBarIcon";
+
 import HomeScreen from "../screens/Keigo/HomeScreen";
 import FavoriteHomeScreen from "../screens/Taiki/FavoriteHomeScreen";
 import ProfileHomeScreen from "../screens/Keigo/ProfileHomeScreen";
@@ -13,6 +17,7 @@ import EventMoreDetailScreen from "../screens/Taiki/EventMoreDetailScreen";
 import SearchHomeScreen from "../screens/Seiya/SearchHomeScreen";
 import LoginFormScreen from "../screens/Keigo/LoginFormScreen";
 import MyEventEditingScreen from "../screens/Seiya/MyEventEditingScreen";
+import NotificationHomeScreen from "../screens/Keigo/NotificationHomeScreen";
 
 /*ホーム画面*/
 const HomeStack = createStackNavigator({
@@ -21,6 +26,7 @@ const HomeStack = createStackNavigator({
   Favorite: FavoriteHomeScreen,
   Profile: ProfileHomeScreen,
   Event: EventCreateScreen,
+  Notification: NotificationHomeScreen,
   MyEvent: MyEventHomeScreen,
   Search: SearchHomeScreen
 });
@@ -28,14 +34,13 @@ const HomeStack = createStackNavigator({
 HomeStack.navigationOptions = {
   header: null,
   title: "ホーム",
-  tabBarLabel: "Home",
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
       name={
         Platform.OS === "ios"
-          ? `ios-information-circle${focused ? "" : "-outline"}`
-          : "md-information-circle"
+          ? `ios-home${focused ? "" : "-outline"}`
+          : "md-home"
       }
     />
   )
@@ -62,13 +67,39 @@ ProfileHomeStack.navigationOptions = {
   title: "プロフィール"
 };
 
-/*イベント作成画面*/
-const EventCreateStack = createStackNavigator({
-  Home: EventCreateScreen
+ProfileHomeStack.navigationOptions = {
+  header: null,
+  title: "プロフィール",
+  tabBarIcon: ({ focused }) => (
+    <TabBarIcon
+      focused={focused}
+      name={
+        Platform.OS === "ios"
+          ? `ios-contact${focused ? "" : "-outline"}`
+          : "ios-contact"
+      }
+    />
+  )
+};
+
+/*通知画面*/
+const NotificationHomeStack = createStackNavigator({
+  Home: NotificationHomeScreen
 });
 
-EventCreateStack.navigationOptions = {
-  title: "イベント作成"
+NotificationHomeStack.navigationOptions = {
+  header: null,
+  title: "通知",
+  tabBarIcon: ({ focused }) => (
+    <TabBarIcon
+      focused={focused}
+      name={
+        Platform.OS === "ios"
+          ? `ios-notifications${focused ? "" : "-outline"}`
+          : "ios-notifications"
+      }
+    />
+  )
 };
 
 /*Myイベント一覧画面*/
@@ -107,11 +138,8 @@ LoginFormStack.navigationOptions = {
   title: "ログインフォーム画面"
 };
 
-export default createDrawerNavigator({
+export default createBottomTabNavigator({
   HomeStack,
-  EventCreateStack,
-  SearchHomeStack,
-  MyEventHomeStack,
-  FavoriteHomeStack,
+  NotificationHomeStack,
   ProfileHomeStack
 });
