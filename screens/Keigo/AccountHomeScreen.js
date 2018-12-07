@@ -70,7 +70,7 @@ export default class AccountHomeScreen extends React.Component {
         <View style={styles.button}>
           <RkButton
             rkType="danjer create"
-            onPress={() => this.props.navigation.navigate("Login")}
+            onPress={() => this.props.navigation.navigate("Main")}
           >
             ログイン
           </RkButton>
