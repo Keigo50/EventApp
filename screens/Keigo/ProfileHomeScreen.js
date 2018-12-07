@@ -23,7 +23,36 @@ export default class ProfileHomeScreen extends React.Component {
     image: null
   };
 
-  // カメラロールに対するPermissionを許可
+
+import { changeEmail, changePassword, submitLogin } from "../../app/actions";
+
+import { FlatList } from "react-native-gesture-handler";
+
+class ProfileHomeScreen extends React.Component {
+  constructor(props) {
+    super(props);
+
+    firebase.auth().onAuthStateChanged(user => {
+      if (!user) {
+        // サインインしていない状態
+        console.log("サインインしてません");
+        this.props.navigation.setParams({ before: "Profile" });
+        return this.props.navigation.navigate("App");
+      } else {
+        // サインイン済
+        console.log("サインインしてます");
+      }
+    });
+
+    this.state = {
+      image: null,
+      hasCameraRollPermission: null
+    };
+    this.onPressOk = this.onPressOk.bind(this);
+    this._onPressLogoutAlert = this._onPressLogoutAlert.bind(this);
+  }
+
+
   async componentWillMount() {
     const { status } = await Permissions.askAsync(Permissions.CAMERA);
     const { status2 } = await Permissions.askAsync(Permissions.CAMERA_ROLL);

@@ -1,17 +1,38 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { RkButton, RkTheme } from "react-native-ui-kitten";
 
-import { Constants } from "expo";
+import { Constants, Icon } from "expo";
 
 export default class AccountHomeScreen extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+
   static navigationOptions = {
     header: null
   };
 
   render() {
+    let a = this.props.navigation.state.params;
+    console.log(a);
+
     return (
       <View style={styles.container}>
+        <View
+          style={{
+            justifyContent: "flex-start",
+            position: "absolute",
+            top: 20,
+            left: 20
+          }}
+        >
+          <TouchableOpacity
+            onPress={() => this.props.navigation.navigate("Main")}
+          >
+            <Icon.Ionicons name="ios-close" size={50} />
+          </TouchableOpacity>
+        </View>
         <View style={styles.button}>
           <RkButton
             rkType="success create"
@@ -61,6 +82,7 @@ export default class AccountHomeScreen extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
+    position: "relative",
     flex: 1,
     flexDirection: "column",
     paddingHorizontal: 25,
