@@ -5,7 +5,7 @@ import {
   View,
   TextInput,
   Platform,
-  TouchableOpacity,
+  TouchableOpacity
 } from "react-native";
 import { RkButton, RkTextInput, RkTheme, RkText } from "react-native-ui-kitten";
 import { Constants } from "expo";
