@@ -37,17 +37,7 @@ class EventCreateScreen extends Component {
   }
 
   static navigationOptions = ({ navigation }) => ({
-    title: "イベント作成",
-    headerLeft: (
-      <Icon
-        name="bars"
-        size={24}
-        onPress={() => {
-          navigation.openDrawer();
-        }}
-        style={{ paddingLeft: 20 }}
-      />
-    )
+    title: "イベント作成"
   });
 
   async componentWillMount() {
