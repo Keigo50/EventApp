@@ -16,28 +16,33 @@ import { ImagePicker, Permissions } from "expo";
 import ActionSheet from "react-native-zhb-actionsheet";
 
 export default class ProfileHomeScreen extends React.Component {
-  state = {
-    hasCameraRollPermission: null,
-    hasCameraPermission: null,
-    defaultImg: [require("../../assets/images/profile.jpg")],
-    image: null
-  };
-
-
-import { changeEmail, changePassword, submitLogin } from "../../app/actions";
-
-import { FlatList } from "react-native-gesture-handler";
-
-class ProfileHomeScreen extends React.Component {
   constructor(props) {
     super(props);
+    this.defaultTitles = [
+      {
+        title: "カメラ",
+        action: this._takePhoto
+      },
+      {
+        title: "ライブラリー",
+        action: this._pickImage
+      },
+
+      {
+        title: "キャンセル",
+        actionStyle: "cancel",
+        action: () => {
+          console.log("click Cancel");
+        }
+      }
+    ];
 
     firebase.auth().onAuthStateChanged(user => {
       if (!user) {
         // サインインしていない状態
         console.log("サインインしてません");
         this.props.navigation.setParams({ before: "Profile" });
-        return this.props.navigation.navigate("App");
+        // return this.props.navigation.navigate("App");
       } else {
         // サインイン済
         console.log("サインインしてます");
@@ -45,13 +50,16 @@ class ProfileHomeScreen extends React.Component {
     });
 
     this.state = {
+      hasCameraRollPermission: null,
+      hasCameraPermission: null,
+      defaultImg: [require("../../assets/images/profile.jpg")],
       image: null,
-      hasCameraRollPermission: null
+      titles: this.defaultTitles
     };
     this.onPressOk = this.onPressOk.bind(this);
     this._onPressLogoutAlert = this._onPressLogoutAlert.bind(this);
+    this._takePhoto = this._takePhoto.bind(this);
   }
-
 
   async componentWillMount() {
     const { status } = await Permissions.askAsync(Permissions.CAMERA);
@@ -59,6 +67,7 @@ class ProfileHomeScreen extends React.Component {
     this.setState({ hasCameraPermission: status === "granted" });
     this.setState({ hasCameraRollPermission: status2 === "granted" });
   }
+
   // カメラを起動
   _takePhoto = async () => {
     let result = await ImagePicker.launchCameraAsync({
@@ -87,36 +96,6 @@ class ProfileHomeScreen extends React.Component {
     }
   };
 
-  constructor(props) {
-    super(props);
-
-    this.defaultTitles = [
-      {
-        title: "カメラ",
-        action: this._takePhoto
-      },
-      {
-        title: "ライブラリー",
-        action: this._pickImage
-      },
-
-      {
-        title: "キャンセル",
-        actionStyle: "cancel",
-        action: () => {
-          console.log("click Cancel");
-        }
-      }
-    ];
-
-    this.state = {
-      titles: this.defaultTitles
-    };
-    this._takePhoto = this._takePhoto.bind(this);
-    this.onPressOk = this.onPressOk.bind(this);
-    this._onPressLogoutAlert = this._onPressLogoutAlert.bind(this);
-  }
-
   static navigationOptions = ({ navigation }) => ({
     title: "プロフィール",
     headerLeft: (
@@ -132,19 +111,18 @@ class ProfileHomeScreen extends React.Component {
   });
 
   onPressOk = () => {
-    // console.log("発動しました！");
-    // firebase.auth().onAuthStateChanged(user => {
-    //   if (!user) {
-    //     // サインインしていない状態
-    //     console.log("サインインしてません");
-    //   } else {
-    //     // サインイン済み
-    //     console.log("サインインしてます");
-    //     firebase.auth().signOut();
-    //     return this.props.navigation.navigate("App");
-    //   }
-    // });
-    this.props.navigation.navigate(App);
+    console.log("発動しました！");
+    firebase.auth().onAuthStateChanged(user => {
+      if (!user) {
+        // サインインしていない状態
+        console.log("サインインしてません");
+      } else {
+        // サインイン済み
+        console.log("サインインしてます");
+        firebase.auth().signOut();
+        return this.props.navigation.navigate("Main");
+      }
+    });
   };
 
   _onPressLogoutAlert = () => {
@@ -220,12 +198,15 @@ class ProfileHomeScreen extends React.Component {
             paddingVertical: 5,
             width: "100%",
             height: 55,
-            justifyContent: "center"
+            justifyContent: "center",
+            borderWidth: 1,
+            borderBottomWidth: 1,
+            borderLeftWidth: 0,
+            borderRightWidth: 0
           }}
         >
           <Button title="ログアウト" onPress={this._onPressLogoutAlert} />
         </View>
-        <View style={{ borderTopWidth: 1 }} />
       </View>
     );
   }
@@ -240,9 +221,9 @@ const styles = StyleSheet.create({
   imgContainer: {
     width: "100%",
     height: 280,
-    borderWidth: 1,
     alignItems: "center",
-    justifyContent: "center"
+    justifyContent: "center",
+    borderTopWidth: 1
   },
   button: {
     alignItems: "center"
