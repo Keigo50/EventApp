@@ -1,35 +1,48 @@
 import React from "react";
 import {
   Image,
-  ScrollView,
   StyleSheet,
   Text,
   Button,
   View,
-  Alert
+  Alert,
+  CameraRoll
 } from "react-native";
-import { connect } from "react-redux";
 import firebase from "firebase";
 import "firebase/firestore";
-import { RkText } from "react-native-ui-kitten";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { Avatar } from "react-native-elements";
 import { ImagePicker, Permissions } from "expo";
+import ActionSheet from "react-native-zhb-actionsheet";
 
-import { changeEmail, changePassword, submitLogin } from "../../app/actions";
-
-import { FlatList } from "react-native-gesture-handler";
-
-class ProfileHomeScreen extends React.Component {
+export default class ProfileHomeScreen extends React.Component {
   constructor(props) {
     super(props);
+    this.defaultTitles = [
+      {
+        title: "カメラ",
+        action: this._takePhoto
+      },
+      {
+        title: "ライブラリー",
+        action: this._pickImage
+      },
+
+      {
+        title: "キャンセル",
+        actionStyle: "cancel",
+        action: () => {
+          console.log("click Cancel");
+        }
+      }
+    ];
 
     firebase.auth().onAuthStateChanged(user => {
       if (!user) {
         // サインインしていない状態
         console.log("サインインしてません");
         this.props.navigation.setParams({ before: "Profile" });
-        return this.props.navigation.navigate("App");
+        // return this.props.navigation.navigate("App");
       } else {
         // サインイン済
         console.log("サインインしてます");
@@ -37,33 +50,43 @@ class ProfileHomeScreen extends React.Component {
     });
 
     this.state = {
+      hasCameraRollPermission: null,
+      hasCameraPermission: null,
+      defaultImg: [require("../../assets/images/profile.jpg")],
       image: null,
-      hasCameraRollPermission: null
+      titles: this.defaultTitles
     };
     this.onPressOk = this.onPressOk.bind(this);
     this._onPressLogoutAlert = this._onPressLogoutAlert.bind(this);
+    this._takePhoto = this._takePhoto.bind(this);
   }
 
   async componentWillMount() {
-    // カメラロールに対するPermissionを許可
-    const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
-    this.setState({ hasCameraRollPermission: status === "granted" });
+    const { status } = await Permissions.askAsync(Permissions.CAMERA);
+    const { status2 } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+    this.setState({ hasCameraPermission: status === "granted" });
+    this.setState({ hasCameraRollPermission: status2 === "granted" });
   }
 
-  _camera = async () => {
-    let result = await ImagePicker.launchCameraAsync();
+  // カメラを起動
+  _takePhoto = async () => {
+    let result = await ImagePicker.launchCameraAsync({
+      allowsEditing: false
+    });
 
     console.log(result);
 
     if (!result.cancelled) {
       this.setState({ image: result.uri });
     }
+    CameraRoll.saveToCameraRoll(result.uri);
   };
 
+  // カメラロールから選択
   _pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       allowsEditing: true,
-      aspect: [4, 3]
+      aspect: [16, 9]
     });
 
     console.log(result);
@@ -97,7 +120,7 @@ class ProfileHomeScreen extends React.Component {
         // サインイン済み
         console.log("サインインしてます");
         firebase.auth().signOut();
-        return this.props.navigation.navigate("App");
+        return this.props.navigation.navigate("Main");
       }
     });
   };
@@ -127,88 +150,63 @@ class ProfileHomeScreen extends React.Component {
     return (
       <View style={styles.container}>
         <View style={styles.imgContainer}>
-          <View style={styles.thumbnail}>
-            {image && (
-              <Avatar
-                xlarge
-                rounded
-                source={{
-                  uri: image
-                }}
-                onPress={() => console.log("Works!")}
-                activeOpacity={0.7}
-              />
-            )}
-          </View>
-
-          <View style={styles.button}>
-            <Button title="プロフィール画像の編集" onPress={this._pickImage} />
-          </View>
-        </View>
-        <View>
-          <RkText style={styles.mailAddress}>メールアドレス</RkText>
-          <RkText style={styles.mailAddress}>{this.props.email}</RkText>
-        </View>
-        <View
-          style={{
-            width: "100%",
-            height: 40,
-            borderColor: "red",
-            borderWidth: 1,
-            justifyContent: "center"
-          }}
-        >
-          <Button
-            title="参加イベントの確認"
-            onPress={() => {
-              this.props.navigation.navigate("Details");
+          <ActionSheet
+            ref="picker"
+            titles={this.state.titles}
+            separateHeight={3}
+            separateColor="#dddddd"
+            backgroundColor="rgba(0, 0, 0, 0.3)"
+            containerStyle={{ margin: 10, borderRadius: 5 }}
+            onClose={obj => {
+              console.log(
+                "action sheet closed! clicked:" + JSON.stringify(obj)
+              );
             }}
           />
+
+          {image ? (
+            <Avatar
+              xlarge
+              rounded
+              source={{ uri: image }}
+              onPress={() => console.log("Works!")}
+              activeOpacity={0.7}
+            />
+          ) : (
+            <Avatar
+              xlarge
+              rounded
+              source={require("../../assets/images/profile.jpg")}
+              onPress={() => console.log("Works!")}
+              activeOpacity={0.7}
+            />
+          )}
+          <View style={styles.button}>
+            <Button
+              title="プロフィール画像の編集"
+              onPress={() => {
+                this.setState({ titles: this.defaultTitles }, () => {
+                  this.refs.picker.show();
+                });
+              }}
+            />
+          </View>
         </View>
 
         <View
           style={{
+            paddingVertical: 5,
             width: "100%",
-            height: 40,
-            borderColor: "red",
+            height: 55,
+            justifyContent: "center",
             borderWidth: 1,
-            justifyContent: "center"
+            borderBottomWidth: 1,
+            borderLeftWidth: 0,
+            borderRightWidth: 0
           }}
         >
           <Button title="ログアウト" onPress={this._onPressLogoutAlert} />
         </View>
-        <View style={{ borderTopWidth: 1, borderBottomWidth: 1 }}>
-          <Text style={{ fontSize: 25, paddingLeft: 25 }}>通知</Text>
-        </View>
-
-        <ScrollView>
-          <Text style={{ fontSize: 15 }}>
-            参加イベントの内容が変更されました。
-          </Text>
-          <Text style={{ fontSize: 15 }}>イベントが追加されました。</Text>
-          <Text style={{ fontSize: 15 }}>
-            お気に入りイベントの内容が変更されました。
-          </Text>
-          <Text style={{ fontSize: 15 }}>
-            参加イベントの内容が変更されました。
-          </Text>
-          <Text style={{ fontSize: 15 }}>
-            お気に入りイベントが削除されました。
-          </Text>
-          <Text style={{ fontSize: 15 }}>
-            参加イベントの内容が変更されました。
-          </Text>
-          <Text style={{ fontSize: 15 }}>参加イベントが開催されました。</Text>
-          <Text style={{ fontSize: 15 }}>参加イベントが明日開催です。</Text>
-          <Text style={{ fontSize: 15 }}>
-            お気に入りイベントの内容が変更されました。
-          </Text>
-          <Text style={{ fontSize: 15 }}>
-            参加イベントの内容が変更されました。
-          </Text>
-          <Text style={{ fontSize: 15 }}>イベントが追加されました。</Text>
-          <Text style={{ fontSize: 15 }}>イベントが追加されました。</Text>
-        </ScrollView>
       </View>
     );
   }
@@ -222,45 +220,16 @@ const styles = StyleSheet.create({
   },
   imgContainer: {
     width: "100%",
-    height: 200,
-    borderColor: "red",
-    borderWidth: 1,
+    height: 280,
     alignItems: "center",
     justifyContent: "center",
-    position: "relative"
-  },
-  thumbnail: {
-    position: "absolute",
-    zIndex: 9999,
-    top: 7
+    borderTopWidth: 1
   },
   button: {
-    position: "absolute",
-    zIndex: 9999,
-    top: 158,
-    justifyContent: "flex-end"
-  },
-  mailAddress: {
-    alignItems: "flex-start",
-    fontSize: 25,
-    paddingLeft: 25
+    alignItems: "center"
   },
   main: {
     width: "100%",
     height: 350
   }
 });
-
-const mapStateToProps = state => {
-  return {
-    email: state.auth.email,
-    password: state.auth.password,
-    loading: state.auth.loading,
-    loggedIn: state.auth.loggedIn
-  };
-};
-
-export default connect(
-  mapStateToProps,
-  { changeEmail, changePassword, submitLogin }
-)(ProfileHomeScreen);
