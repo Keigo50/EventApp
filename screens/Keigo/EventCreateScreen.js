@@ -79,10 +79,10 @@ class EventCreateScreen extends Component {
         rnumbers: this.props.rnumbers
       })
 
-      .then(function() {
+      .then(function () {
         console.log("firebaseにデータ到着！");
       })
-      .catch(function(error) {
+      .catch(function (error) {
         // The document probably doesn't exist.
         console.error("firebaseにデータ来てないぞ！！ ", error);
       });

@@ -1,4 +1,5 @@
 {
     "editor.foldingStrategy": "indentation",
-    "files.autoGuessEncoding": true
+    "files.autoGuessEncoding": true,
+    "prettier.eslintIntegration": true
 }

@@ -44,14 +44,19 @@ class AccountLoginScreen extends React.Component {
 
     const { email, password } = this.props;
     await this.props.submitLogin({ email, password });
+
     firebase.auth().onAuthStateChanged(user => {
       if (!user) {
         // サインインしていない状態
         console.log("サインインしてません");
+        let beforeRoot = this.props.navigation.getParam("before", "");
+
+        if (String(beforeRoot) === "Profile") {
+          return this.props.navigation.navigate("Main");
+        }
       } else {
         // サインイン済み
         console.log("サインインしてます");
-        return this.props.navigation.navigate("Main");
       }
     });
   };

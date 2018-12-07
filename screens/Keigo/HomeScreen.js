@@ -9,9 +9,12 @@ import {
   TouchableOpacity,
   FlatList
 } from "react-native";
-import { RkCard, RkTheme } from "react-native-ui-kitten";
+import { RkCard, RkTheme, RkButton } from "react-native-ui-kitten";
+import { SearchBar } from "react-native-elements";
 import Icon from "react-native-vector-icons/FontAwesome";
 import ScrollableTabView from "react-native-scrollable-tab-view";
+import { Constants } from "expo";
+import firebase from "firebase";
 
 export default class HomeScreen extends React.Component {
   constructor(props) {
@@ -22,30 +25,82 @@ export default class HomeScreen extends React.Component {
     };
   }
   static navigationOptions = ({ navigation }) => ({
-    title: "ホーム",
-    headerLeft: (
+    headernull: (
       <Icon
-        name="bars"
+        name="bell"
+        size={24}
+        onPress={() => {
+          navigation.navigate("App");
+        }}
+        style={{ paddingLeft: 20 }}
+      />
+    ),
+    headernull: (
+      <SearchBar
+        round
+        onChangeText={someMethod => this.setState({ todoText: someMethod })}
+        onClearText={someMethod => this.setState({ todoText: someMethod })}
+        placeholder='Type Here...' />
+    ),
+    headernull: (
+      <Icon
+        name="star"
         size={24}
         onPress={() => {
           navigation.openDrawer();
         }}
-        style={{ paddingLeft: 20 }}
+        style={{ paddingRight: 20 }}
       />
-    )
+    ),
+    header: null
   });
 
   render() {
     return (
       <View style={styles.container}>
+        <View style={styles.sub3}>
+          <View style={styles.sub}>
+            <Icon
+              name="plus-circle"
+              size={30}
+              onPress={() => {
+                navigation.openDrawer();
+              }}
+            />
+          </View>
+          <View style={styles.sub4}>
+            <SearchBar
+              containerStyle={{
+                borderTopWidth: 1,
+                borderBottomWidth: 1,
+                borderBottomColor: "#fff",
+                borderTopColor: "#fff",
+                backgroundColor: "#fff",
+              }}
+              round
+              lightTheme
+              showLoading
+              platform="ios"
+              cancelButtonTitle="Cancel"
+              onChangeText={someMethod => this.setState({ todoText: someMethod })}
+              onClearText={someMethod => this.setState({ todoText: someMethod })}
+              placeholder='Search' />
+          </View>
+          <View style={styles.sub2}>
+            <Button
+              onPress={() => {
+                navigation.navigate('App');
+              }}
+              title="ログイン" />
+          </View>
+        </View>
         <ScrollableTabView style={styles.main}>
-          <Tab1 tabLabel="一覧" />
-          <Tab2 tabLabel="スポーツ" />
-          <Tab3 tabLabel="サークル" />
-          <Tab4 tabLabel="行事" />
-          <Tab5 tabLabel="フェス" />
+          <Tab1 tabLabel="すべて" />
+          <Tab2 tabLabel="参加中" />
+          <Tab3 tabLabel="Myイベント" />
+          <Tab4 tabLabel="お気に入り" />
         </ScrollableTabView>
-      </View>
+      </View >
     );
   }
 }
@@ -77,7 +132,9 @@ export class Tab1 extends React.Component {
     for (let i = 0; i < 4; i++) {
       let events;
       events = (
-        <TouchableOpacity onPress={this._Navigte}>
+        <TouchableOpacity
+          onPress={() => this.props.navigation.navigate("Home")}
+        >
           <RkCard rkType="shadowed  events">
             <View rkCardHeader>
               <Text style={{ fontSize: 20 }}>{this.state.title[i]}</Text>
@@ -290,69 +347,42 @@ class Tab4 extends React.Component {
   }
 }
 
-class Tab5 extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      title: ["ジョビフェス", "いしがきMS", "よさこいさんさ", "街中ハロウィン"],
-      date: ["2018/7/30", "2018/6/20", "2018/5/21", "2018/10/31"]
-    };
-  }
-  render() {
-    let data = [];
-    for (let i = 0; i < 3; i++) {
-      let events;
-      events = (
-        <RkCard rkType="shadowed  events">
-          <View rkCardHeader>
-            <Text>{this.state.title[i]}</Text>
-          </View>
-          <View
-            style={{
-              width: "100%",
-              height: 180,
-              borderColor: "red",
-              borderWidth: 1
-            }}
-          />
-          <View rkCardContent>
-            <Text> quick brown fox jumps over the lazy dog</Text>
-          </View>
-          <View rkCardFooter>
-            <Text>Footer</Text>
-          </View>
-        </RkCard>
-      );
-      data.push(events);
-    }
-    return (
-      <FlatList
-        style={{ backgroundColor: "#ccc", paddingTop: 10 }}
-        data={data}
-        renderItem={({ item }) => (
-          <View
-            style={{
-              paddingHorizontal: 1,
-              paddingBottom: 10
-            }}
-          >
-            {item}
-          </View>
-        )}
-        keyExtractor={(item, index) => `list-${index}`}
-      />
-    );
-  }
-}
-
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: "#fff"
+    flex: 9,
+    backgroundColor: "#fff",
+    paddingTop: Constants.statusBarHeight
   },
 
   main: {
     backgroundColor: "#fff"
+  },
+  sub: {
+    flex: 1,
+    flexDirection: "column",
+    backgroundColor: "#fff",
+    alignItems: "flex-start",
+    justifyContent: "center",
+    paddingLeft: 10
+
+  },
+  sub2: {
+    flex: 3,
+    flexDirection: "column",
+    backgroundColor: "#fff",
+    alignItems: "flex-start",
+    justifyContent: "center"
+  },
+  sub4: {
+    flex: 9,
+    flexDirection: "column",
+    backgroundColor: "#fff",
+    justifyContent: "center"
+  },
+  sub3: {
+    flexDirection: "row",
+    backgroundColor: "#fff",
+    alignItems: "stretch"
   }
 });
 
