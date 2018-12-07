@@ -16,50 +16,12 @@ import { ImagePicker, Permissions } from "expo";
 import ActionSheet from "react-native-zhb-actionsheet";
 
 export default class ProfileHomeScreen extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      titles: (defaultTitles = [
-        ({
-          title: "カメラ",
-          action: this._takePhoto
-        },
-        {
-          title: "ライブラリー",
-          action: this._pickImage
-        },
-        {
-          title: "キャンセル",
-          actionStyle: "cancel",
-          action: () => {
-            console.log("click Cancel");
-          }
-        })
-      ]),
-      hasCameraRollPermission: null,
-      hasCameraPermission: null,
-      image: null
-    };
-
-    this._takePhoto = this._takePhoto.bind(this);
-    this.onPressOk = this.onPressOk.bind(this);
-    this._onPressLogoutAlert = this._onPressLogoutAlert.bind(this);
-  }
-
-  static navigationOptions = ({ navigation }) => ({
-    title: "プロフィール",
-    headerLeft: (
-      <Icon
-        name="bars"
-        size={24}
-        onPress={() => {
-          navigation.openDrawer();
-        }}
-        style={{ paddingLeft: 20 }}
-      />
-    )
-  });
+  state = {
+    hasCameraRollPermission: null,
+    hasCameraPermission: null,
+    defaultImg: [require("../../assets/images/profile.jpg")],
+    image: null
+  };
 
   // カメラロールに対するPermissionを許可
   async componentWillMount() {
@@ -96,19 +58,64 @@ export default class ProfileHomeScreen extends React.Component {
     }
   };
 
-  onPressOk = () => {
-    console.log("発動しました！");
-    firebase.auth().onAuthStateChanged(user => {
-      if (!user) {
-        // サインインしていない状態
-        console.log("サインインしてません");
-      } else {
-        // サインイン済み
-        console.log("サインインしてます");
-        firebase.auth().signOut();
-        return this.props.navigation.navigate("App");
+  constructor(props) {
+    super(props);
+
+    this.defaultTitles = [
+      {
+        title: "カメラ",
+        action: this._takePhoto
+      },
+      {
+        title: "ライブラリー",
+        action: this._pickImage
+      },
+
+      {
+        title: "キャンセル",
+        actionStyle: "cancel",
+        action: () => {
+          console.log("click Cancel");
+        }
       }
-    });
+    ];
+
+    this.state = {
+      titles: this.defaultTitles
+    };
+    this._takePhoto = this._takePhoto.bind(this);
+    this.onPressOk = this.onPressOk.bind(this);
+    this._onPressLogoutAlert = this._onPressLogoutAlert.bind(this);
+  }
+
+  static navigationOptions = ({ navigation }) => ({
+    title: "プロフィール",
+    headerLeft: (
+      <Icon
+        name="bars"
+        size={24}
+        onPress={() => {
+          navigation.openDrawer();
+        }}
+        style={{ paddingLeft: 20 }}
+      />
+    )
+  });
+
+  onPressOk = () => {
+    // console.log("発動しました！");
+    // firebase.auth().onAuthStateChanged(user => {
+    //   if (!user) {
+    //     // サインインしていない状態
+    //     console.log("サインインしてません");
+    //   } else {
+    //     // サインイン済み
+    //     console.log("サインインしてます");
+    //     firebase.auth().signOut();
+    //     return this.props.navigation.navigate("App");
+    //   }
+    // });
+    this.props.navigation.navigate(App);
   };
 
   _onPressLogoutAlert = () => {
@@ -136,66 +143,60 @@ export default class ProfileHomeScreen extends React.Component {
     return (
       <View style={styles.container}>
         <View style={styles.imgContainer}>
-          <View style={styles.thumbnail}>
-            <ActionSheet
-              ref="picker"
-              titles={this.state.titles}
-              separateHeight={3}
-              separateColor="#dddddd"
-              backgroundColor="rgba(0, 0, 0, 0.3)"
-              containerStyle={{ margin: 10, borderRadius: 5 }}
-              onClose={obj => {
-                console.log(
-                  "action sheet closed! clicked:" + JSON.stringify(obj)
-                );
+          <ActionSheet
+            ref="picker"
+            titles={this.state.titles}
+            separateHeight={3}
+            separateColor="#dddddd"
+            backgroundColor="rgba(0, 0, 0, 0.3)"
+            containerStyle={{ margin: 10, borderRadius: 5 }}
+            onClose={obj => {
+              console.log(
+                "action sheet closed! clicked:" + JSON.stringify(obj)
+              );
+            }}
+          />
+
+          {image ? (
+            <Avatar
+              xlarge
+              rounded
+              source={{ uri: image }}
+              onPress={() => console.log("Works!")}
+              activeOpacity={0.7}
+            />
+          ) : (
+            <Avatar
+              xlarge
+              rounded
+              source={require("../../assets/images/profile.jpg")}
+              onPress={() => console.log("Works!")}
+              activeOpacity={0.7}
+            />
+          )}
+          <View style={styles.button}>
+            <Button
+              title="プロフィール画像の編集"
+              onPress={() => {
+                this.setState({ titles: this.defaultTitles }, () => {
+                  this.refs.picker.show();
+                });
               }}
             />
-
-            {image && (
-              <Avatar
-                xlarge
-                rounded
-                source={{
-                  uri: image
-                }}
-                onPress={() => console.log("Works!")}
-                activeOpacity={0.7}
-              />
-            )}
-
-            <View style={styles.button}>
-              <Button
-                title="プロフィール画像の編集"
-                onPress={() => {
-                  this.setState({ titles: this.defaultTitles }, () => {
-                    this.refs.picker.show();
-                  });
-                }}
-              />
-            </View>
           </View>
         </View>
 
         <View
           style={{
+            paddingVertical: 5,
             width: "100%",
-            height: 40,
-            borderWidth: 1,
-            justifyContent: "center"
-          }}
-        />
-
-        <View
-          style={{
-            width: "100%",
-            height: 40,
-            borderWidth: 1,
+            height: 55,
             justifyContent: "center"
           }}
         >
           <Button title="ログアウト" onPress={this._onPressLogoutAlert} />
         </View>
-        <View style={{ borderTopWidth: 1, borderBottomWidth: 1 }} />
+        <View style={{ borderTopWidth: 1 }} />
       </View>
     );
   }
@@ -209,22 +210,13 @@ const styles = StyleSheet.create({
   },
   imgContainer: {
     width: "100%",
-    height: 200,
+    height: 280,
     borderWidth: 1,
     alignItems: "center",
-    justifyContent: "center",
-    position: "relative"
-  },
-  thumbnail: {
-    position: "absolute",
-    zIndex: 9999,
-    top: 7
+    justifyContent: "center"
   },
   button: {
-    position: "absolute",
-    zIndex: 9999,
-    top: 158,
-    justifyContent: "flex-end"
+    alignItems: "center"
   },
   main: {
     width: "100%",
