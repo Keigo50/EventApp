@@ -1,7 +1,8 @@
 import React from "react";
 import firebase from "firebase";
-import { View, StyleSheet, Button } from "react-native";
+import { View, StyleSheet, Button, TouchableOpacity } from "react-native";
 import * as Expo from "expo";
+import { Constants, Icon } from "expo";
 export default class GoogleLoginScreen extends React.Component {
   state = { email: "", password: "", loggedIn: null };
 
@@ -57,6 +58,21 @@ export default class GoogleLoginScreen extends React.Component {
     return (
       <View style={styles.container}>
         {/* ④Google認証するボタンを表示し、作成したGoogle認証処理をonPressに設定する */}
+        <View
+          style={{
+            justifyContent: "flex-start",
+            position: "absolute",
+            top: 20,
+            left: 20
+          }}
+        >
+          <TouchableOpacity
+            onPress={() => this.props.navigation.navigate("Main")}
+          >
+            <Icon.Ionicons name="ios-close" size={50} />
+          </TouchableOpacity>
+        </View>
+
         <Button
           title="Google認証"
           onPress={this.onLoginButtonPress.bind(this)}
