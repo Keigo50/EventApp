@@ -3,7 +3,7 @@ import { createStackNavigator } from "react-navigation";
 import GoogleLoginScreen from "../screens/Keigo/GoogleLoginScreen";
 
 const AccountHomeStack = createStackNavigator({
-  Home: { screen: GoogleLoginScreen, mode: "modal" }
+  Home: GoogleLoginScreen
 });
 
 AccountHomeStack.navigationOptions = {

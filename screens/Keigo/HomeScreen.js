@@ -7,7 +7,8 @@ import {
   Text,
   View,
   TouchableOpacity,
-  FlatList
+  FlatList,
+  CustomComponent
 } from "react-native";
 import { RkCard, RkTheme, RkButton } from "react-native-ui-kitten";
 import { SearchBar } from "react-native-elements";
@@ -19,54 +20,41 @@ import firebase from "firebase";
 export default class HomeScreen extends React.Component {
   constructor(props) {
     super(props);
+    this.textInput = null;
+    this.setTextInputRef = element => {
+      this.textInput = element;
+    };
+    this.focusTextInput = () => {
+      // Focus the text input using the raw DOM API
+      if (this.textInput) this.textInput.focus();
+    };
     this.state = {
       title: ["ジョビフェス", "いしがきMS", "よさこいさんさ", "街中ハロウィン"],
       date: ["2018/7/30", "2018/6/20", "2018/5/21", "2018/10/31"]
     };
   }
+  componentDidMount() {
+    // autofocus the input on mount
+    this.focusTextInput();
+  }
   static navigationOptions = ({ navigation }) => ({
-    headernull: (
-      <Icon
-        name="bell"
-        size={24}
-        onPress={() => {
-          navigation.navigate("App");
-        }}
-        style={{ paddingLeft: 20 }}
-      />
-    ),
-    headernull: (
-      <SearchBar
-        round
-        onChangeText={someMethod => this.setState({ todoText: someMethod })}
-        onClearText={someMethod => this.setState({ todoText: someMethod })}
-        placeholder='Type Here...' />
-    ),
-    headernull: (
-      <Icon
-        name="star"
-        size={24}
-        onPress={() => {
-          navigation.openDrawer();
-        }}
-        style={{ paddingRight: 20 }}
-      />
-    ),
     header: null
   });
-
   render() {
     return (
       <View style={styles.container}>
         <View style={styles.sub3}>
           <View style={styles.sub}>
-            <Icon
-              name="plus-circle"
-              size={30}
+            <TouchableOpacity
               onPress={() => {
-                navigation.openDrawer();
-              }}
-            />
+                this.props.navigation.navigate('Details');
+              }}>
+              <Icon
+                name="plus-circle"
+                size={30}
+              />
+            </TouchableOpacity>
+
           </View>
           <View style={styles.sub4}>
             <SearchBar
@@ -79,9 +67,8 @@ export default class HomeScreen extends React.Component {
               }}
               round
               lightTheme
-              showLoading
-              platform="ios"
-              cancelButtonTitle="Cancel"
+              ref={search => this.search = search}
+              searchIcon={<CustomComponent />}
               onChangeText={someMethod => this.setState({ todoText: someMethod })}
               onClearText={someMethod => this.setState({ todoText: someMethod })}
               placeholder='Search' />
@@ -89,7 +76,7 @@ export default class HomeScreen extends React.Component {
           <View style={styles.sub2}>
             <Button
               onPress={() => {
-                navigation.navigate('App');
+                this.props.navigation.navigate('App');
               }}
               title="ログイン" />
           </View>
