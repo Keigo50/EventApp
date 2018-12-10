@@ -12,7 +12,7 @@ import firebase from "firebase";
 import "firebase/firestore";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { Avatar } from "react-native-elements";
-import { ImagePicker, Permissions } from "expo";
+import { ImagePicker, Permissions, Constants } from "expo";
 import ActionSheet from "react-native-zhb-actionsheet";
 
 export default class ProfileHomeScreen extends React.Component {
@@ -37,18 +37,6 @@ export default class ProfileHomeScreen extends React.Component {
       }
     ];
 
-    firebase.auth().onAuthStateChanged(user => {
-      if (!user) {
-        // サインインしていない状態
-        console.log("サインインしてません");
-        this.props.navigation.setParams({ before: "Profile" });
-        // return this.props.navigation.navigate("App");
-      } else {
-        // サインイン済
-        console.log("サインインしてます");
-      }
-    });
-
     this.state = {
       hasCameraRollPermission: null,
       hasCameraPermission: null,
@@ -60,6 +48,10 @@ export default class ProfileHomeScreen extends React.Component {
     this._onPressLogoutAlert = this._onPressLogoutAlert.bind(this);
     this._takePhoto = this._takePhoto.bind(this);
   }
+
+  static navigationOptions = {
+    header: null
+  };
 
   async componentWillMount() {
     const { status } = await Permissions.askAsync(Permissions.CAMERA);
@@ -96,20 +88,6 @@ export default class ProfileHomeScreen extends React.Component {
     }
   };
 
-  static navigationOptions = ({ navigation }) => ({
-    title: "プロフィール",
-    headerLeft: (
-      <Icon
-        name="bars"
-        size={24}
-        onPress={() => {
-          navigation.openDrawer();
-        }}
-        style={{ paddingLeft: 20 }}
-      />
-    )
-  });
-
   onPressOk = () => {
     console.log("発動しました！");
     firebase.auth().onAuthStateChanged(user => {
@@ -145,6 +123,18 @@ export default class ProfileHomeScreen extends React.Component {
   };
 
   render() {
+    firebase.auth().onAuthStateChanged(user => {
+      if (!user) {
+        // サインインしていない状態
+        console.log("サインインしてません");
+        this.props.navigation.setParams({ before: "Profile" });
+        this.props.navigation.replace("Details");
+      } else {
+        // サインイン済
+        console.log("サインインしてます");
+      }
+    });
+
     console.log(this.props);
     let { image } = this.state;
     return (
@@ -216,14 +206,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "stretch",
-    backgroundColor: "#fff"
+    backgroundColor: "#fff",
+    paddingTop: Constants.statusBarHeight
   },
   imgContainer: {
     width: "100%",
     height: 280,
     alignItems: "center",
-    justifyContent: "center",
-    borderTopWidth: 1
+    justifyContent: "center"
   },
   button: {
     alignItems: "center"

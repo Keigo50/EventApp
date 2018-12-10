@@ -64,10 +64,6 @@ const ProfileHomeStack = createStackNavigator({
 });
 
 ProfileHomeStack.navigationOptions = {
-  title: "プロフィール"
-};
-
-ProfileHomeStack.navigationOptions = {
   header: null,
   title: "プロフィール",
   tabBarIcon: ({ focused }) => (

@@ -1,11 +1,14 @@
 import React from "react";
 import firebase from "firebase";
-import { View, StyleSheet, Button, TouchableOpacity } from "react-native";
+import { Text, View, StyleSheet, TouchableOpacity, Button } from "react-native";
 import * as Expo from "expo";
-import { Constants, Icon } from "expo";
+import { Icon } from "expo";
+import { SocialIcon } from "react-native-elements";
 export default class GoogleLoginScreen extends React.Component {
-  state = { email: "", password: "", loggedIn: null };
-
+  constructor(props) {
+    super(props);
+    this.state = { email: "", password: "", loggedIn: "ログイン" };
+  }
   static navigationOptions = {
     header: null
   };
@@ -33,10 +36,13 @@ export default class GoogleLoginScreen extends React.Component {
           idToken,
           accessToken
         );
+
         const response = firebase
           .auth()
           .signInAndRetrieveDataWithCredential(credential);
         // ログイン後の処理
+
+        firebase.auth().createUserAndRetrieveDataWithEmailAndPassword;
       }
     } catch (err) {
       console.log("firebase Google認証エラー");
@@ -77,6 +83,14 @@ export default class GoogleLoginScreen extends React.Component {
           title="Google認証"
           onPress={this.onLoginButtonPress.bind(this)}
         />
+
+        <Text style={{ fontSize: 20 }}>{this.state.loggedIn}</Text>
+        {/* <SocialIcon
+            type="google-plus-official"
+            title="Google+でログイン"
+            button
+            onPress={this.onLoginButtonPress.bind(this)}
+          /> */}
       </View>
     );
   }
@@ -86,7 +100,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center"
+    alignItems: "stretch",
+    justifyContent: "center",
+    paddingHorizontal: 25
   }
 });

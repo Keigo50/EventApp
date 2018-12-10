@@ -47,14 +47,11 @@ export default class HomeScreen extends React.Component {
           <View style={styles.sub}>
             <TouchableOpacity
               onPress={() => {
-                this.props.navigation.navigate('Details');
-              }}>
-              <Icon
-                name="plus-circle"
-                size={30}
-              />
+                this.props.navigation.navigate("Details");
+              }}
+            >
+              <Icon name="plus-circle" size={30} />
             </TouchableOpacity>
-
           </View>
           <View style={styles.sub4}>
             <SearchBar
@@ -63,22 +60,28 @@ export default class HomeScreen extends React.Component {
                 borderBottomWidth: 1,
                 borderBottomColor: "#fff",
                 borderTopColor: "#fff",
-                backgroundColor: "#fff",
+                backgroundColor: "#fff"
               }}
               round
               lightTheme
-              ref={search => this.search = search}
+              ref={search => (this.search = search)}
               searchIcon={<CustomComponent />}
-              onChangeText={someMethod => this.setState({ todoText: someMethod })}
-              onClearText={someMethod => this.setState({ todoText: someMethod })}
-              placeholder='Search' />
+              onChangeText={someMethod =>
+                this.setState({ todoText: someMethod })
+              }
+              onClearText={someMethod =>
+                this.setState({ todoText: someMethod })
+              }
+              placeholder="Search"
+            />
           </View>
           <View style={styles.sub2}>
             <Button
               onPress={() => {
-                this.props.navigation.navigate('App');
+                this.props.navigation.navigate("App");
               }}
-              title="ログイン" />
+              title="ログイン"
+            />
           </View>
         </View>
         <ScrollableTabView style={styles.main}>
@@ -87,7 +90,7 @@ export default class HomeScreen extends React.Component {
           <Tab3 tabLabel="Myイベント" />
           <Tab4 tabLabel="お気に入り" />
         </ScrollableTabView>
-      </View >
+      </View>
     );
   }
 }
@@ -351,7 +354,6 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     justifyContent: "center",
     paddingLeft: 10
-
   },
   sub2: {
     flex: 3,
