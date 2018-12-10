@@ -6,12 +6,13 @@ import {
   Button,
   View,
   Alert,
-  CameraRoll
+  CameraRoll,
+  TouchableOpacity
 } from "react-native";
 import firebase from "firebase";
 import "firebase/firestore";
 import Icon from "react-native-vector-icons/FontAwesome";
-import { Avatar } from "react-native-elements";
+import { Avatar, colors } from "react-native-elements";
 import { ImagePicker, Permissions } from "expo";
 import ActionSheet from "react-native-zhb-actionsheet";
 
@@ -169,28 +170,33 @@ export default class ProfileHomeScreen extends React.Component {
               xlarge
               rounded
               source={{ uri: image }}
-              onPress={() => console.log("Works!")}
-              activeOpacity={0.7}
-            />
-          ) : (
-            <Avatar
-              xlarge
-              rounded
-              source={require("../../assets/images/profile.jpg")}
-              onPress={() => console.log("Works!")}
-              activeOpacity={0.7}
-            />
-          )}
-          <View style={styles.button}>
-            <Button
-              title="プロフィール画像の編集"
               onPress={() => {
                 this.setState({ titles: this.defaultTitles }, () => {
                   this.refs.picker.show();
                 });
               }}
             />
-          </View>
+          ) : (
+            <Avatar
+              xlarge
+              rounded
+              source={require("../../assets/images/profile.jpg")}
+              onPress={() => {
+                this.setState({ titles: this.defaultTitles }, () => {
+                  this.refs.picker.show();
+                });
+              }}
+            />
+          )}
+          <TouchableOpacity
+            onPress={() => {
+              this.setState({ titles: this.defaultTitles }, () => {
+                this.refs.picker.show();
+              });
+            }}
+          >
+            <Text style={styles.editingFont}>プロフィール画像の編集</Text>
+          </TouchableOpacity>
         </View>
 
         <View
@@ -198,6 +204,7 @@ export default class ProfileHomeScreen extends React.Component {
             paddingVertical: 5,
             width: "100%",
             height: 55,
+            alignItems: "center",
             justifyContent: "center",
             borderWidth: 1,
             borderBottomWidth: 1,
@@ -205,7 +212,9 @@ export default class ProfileHomeScreen extends React.Component {
             borderRightWidth: 0
           }}
         >
-          <Button title="ログアウト" onPress={this._onPressLogoutAlert} />
+          <TouchableOpacity onPress={this._onPressLogoutAlert}>
+            <Text style={styles.logoutFont}>ログアウト</Text>
+          </TouchableOpacity>
         </View>
       </View>
     );
@@ -225,11 +234,19 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderTopWidth: 1
   },
-  button: {
-    alignItems: "center"
-  },
   main: {
     width: "100%",
     height: 350
+  },
+  editingFont: {
+    paddingTop: 10,
+    fontSize: 16,
+    justifyContent: "center",
+    color: "#007AFF"
+  },
+  logoutFont: {
+    fontSize: 20,
+    justifyContent: "center",
+    color: "#007AFF"
   }
 });
