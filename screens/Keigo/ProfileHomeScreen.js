@@ -89,26 +89,14 @@ export default class ProfileHomeScreen extends React.Component {
   };
 
   onPressOk = () => {
-    console.log("発動しました！");
-    firebase.auth().onAuthStateChanged(user => {
-      if (!user) {
-        // サインインしていない状態
-        console.log("サインインしてません");
-      } else {
-        // サインイン済み
-        console.log("サインインしてます");
-        firebase.auth().signOut();
-      }
-    });
+    firebase.auth().signOut();
   };
 
   componentWillMount() {
     firebase.auth().onAuthStateChanged(user => {
       if (!user) {
         // サインインしていない状態
-        firebase.auth().signOut();
         console.log("サインインしてません");
-        this.props.Param({ before: "Profile" });
         this.props.navigation.navigate("App");
       } else {
         // サインイン済
@@ -137,7 +125,6 @@ export default class ProfileHomeScreen extends React.Component {
   };
 
   render() {
-    console.log(this.props);
     let { image } = this.state;
     return (
       <View style={styles.container}>

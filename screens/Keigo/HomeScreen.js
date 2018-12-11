@@ -10,6 +10,9 @@ import {
   FlatList,
   CustomComponent
 } from "react-native";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import * as Actions from "../../app/actions";
 import { RkCard, RkTheme, RkButton } from "react-native-ui-kitten";
 import { SearchBar } from "react-native-elements";
 import Icon from "react-native-vector-icons/FontAwesome";
@@ -17,9 +20,10 @@ import ScrollableTabView from "react-native-scrollable-tab-view";
 import { Constants } from "expo";
 import firebase from "firebase";
 
-export default class HomeScreen extends React.Component {
+class HomeScreen extends React.Component {
   constructor(props) {
     super(props);
+
     this.textInput = null;
     this.setTextInputRef = element => {
       this.textInput = element;
@@ -30,7 +34,8 @@ export default class HomeScreen extends React.Component {
     };
     this.state = {
       title: ["ジョビフェス", "いしがきMS", "よさこいさんさ", "街中ハロウィン"],
-      date: ["2018/7/30", "2018/6/20", "2018/5/21", "2018/10/31"]
+      date: ["2018/7/30", "2018/6/20", "2018/5/21", "2018/10/31"],
+      user: null
     };
   }
   componentDidMount() {
@@ -40,19 +45,28 @@ export default class HomeScreen extends React.Component {
   static navigationOptions = ({ navigation }) => ({
     header: null
   });
+
+  componentWillMount() {
+    this.props.checkLogin();
+  }
   render() {
-    console.log(this.props.navigation.params);
+    //TODO ログイン状態を確認し作成ボタンを表示・非表示する処理
+    console.log(this.props.loggedIn);
+    let createbutton = this.props.loggedIn;
+    console.log(this.props.navigation.state.params);
     return (
       <View style={styles.container}>
         <View style={styles.sub3}>
           <View style={styles.sub}>
-            <TouchableOpacity
-              onPress={() => {
-                this.props.navigation.navigate("Details");
-              }}
-            >
-              <Icon name="plus-circle" size={30} />
-            </TouchableOpacity>
+            {createbutton && (
+              <TouchableOpacity
+                onPress={() => {
+                  this.props.navigation.navigate("Details");
+                }}
+              >
+                <Icon name="plus-circle" size={30} />
+              </TouchableOpacity>
+            )}
           </View>
           <View style={styles.sub4}>
             <SearchBar
@@ -77,12 +91,14 @@ export default class HomeScreen extends React.Component {
             />
           </View>
           <View style={styles.sub2}>
-            <Button
-              onPress={() => {
-                this.props.navigation.navigate("");
-              }}
-              title="ログイン"
-            />
+            {!createbutton && (
+              <Button
+                onPress={() => {
+                  this.props.navigation.navigate("App");
+                }}
+                title="ログイン"
+              />
+            )}
           </View>
         </View>
         <ScrollableTabView style={styles.main}>
@@ -123,10 +139,10 @@ export class Tab1 extends React.Component {
     for (let i = 0; i < 4; i++) {
       let events;
       events = (
-        <TouchableOpacity
-          onPress={() => this.props.navigation.navigate("Home")}
-        >
-          <RkCard rkType="shadowed  events">
+        <RkCard rkType="shadowed  events">
+          <TouchableOpacity
+            onPress={() => this.props.navigation.navigate("Details")}
+          >
             <View rkCardHeader>
               <Text style={{ fontSize: 20 }}>{this.state.title[i]}</Text>
             </View>
@@ -144,8 +160,8 @@ export class Tab1 extends React.Component {
             <View rkCardFooter>
               <Text>{this.state.date[i]}</Text>
             </View>
-          </RkCard>
-        </TouchableOpacity>
+          </TouchableOpacity>
+        </RkCard>
       );
       data.push(events);
     }
@@ -388,3 +404,21 @@ RkTheme.setType("RkCard", "events", {
   },
   marginVertical: 5
 });
+
+const mapStateToProps = state => {
+  return {
+    loading: state.auth.loading,
+    loggedIn: state.auth.loggedIn
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    ...bindActionCreators(Actions, dispatch)
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(HomeScreen);

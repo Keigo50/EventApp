@@ -3,29 +3,47 @@ import { View, Text, StyleSheet, TouchableOpacity, Button } from "react-native";
 import { RkButton, RkTheme } from "react-native-ui-kitten";
 import { SearchBar } from "react-native-elements";
 import Icon from "react-native-vector-icons/FontAwesome";
-
+import firebase from "firebase";
+import { connect } from "react-redux";
 import { Constants } from "expo";
+import { bindActionCreators } from "redux";
+import * as Actions from "../../app/actions";
 
-export default class NotificationHomeScreen extends React.Component {
+class NotificationHomeScreen extends React.Component {
   static navigationOptions = {
     header: null
   };
 
+  componentWillMount() {
+    firebase.auth().onAuthStateChanged(user => {
+      if (!user) {
+        // サインインしていない状態
+        console.log("サインインしてません");
+        this.props.navigation.navigate("App");
+      } else {
+        // サインイン済
+        console.log("サインインしてます");
+        this.props.checkLogin();
+      }
+    });
+  }
+
   render() {
+    let createbutton = this.props.loggedIn;
+
     return (
       <View style={styles.container}>
         <View style={styles.sub3}>
           <View style={styles.sub}>
-            <TouchableOpacity
-              onPress={() => {
-                this.props.navigation.navigate('Details');
-              }}>
-              <Icon
-                name="plus-circle"
-                size={30}
-              />
-            </TouchableOpacity>
-
+            {createbutton && (
+              <TouchableOpacity
+                onPress={() => {
+                  this.props.navigation.navigate("Details");
+                }}
+              >
+                <Icon name="plus-circle" size={30} />
+              </TouchableOpacity>
+            )}
           </View>
           <View style={styles.sub4}>
             <SearchBar
@@ -34,23 +52,31 @@ export default class NotificationHomeScreen extends React.Component {
                 borderBottomWidth: 1,
                 borderBottomColor: "#fff",
                 borderTopColor: "#fff",
-                backgroundColor: "#fff",
+                backgroundColor: "#fff"
               }}
               round
               lightTheme
               showLoading
               platform="ios"
               cancelButtonTitle="Cancel"
-              onChangeText={someMethod => this.setState({ todoText: someMethod })}
-              onClearText={someMethod => this.setState({ todoText: someMethod })}
-              placeholder='Search' />
+              onChangeText={someMethod =>
+                this.setState({ todoText: someMethod })
+              }
+              onClearText={someMethod =>
+                this.setState({ todoText: someMethod })
+              }
+              placeholder="Search"
+            />
           </View>
           <View style={styles.sub2}>
-            <Button
-              onPress={() => {
-                this.props.navigation.navigate('App');
-              }}
-              title="ログイン" />
+            {!createbutton && (
+              <Button
+                onPress={() => {
+                  this.props.navigation.navigate("App");
+                }}
+                title="ログイン"
+              />
+            )}
           </View>
         </View>
         <Text>Notification</Text>
@@ -72,7 +98,6 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     justifyContent: "center",
     paddingLeft: 10
-
   },
   sub2: {
     flex: 3,
@@ -121,3 +146,21 @@ RkTheme.setType("RkButton", "danjer", {
   backgroundColor: "red",
   marginTop: 10
 });
+
+const mapStateToProps = state => {
+  return {
+    loading: state.auth.loading,
+    loggedIn: state.auth.loggedIn
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    ...bindActionCreators(Actions, dispatch)
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(NotificationHomeScreen);
