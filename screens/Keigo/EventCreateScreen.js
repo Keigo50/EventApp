@@ -9,6 +9,7 @@ import {
   Button,
   Text,
   Image,
+  CameraRoll,
   KeyboardAvoidingView
 } from "react-native";
 import firebase from "firebase";
@@ -16,24 +17,47 @@ import "firebase/firestore";
 import { RkButton, RkTextInput, RkTheme, RkText } from "react-native-ui-kitten";
 import Entypo from "react-native-vector-icons/Entypo";
 import { ScrollView } from "react-native-gesture-handler";
-import { Dropdown } from "react-native-material-dropdown";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { Calendar } from "react-native-calendars";
 import { ImagePicker, Permissions } from "expo";
 import * as Actions from "../../app/actions";
 import PropTypes from "prop-types";
+import ActionSheet from "react-native-zhb-actionsheet";
 class EventCreateScreen extends Component {
   constructor(props) {
     super(props);
+    this.defaultTitles = [
+      {
+        title: "カメラ",
+        action: this._takePhoto
+      },
+      {
+        title: "ライブラリー",
+        action: this._pickImage
+      },
+
+      {
+        title: "キャンセル",
+        actionStyle: "cancel",
+        action: () => {
+          console.log("click Cancel");
+        }
+      }
+    ];
     this.state = {
       calendarDecision: false,
+      deadlineDecision: false,
       image: null,
-      hasCameraRollPermission: null
+      hasCameraRollPermission: null,
+      hasCameraPermission: null,
+      titles: this.defaultTitles
     };
 
     this._onEditingImage = this._onEditingImage.bind(this);
     this._onCalendarPress = this._onCalendarPress.bind(this);
     this._onPressSubmit = this._onPressSubmit.bind(this);
+    this._onDeadlinePress = this._onDeadlinePress.bind(this);
+    this._takePhoto = this._takePhoto.bind(this);
   }
 
   static navigationOptions = ({ navigation }) => ({
@@ -41,9 +65,10 @@ class EventCreateScreen extends Component {
   });
 
   async componentWillMount() {
-    // カメラロールに対するPermissionを許可
-    const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
-    this.setState({ hasCameraRollPermission: status === "granted" });
+    const { status } = await Permissions.askAsync(Permissions.CAMERA);
+    const { status2 } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+    this.setState({ hasCameraPermission: status === "granted" });
+    this.setState({ hasCameraRollPermission: status2 === "granted" });
   }
 
   _onEditingImage = () => {
@@ -69,10 +94,10 @@ class EventCreateScreen extends Component {
         rnumbers: this.props.rnumbers
       })
 
-      .then(function () {
+      .then(function() {
         console.log("firebaseにデータ到着！");
       })
-      .catch(function (error) {
+      .catch(function(error) {
         // The document probably doesn't exist.
         console.error("firebaseにデータ来てないぞ！！ ", error);
       });
@@ -92,10 +117,39 @@ class EventCreateScreen extends Component {
     }
   };
 
+  _onDeadlinePress = () => {
+    if (!this.state.deadlineDecision) {
+      console.log(this.state.deadlineDecision);
+      this.setState({
+        deadlineDecision: true
+      });
+    } else {
+      console.log(this.state.deadlineDecision);
+      this.setState({
+        deadlineDecision: false
+      });
+    }
+  };
+
+  // カメラを起動
+  _takePhoto = async () => {
+    let result = await ImagePicker.launchCameraAsync({
+      allowsEditing: false
+    });
+
+    console.log(result);
+
+    if (!result.cancelled) {
+      this.setState({ image: result.uri });
+    }
+    CameraRoll.saveToCameraRoll(result.uri);
+  };
+
+  // カメラロールから選択
   _pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       allowsEditing: true,
-      aspect: [4, 3]
+      aspect: [16, 9]
     });
 
     console.log(result);
@@ -111,41 +165,23 @@ class EventCreateScreen extends Component {
     const today = new Date();
     let year = today.getFullYear();
     let month = today.getMonth() + 1;
-    let dates = today.getDate() + 1;
+    let dates = today.getDate() + 2;
     const now = `${year}/${month}/${dates}`;
-    let data = [
-      {
-        value: "スポーツ"
-      },
-      {
-        value: "サークル"
-      },
-      {
-        value: "行事"
-      },
-      {
-        value: "フェス"
-      }
-    ];
-
-    let people = [
-      {
-        value: "１～５人"
-      },
-      {
-        value: "５～１０人"
-      },
-      {
-        value: "１０～１５人"
-      },
-      {
-        value: "１５人以上"
-      }
-    ];
 
     let calendar = this.state.calendarDecision;
     if (this.state.calendarDecision) {
       calendar = (
+        <Calendar
+          hideExtraDays={true}
+          minDate={now}
+          onDayPress={day => this.props.returnDate(day.dateString)}
+        />
+      );
+    }
+
+    let deadline = this.state.deadlineDecision;
+    if (this.state.deadlineDecision) {
+      deadline = (
         <Calendar
           hideExtraDays={true}
           minDate={now}
@@ -165,37 +201,10 @@ class EventCreateScreen extends Component {
       >
         <ScrollView>
           <View style={styles.main}>
-            <View
-              style={{
-                width: "100%",
-                height: 70,
-                marginVertical: 10
-              }}
-            >
-              <Dropdown
-                itemCount={3}
-                dropdownPosition={1}
-                label="カテゴリー"
-                data={data}
-              />
-            </View>
-            <View
-              style={{
-                width: "100%",
-                height: 70,
-                marginVertical: 10
-              }}
-            >
-              <Dropdown
-                itemCount={5}
-                dropdownPosition={1}
-                label="人数"
-                data={people}
-              />
-            </View>
             <View>
               <RkText rkType="text">イベントタイトル</RkText>
             </View>
+
             <RkTextInput
               autoFocus={true}
               rkType="textInput"
@@ -203,11 +212,35 @@ class EventCreateScreen extends Component {
               onChangeText={ename => this.props.returnEname(ename)}
             />
 
+            <View>
+              <RkText rkType="text">募集定員</RkText>
+            </View>
+            <View style={{ flexDirection: "row" }}>
+              <RkTextInput
+                style={{ flex: 1 }}
+                rkType="member"
+                multiline
+                onChangeText={rnumbers => this.props.returnRnumbers(rnumbers)}
+              />
+              <View
+                style={{
+                  flex: 1,
+                  alignItems: "flex-start",
+                  justifyContent: "flex-end",
+                  marginBottom: 30,
+                  marginLeft: 9
+                }}
+              >
+                <RkText style={{ fontSize: 25 }}>人</RkText>
+              </View>
+            </View>
+
             <RkText rkType="text">画像</RkText>
 
             <View
               style={{
                 justifyContent: "center",
+                alignItems: "center",
                 width: "100%",
                 borderWidth: 1,
                 borderColor: "#0000003B",
@@ -215,13 +248,35 @@ class EventCreateScreen extends Component {
                 marginBottom: 10
               }}
             >
-              <Button title="画像の選択" onPress={this._pickImage} />
+              <ActionSheet
+                ref="picker"
+                titles={this.state.titles}
+                separateHeight={3}
+                separateColor="#dddddd"
+                backgroundColor="rgba(0, 0, 0, 0.3)"
+                containerStyle={{ margin: 10, borderRadius: 5 }}
+                onClose={obj => {
+                  console.log(
+                    "action sheet closed! clicked:" + JSON.stringify(obj)
+                  );
+                }}
+              />
+              ;
               {image && (
                 <Image
                   source={{ uri: image }}
-                  style={{ width: "100%", height: "84%" }}
+                  style={{ width: "100%", height: "93%" }}
                 />
               )}
+              <TouchableOpacity
+                onPress={() => {
+                  this.setState({ titles: this.defaultTitles }, () => {
+                    this.refs.picker.show();
+                  });
+                }}
+              >
+                <Text style={styles.choiceFont}>画像の選択</Text>
+              </TouchableOpacity>
             </View>
 
             <View>
@@ -253,6 +308,37 @@ class EventCreateScreen extends Component {
               </View>
             </View>
             {calendar}
+
+            <View>
+              <RkText rkType="text">締切日</RkText>
+            </View>
+
+            <View style={{ flex: 1, flexDirection: "row", marginVertical: 30 }}>
+              <View
+                style={{
+                  flex: 8,
+                  alignItems: "center",
+                  justifyContent: "center"
+                }}
+              >
+                <View>
+                  <RkText style={{ fontSize: 20 }}>{this.props.date}</RkText>
+                </View>
+              </View>
+              <View
+                style={{
+                  flex: 2,
+                  alignItems: "center",
+                  justifyContent: "center"
+                }}
+              >
+                <TouchableOpacity onPress={this._onDeadlinePress}>
+                  <Icon name="calendar" size={24} />
+                </TouchableOpacity>
+              </View>
+            </View>
+            {deadline}
+
             <View>
               <RkText rkType="text">開催場所</RkText>
             </View>
@@ -287,6 +373,7 @@ class EventCreateScreen extends Component {
 }
 
 EventCreateScreen.propTypes = {
+  member: PropTypes.string.isRequired,
   date: PropTypes.string.isRequired,
   ename: PropTypes.string.isRequired,
   eimage: PropTypes.string.isRequired,
@@ -301,6 +388,12 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     alignItems: "stretch",
     justifyContent: "flex-start"
+  },
+  choiceFont: {
+    fontSize: 16,
+    justifyContent: "center",
+    alignItems: "center",
+    color: "#007AFF"
   },
   main: {
     flex: 1,
@@ -340,6 +433,23 @@ RkTheme.setType("RkTextInput", "textInput", {
   input: {
     paddingHorizontal: 10,
     marginVertical: 15,
+    marginLeft: 5,
+    fontSize: 20,
+    height: 25
+  }
+});
+
+RkTheme.setType("RkTextInput", "member", {
+  marginBottom: 30,
+  underlineWidth: 0,
+  borderWidth: 1,
+  borderBottomWidth: 1,
+  borderBottomColor: "#000",
+  borderColor: "#000",
+  height: "auto",
+  input: {
+    paddingHorizontal: 10,
+    marginVertical: 10,
     marginLeft: 5,
     fontSize: 20,
     height: 25
