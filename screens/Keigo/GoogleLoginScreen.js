@@ -7,14 +7,15 @@ import { SocialIcon } from "react-native-elements";
 export default class GoogleLoginScreen extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { email: "", password: "", loggedIn: "ログイン" };
+
+    firebase.auth().signOut();
+    this.state = { email: "", password: "", loggedIn: null };
   }
   static navigationOptions = {
     header: null
   };
 
   async onLoginButtonPress() {
-    // ①Expoの機能でGoogleにログインする（トークン取得のため）
     try {
       const result = await Expo.Google.logInAsync({
         androidClientId:
@@ -23,37 +24,33 @@ export default class GoogleLoginScreen extends React.Component {
           "1067680483596-cir3ak0j5cfr5fk79cpma2m86b8fs8ni.apps.googleusercontent.com",
         scopes: ["profile", "email"]
       });
-    } catch (err) {
-      console.log("Googleトークン取得エラー");
-      return;
-    }
-
-    // ②トークン取得できたら、firebaseでGoogle認証する
-    try {
       if (result.type === "success") {
         const { idToken, accessToken } = result;
         const credential = firebase.auth.GoogleAuthProvider.credential(
           idToken,
           accessToken
         );
-
         const response = firebase
           .auth()
           .signInAndRetrieveDataWithCredential(credential);
         // ログイン後の処理
-
-        firebase.auth().createUserAndRetrieveDataWithEmailAndPassword;
+        console.log(result.user.email);
       }
     } catch (err) {
-      console.log("firebase Google認証エラー");
+      console.log("Googleトークン取得エラー");
+      return;
     }
   }
 
-  // ③アプリが起動したらfirebaseに接続するように
   componentWillMount() {
     firebase.auth().onAuthStateChanged(user => {
       if (user) {
+        console.log(user);
+        const a = firebase.auth().currentUser;
+        console.log(a);
         this.setState({ loggedIn: true });
+        console.log(this.state.loggedIn);
+        this.props.navigation.navigate("Main");
       } else {
         this.setState({ loggedIn: false });
       }
@@ -63,7 +60,6 @@ export default class GoogleLoginScreen extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        {/* ④Google認証するボタンを表示し、作成したGoogle認証処理をonPressに設定する */}
         <View
           style={{
             justifyContent: "flex-start",
@@ -79,18 +75,12 @@ export default class GoogleLoginScreen extends React.Component {
           </TouchableOpacity>
         </View>
 
-        <Button
-          title="Google認証"
+        <SocialIcon
+          type="google-plus-official"
+          title="Google+でログイン"
+          button
           onPress={this.onLoginButtonPress.bind(this)}
         />
-
-        <Text style={{ fontSize: 20 }}>{this.state.loggedIn}</Text>
-        {/* <SocialIcon
-            type="google-plus-official"
-            title="Google+でログイン"
-            button
-            onPress={this.onLoginButtonPress.bind(this)}
-          /> */}
       </View>
     );
   }

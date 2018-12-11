@@ -41,6 +41,7 @@ export default class HomeScreen extends React.Component {
     header: null
   });
   render() {
+    console.log(this.props.navigation.params);
     return (
       <View style={styles.container}>
         <View style={styles.sub3}>
@@ -65,7 +66,7 @@ export default class HomeScreen extends React.Component {
               round
               lightTheme
               ref={search => (this.search = search)}
-              searchIcon={<CustomComponent />}
+              // searchIcon={<CustomComponent />}
               onChangeText={someMethod =>
                 this.setState({ todoText: someMethod })
               }
@@ -78,7 +79,7 @@ export default class HomeScreen extends React.Component {
           <View style={styles.sub2}>
             <Button
               onPress={() => {
-                this.props.navigation.navigate("App");
+                this.props.navigation.navigate("");
               }}
               title="ログイン"
             />

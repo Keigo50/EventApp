@@ -1,8 +1,8 @@
 import React from "react";
 import { createSwitchNavigator } from "react-navigation";
 
-import AccountNavigator from "./AccountNavigator";
 import MainNavigator from "./MainNavigator";
+import AccountNavigator from "./AccountNavigator";
 
 export default createSwitchNavigator({
   // You could add another route here for authentication.

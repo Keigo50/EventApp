@@ -98,10 +98,24 @@ export default class ProfileHomeScreen extends React.Component {
         // サインイン済み
         console.log("サインインしてます");
         firebase.auth().signOut();
-        return this.props.navigation.navigate("Main");
       }
     });
   };
+
+  componentWillMount() {
+    firebase.auth().onAuthStateChanged(user => {
+      if (!user) {
+        // サインインしていない状態
+        firebase.auth().signOut();
+        console.log("サインインしてません");
+        this.props.Param({ before: "Profile" });
+        this.props.navigation.navigate("App");
+      } else {
+        // サインイン済
+        console.log("サインインしてます");
+      }
+    });
+  }
 
   _onPressLogoutAlert = () => {
     return Alert.alert(
@@ -123,18 +137,6 @@ export default class ProfileHomeScreen extends React.Component {
   };
 
   render() {
-    firebase.auth().onAuthStateChanged(user => {
-      if (!user) {
-        // サインインしていない状態
-        console.log("サインインしてません");
-        this.props.navigation.setParams({ before: "Profile" });
-        this.props.navigation.replace("Details");
-      } else {
-        // サインイン済
-        console.log("サインインしてます");
-      }
-    });
-
     console.log(this.props);
     let { image } = this.state;
     return (
