@@ -47,7 +47,7 @@ export default class HomeScreen extends React.Component {
           <View style={styles.sub}>
             <TouchableOpacity
               onPress={() => {
-                this.props.navigation.navigate('Details');
+                this.props.navigation.navigate('Event');
               }}>
               <Icon
                 name="plus-circle"
