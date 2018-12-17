@@ -421,6 +421,14 @@ RkTheme.setType("RkTextInput", "details", {
   }
 });
 
+RkTheme.setType("RkButton", "btn", {
+  width: "100%",
+  fontSize: 25,
+  height: 60,
+  color: "#fff",
+  marginBottom: 10
+});
+
 RkTheme.setType("RkTextInput", "textInput", {
   marginBottom: 30,
   underlineWidth: 0,

@@ -14,21 +14,19 @@ export const changePassword = text => {
   };
 };
 
-export const submitLogin = ({ email, password }) => {
+export const checkLogin = () => {
   return dispatch => {
     dispatch({ type: "login_start" });
 
-    firebase
-      .auth()
-      .signInWithEmailAndPassword(email, password)
-      .then(user => {
+    firebase.auth().onAuthStateChanged(user => {
+      if (user) {
         dispatch({ type: "login_success" });
         dispatch({ type: "login_end" });
-      })
-      .catch(() => {
+      } else {
         dispatch({ type: "login_fail" });
         dispatch({ type: "login_end" });
-      });
+      }
+    });
   };
 };
 

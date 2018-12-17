@@ -18,7 +18,7 @@ const AUTH_INITIAL_STATE = {
   email: "",
   password: "",
   loading: false,
-  loggedIn: ""
+  loggedIn: false
 };
 
 const AuthReducer = (state = AUTH_INITIAL_STATE, action) => {
@@ -32,9 +32,9 @@ const AuthReducer = (state = AUTH_INITIAL_STATE, action) => {
     case "login_end":
       return { ...state, loading: false };
     case "login_success":
-      return { ...state, loggedIn: "ログイン中" };
+      return { ...state, loggedIn: true };
     case "login_fail":
-      return { ...state, loggedIn: "" };
+      return { ...state, loggedIn: false };
     default:
       return state;
   }
