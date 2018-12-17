@@ -69,10 +69,10 @@ class EventCreateScreen extends Component {
         rnumbers: this.props.rnumbers
       })
 
-      .then(function () {
+      .then(function() {
         console.log("firebaseにデータ到着！");
       })
-      .catch(function (error) {
+      .catch(function(error) {
         // The document probably doesn't exist.
         console.error("firebaseにデータ来てないぞ！！ ", error);
       });
@@ -326,6 +326,14 @@ RkTheme.setType("RkTextInput", "details", {
     fontSize: 20,
     height: 100
   }
+});
+
+RkTheme.setType("RkButton", "btn", {
+  width: "100%",
+  fontSize: 25,
+  height: 60,
+  color: "#fff",
+  marginBottom: 10
 });
 
 RkTheme.setType("RkTextInput", "textInput", {

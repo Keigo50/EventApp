@@ -6,21 +6,21 @@ import {
 } from "react-navigation";
 
 import TabBarIcon from "../components/TabBarIcon";
-import GoogleLoginScreen from "../screens/Keigo/GoogleLoginScreen";
 import HomeScreen from "../screens/Keigo/HomeScreen";
-import FavoriteHomeScreen from "../screens/Taiki/FavoriteHomeScreen";
 import ProfileHomeScreen from "../screens/Keigo/ProfileHomeScreen";
 import EventCreateScreen from "../screens/Keigo/EventCreateScreen";
-import MyEventHomeScreen from "../screens/Seiya/MyEventHomeScreen";
 import EventMoreDetailScreen from "../screens/Taiki/EventMoreDetailScreen";
-import SearchHomeScreen from "../screens/Seiya/SearchHomeScreen";
 import MyEventEditingScreen from "../screens/Seiya/MyEventEditingScreen";
 import NotificationHomeScreen from "../screens/Keigo/NotificationHomeScreen";
+
+import Colors from "../constants/Colors";
 
 /*ホーム画面*/
 const HomeStack = createStackNavigator({
   Home: HomeScreen,
-  Details: EventMoreDetailScreen
+  Details: EventMoreDetailScreen,
+  Create: EventCreateScreen,
+  Editing: MyEventEditingScreen
 });
 
 HomeStack.navigationOptions = {
@@ -29,6 +29,8 @@ HomeStack.navigationOptions = {
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
+      color={focused ? Colors.tabIconSelected : Colors.tabIconDefault}
+      size={26}
       name={
         Platform.OS === "ios"
           ? `ios-home${focused ? "" : "-outline"}`
@@ -50,6 +52,8 @@ ProfileHomeStack.navigationOptions = {
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
+      color={focused ? Colors.tabIconSelected : Colors.tabIconDefault}
+      size={26}
       name={
         Platform.OS === "ios"
           ? `ios-contact${focused ? "" : "-outline"}`
@@ -75,6 +79,8 @@ NotificationHomeStack.navigationOptions = {
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
+      color={focused ? Colors.tabIconSelected : Colors.tabIconDefault}
+      size={26}
       name={
         Platform.OS === "ios"
           ? `ios-notifications${focused ? "" : "-outline"}`

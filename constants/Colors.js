@@ -1,14 +1,19 @@
-const tintColor = '#2f95dc';
+const tintColor = "#2f95dc";
+const orangeColor = "#F5A21B";
 
 export default {
   tintColor,
-  tabIconDefault: '#ccc',
+  orangeColor,
+  tabIconDefault: "#ccc",
+
   tabIconSelected: tintColor,
-  tabBar: '#fefefe',
-  errorBackground: 'red',
-  errorText: '#fff',
-  warningBackground: '#EAEB5E',
-  warningText: '#666804',
+  tabIconSelected2: orangeColor,
+
+  tabBar: "#fefefe",
+  errorBackground: "red",
+  errorText: "#fff",
+  warningBackground: "#EAEB5E",
+  warningText: "#666804",
   noticeBackground: tintColor,
-  noticeText: '#fff',
+  noticeText: "#fff"
 };

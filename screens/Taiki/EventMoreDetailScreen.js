@@ -1,18 +1,31 @@
 import React from "react";
-import { StyleSheet, Text, View, Image, FlatList, TouchableOpacity, Platform } from "react-native";
-import { RkButton, RkGalleryImage, RkText, RkTheme } from "react-native-ui-kitten";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  FlatList,
+  TouchableOpacity,
+  Platform
+} from "react-native";
+import {
+  RkButton,
+  RkGalleryImage,
+  RkText,
+  RkTheme
+} from "react-native-ui-kitten";
 import { ScrollView } from "react-native";
 import { Avatar } from "react-native-elements";
 import Entypo from "react-native-vector-icons/Entypo";
 import TabBarIcon from "../../components/TabBarIcon";
+import Colors from "../../constants/Colors";
 import Icon from "react-native-vector-icons/FontAwesome";
+import firebase from "firebase";
 
 export default class EventMoreDetailScreen extends React.Component {
-  static navigationOptions = ({
-    navigation
-  }) => ({
-    title: "イベント詳細"
-  });
+  static navigationOptions = {
+    header: null
+  };
 
   constructor(props) {
     super(props);
@@ -25,9 +38,7 @@ export default class EventMoreDetailScreen extends React.Component {
     this.onPressIcon = this.onPressIcon.bind(this);
   }
 
-
   onPressIcon = () => {
-    console.log(this.state.focused);
     if (!this.state.focused) {
       this.setState({
         focused: true
@@ -37,14 +48,39 @@ export default class EventMoreDetailScreen extends React.Component {
         focused: false
       });
     }
-  }
+    firebase.auth().onAuthStateChanged(user => {
+      if (!user) {
+        // サインインしていない状態
+        console.log("サインインしてません");
+        this.props.navigation.navigate("App");
+      } else {
+        // サインイン済
+        console.log("サインインしてます");
+      }
+    });
+    console.log(this.state.focused);
+  };
 
-
-
-  _changeButton = () => {
+  _changeButton = async () => {
     console.log(`参加するを押したとき${this.state.changeButton}`);
-    this.setState({
-      changeButton: true
+
+    this.state.changeButton
+      ? this.setState({
+          changeButton: false
+        })
+      : this.setState({
+          changeButton: true
+        });
+
+    firebase.auth().onAuthStateChanged(user => {
+      if (!user) {
+        // サインインしていない状態
+        console.log("サインインしてません");
+        this.props.navigation.navigate("App");
+      } else {
+        // サインイン済
+        console.log("サインインしてます");
+      }
     });
   };
   _changeBtn = () => {
@@ -55,36 +91,25 @@ export default class EventMoreDetailScreen extends React.Component {
   };
 
   render() {
-    console.log('最強');
+    console.log("最強");
     const changeDecision = this.state.changeButton;
     let changeBtn;
 
-    if (!changeDecision) {
-      changeBtn = (<RkButton onPress={
-        this._changeButton
-      }
-        rkType="rounded"
-        style={{
-          width: "100%",
-          marginTop: 10,
-          alignItems: "center",
-          justifyContent: "center",
-          fontSize: 20
-        }}>取り消す </RkButton>
+    if (changeDecision) {
+      changeBtn = (
+        <RkButton onPress={this._changeButton} rkType="rounded">
+          取り消す
+        </RkButton>
       );
     } else {
-      changeBtn = (<RkButton onPress={
-        this._changeBtn
-      }
-        rkType="rounded"
-        style={{
-          backgroundColor: "red",
-          width: "100%",
-          marginTop: 10,
-          alignItems: "center",
-          justifyContent: "center",
-          fontSize: 20
-        }}>参加する </RkButton>
+      changeBtn = (
+        <RkButton
+          onPress={this._changeButton}
+          rkType="rounded"
+          style={{ backgroundColor: "red" }}
+        >
+          参加する
+        </RkButton>
       );
     }
     let data = [];
@@ -93,102 +118,107 @@ export default class EventMoreDetailScreen extends React.Component {
     }
 
     return (
-      <ScrollView >
+      <ScrollView>
         <View style={styles.container}>
           <View style={styles.sub5}>
-            <Image style={{
-              width: "100%",
-              height: 180
-            }} source={require("../../assets/images/MSfes.png")} />
+            <View style={styles.back}>
+              <TouchableOpacity
+                onPress={() => this.props.navigation.navigate("Home")}
+              >
+                <Icon name="angle-left" size={40} />
+              </TouchableOpacity>
+            </View>
+            <Image
+              style={{
+                width: "100%",
+                height: 180
+              }}
+              source={require("../../assets/images/MSfes.png")}
+            />
           </View>
           <View style={styles.sub3}>
             <View style={styles.sub}>
-              <Text style={{ fontSize: 25 }}>
-                いしがきMS </Text>
-              <Text style={{ fontSize: 25 }}>
-                日時： 9 / 24(月) 9: 00 </Text>
-              <Text style={{ fontSize: 25 }}>
-                場所： 盛岡城跡公園 </Text>
-            </View>
-            <View style={styles.sub2}>
-              <TouchableOpacity onPress={this._onCalendarPress}>
-                <Icon name="star" size={30} />
-              </TouchableOpacity>
+              <Text style={{ fontSize: 25 }}>いしがきMS </Text>
+              <Text style={{ fontSize: 25 }}>日時： 9 / 24(月) 9: 00 </Text>
+              <Text style={{ fontSize: 25 }}>場所： 盛岡城跡公園 </Text>
             </View>
             <View style={styles.sub4}>
               <TouchableOpacity onPress={this.onPressIcon}>
                 <TabBarIcon
-                  size={30}
+                  size={35}
                   name={
                     Platform.OS === "ios"
                       ? `ios-star${this.state.focused ? "" : "-outline"}`
-                      : "ios-star"} />
+                      : "ios-star"
+                  }
+                  color={
+                    this.state.focused
+                      ? Colors.tabIconSelected2
+                      : Colors.tabIconDefault
+                  }
+                />
               </TouchableOpacity>
             </View>
           </View>
           <View style={styles.detail}>
-            <RkText rkType="common"
-              style={
-                {
-                  fontSize: 40,
-                  justifyContent: "center"
-                }
-              }>詳細 </RkText> </View>
+            <RkText rkType="common">詳細</RkText>
+          </View>
           <Text style={{ fontSize: 25 }}>
-            いしがきミュージックフェスティバルの設営・ 撤去 </Text>
+            いしがきミュージックフェスティバルの設営・ 撤去
+          </Text>
           <View style={styles.space} />
           <View style={styles.test}>
-            <RkText rkType="common"
-              style={{
-                fontSize: 40
-              }}>参加者 </RkText>
+            <RkText rkType="common">参加者</RkText>
           </View>
-          <View style={
-            styles.main
-          }>
-            <FlatList style={{
-              width: "100%"
-            }}
-              data={
-                data
-              }
-              renderItem={
-                ({
-                  item
-                }) => (<View style={
-                  {
+          <View style={styles.main}>
+            <FlatList
+              style={{
+                width: "100%"
+              }}
+              data={data}
+              renderItem={({ item }) => (
+                <View
+                  style={{
                     marginBottom: 5,
                     flex: 2,
                     flexDirection: "row",
                     borderWidth: 1,
                     height: 90,
                     borderColor: "gray"
-                  }
-                } >
-                  { /* アイコンを以下に配置*/} <
-                    Avatar large rounded source={
-                      {
-                        uri: "https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg"
-                      }
-                    }
-                    onPress={
-                      () => console.log("Works!")
-                    }
-                    activeOpacity={
-                      0.7
-                    }
-                  /> <View style={{
-                    flex: 2,
-                    padding: 3,
-                    alignItems: "flex-start"
-                  }} >
-                    <Text style={{
-                      fontSize: 50
-                    }}>
-                      佐藤慶吾 </Text> </View> </View>
-                  )
-              }
-              keyExtractor={(item, index) => `list-${index}`} /> {changeBtn}
+                  }}
+                >
+                  {/* アイコンを以下に配置*/}
+                  <Avatar
+                    large
+                    rounded
+                    source={{
+                      uri:
+                        "https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg"
+                    }}
+                    onPress={() => console.log("Works!")}
+                    activeOpacity={0.7}
+                  />
+                  <View
+                    style={{
+                      flex: 2,
+                      padding: 3,
+                      alignItems: "center",
+                      justifyContent: "center"
+                    }}
+                  >
+                    <Text
+                      style={{
+                        fontSize: 30
+                      }}
+                    >
+                      佐藤慶吾
+                    </Text>
+                  </View>
+                </View>
+              )}
+              keyExtractor={(item, index) => `list-${index}`}
+            />
+            {changeBtn}
           </View>
         </View>
       </ScrollView>
@@ -204,6 +234,7 @@ const styles = StyleSheet.create({
     justifyContent: "center"
   },
   sub5: {
+    position: "relative",
     width: "100%",
     height: 200,
     borderWidth: 1
@@ -229,6 +260,7 @@ const styles = StyleSheet.create({
     alignItems: "stretch"
   },
   detail: {
+    justifyContent: "center",
     width: "100%",
     height: 50,
     borderWidth: 1
@@ -238,6 +270,7 @@ const styles = StyleSheet.create({
     height: 250
   },
   test: {
+    justifyContent: "center",
     width: "100%",
     height: 50,
     borderWidth: 1
@@ -245,9 +278,25 @@ const styles = StyleSheet.create({
   main: {
     width: "100%",
     height: 350
+  },
+  back: {
+    position: "absolute",
+    top: 20,
+    left: 10,
+    zIndex: 9999
   }
 });
 
 RkTheme.setType("RkText", "common", {
-  alignItems: "center"
+  alignItems: "center",
+  justifyContent: "flex-start",
+  fontSize: 25
+});
+
+RkTheme.setType("RkButton", "rounded", {
+  width: "100%",
+  marginTop: 10,
+  alignItems: "center",
+  justifyContent: "center",
+  fontSize: 20
 });

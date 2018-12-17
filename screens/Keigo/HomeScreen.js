@@ -49,10 +49,12 @@ class HomeScreen extends React.Component {
   componentWillMount() {
     this.props.checkLogin();
   }
+
   render() {
     //TODO ログイン状態を確認し作成ボタンを表示・非表示する処理
     console.log(this.props.loggedIn);
     let createbutton = this.props.loggedIn;
+    let tabdisplay = this.props.loggedIn;
     console.log(this.props.navigation.state.params);
     return (
       <View style={styles.container}>
@@ -61,7 +63,7 @@ class HomeScreen extends React.Component {
             {createbutton && (
               <TouchableOpacity
                 onPress={() => {
-                  this.props.navigation.navigate("Details");
+                  this.props.navigation.navigate("Create");
                 }}
               >
                 <Icon name="plus-circle" size={30} />
@@ -101,18 +103,24 @@ class HomeScreen extends React.Component {
             )}
           </View>
         </View>
-        <ScrollableTabView style={styles.main}>
-          <Tab1 tabLabel="すべて" />
-          <Tab2 tabLabel="参加中" />
-          <Tab3 tabLabel="Myイベント" />
-          <Tab4 tabLabel="お気に入り" />
-        </ScrollableTabView>
+        {tabdisplay ? (
+          <ScrollableTabView style={styles.main}>
+            <Tab1 tabLabel="すべて" {...this.props} />
+            <Tab2 tabLabel="参加中" {...this.props} />
+            <Tab3 tabLabel="お気に入り" {...this.props} />
+            <Tab4 tabLabel="作成済み" {...this.props} />
+          </ScrollableTabView>
+        ) : (
+          <ScrollableTabView style={styles.main}>
+            <Tab1 tabLabel="すべて" {...this.props} />
+          </ScrollableTabView>
+        )}
       </View>
     );
   }
 }
 
-export class Tab1 extends React.Component {
+class Tab1 extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -139,10 +147,10 @@ export class Tab1 extends React.Component {
     for (let i = 0; i < 4; i++) {
       let events;
       events = (
-        <RkCard rkType="shadowed  events">
-          <TouchableOpacity
-            onPress={() => this.props.navigation.navigate("Details")}
-          >
+        <TouchableOpacity
+          onPress={() => this.props.navigation.navigate("Details")}
+        >
+          <RkCard rkType="shadowed  events">
             <View rkCardHeader>
               <Text style={{ fontSize: 20 }}>{this.state.title[i]}</Text>
             </View>
@@ -160,8 +168,8 @@ export class Tab1 extends React.Component {
             <View rkCardFooter>
               <Text>{this.state.date[i]}</Text>
             </View>
-          </TouchableOpacity>
-        </RkCard>
+          </RkCard>
+        </TouchableOpacity>
       );
       data.push(events);
     }
@@ -199,25 +207,29 @@ class Tab2 extends React.Component {
     for (let i = 0; i < 1; i++) {
       let events;
       events = (
-        <RkCard rkType="shadowed  events">
-          <View rkCardHeader>
-            <Text>{this.state.title[i]}</Text>
-          </View>
-          <View
-            style={{
-              width: "100%",
-              height: 180
-            }}
-          >
-            <Image rkCardImg source={this.state.img[i]} />
-          </View>
-          <View rkCardContent>
-            <Text>石垣マラソンのボランティアメンバー募集しています。</Text>
-          </View>
-          <View rkCardFooter>
-            <Text>{this.state.date}</Text>
-          </View>
-        </RkCard>
+        <TouchableOpacity
+          onPress={() => this.props.navigation.navigate("Details")}
+        >
+          <RkCard rkType="shadowed  events">
+            <View rkCardHeader>
+              <Text>{this.state.title[i]}</Text>
+            </View>
+            <View
+              style={{
+                width: "100%",
+                height: 180
+              }}
+            >
+              <Image rkCardImg source={this.state.img[i]} />
+            </View>
+            <View rkCardContent>
+              <Text>石垣マラソンのボランティアメンバー募集しています。</Text>
+            </View>
+            <View rkCardFooter>
+              <Text>{this.state.date}</Text>
+            </View>
+          </RkCard>
+        </TouchableOpacity>
       );
       data.push(events);
     }
@@ -255,27 +267,31 @@ class Tab3 extends React.Component {
     for (let i = 0; i < 1; i++) {
       let events;
       events = (
-        <RkCard rkType="shadowed  events">
-          <View rkCardHeader>
-            <Text>{this.state.title[i]}</Text>
-          </View>
-          <View
-            style={{
-              width: "100%",
-              height: 180,
-              borderColor: "red",
-              borderWidth: 1
-            }}
-          >
-            <Image rkCardImg source={this.state.img[i]} />
-          </View>
-          <View rkCardContent>
-            <Text>ゲームサークル部員募集中！！</Text>
-          </View>
-          <View rkCardFooter>
-            <Text>{this.state.date}</Text>
-          </View>
-        </RkCard>
+        <TouchableOpacity
+          onPress={() => this.props.navigation.navigate("Details")}
+        >
+          <RkCard rkType="shadowed  events">
+            <View rkCardHeader>
+              <Text>{this.state.title[i]}</Text>
+            </View>
+            <View
+              style={{
+                width: "100%",
+                height: 180,
+                borderColor: "red",
+                borderWidth: 1
+              }}
+            >
+              <Image rkCardImg source={this.state.img[i]} />
+            </View>
+            <View rkCardContent>
+              <Text>ゲームサークル部員募集中！！</Text>
+            </View>
+            <View rkCardFooter>
+              <Text>{this.state.date}</Text>
+            </View>
+          </RkCard>
+        </TouchableOpacity>
       );
       data.push(events);
     }
@@ -312,28 +328,33 @@ class Tab4 extends React.Component {
     for (let i = 0; i < 3; i++) {
       let events;
       events = (
-        <RkCard rkType="shadowed  events">
-          <View rkCardHeader>
-            <Text>{this.state.title[i]}</Text>
-          </View>
-          <View
-            style={{
-              width: "100%",
-              height: 180,
-              borderColor: "red",
-              borderWidth: 1
-            }}
-          />
-          <View rkCardContent>
-            <Text> quick brown fox jumps over the lazy dog</Text>
-          </View>
-          <View rkCardFooter>
-            <Text>Footer</Text>
-          </View>
-        </RkCard>
+        <TouchableOpacity
+          onPress={() => this.props.navigation.navigate("Details")}
+        >
+          <RkCard rkType="shadowed  events">
+            <View rkCardHeader>
+              <Text>{this.state.title[i]}</Text>
+            </View>
+            <View
+              style={{
+                width: "100%",
+                height: 180,
+                borderColor: "red",
+                borderWidth: 1
+              }}
+            />
+            <View rkCardContent>
+              <Text> quick brown fox jumps over the lazy dog</Text>
+            </View>
+            <View rkCardFooter>
+              <Text>Footer</Text>
+            </View>
+          </RkCard>
+        </TouchableOpacity>
       );
       data.push(events);
     }
+
     return (
       <FlatList
         style={{ backgroundColor: "#ccc", paddingTop: 10 }}

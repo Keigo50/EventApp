@@ -1,15 +1,31 @@
 import React from "react";
 import firebase from "firebase";
-import { Text, View, StyleSheet, TouchableOpacity, Button } from "react-native";
+import {
+  Text,
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  Button,
+  Alert,
+  ActivityIndicator
+} from "react-native";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
 import * as Expo from "expo";
 import { Icon } from "expo";
+import * as Actions from "../../app/actions";
 import { SocialIcon } from "react-native-elements";
-export default class GoogleLoginScreen extends React.Component {
+class GoogleLoginScreen extends React.Component {
   constructor(props) {
     super(props);
 
     firebase.auth().signOut();
-    this.state = { email: "", password: "", loggedIn: null };
+    this.state = {
+      email: "",
+      password: "",
+      loggedIn: null
+    };
+    this._onPressLogInAlert = this._onPressLogInAlert.bind(this);
   }
   static navigationOptions = {
     header: null
@@ -34,6 +50,7 @@ export default class GoogleLoginScreen extends React.Component {
           .auth()
           .signInAndRetrieveDataWithCredential(credential);
         // ログイン後の処理
+        this.props.checkLogin();
         console.log(result.user.email);
       }
     } catch (err) {
@@ -42,22 +59,30 @@ export default class GoogleLoginScreen extends React.Component {
     }
   }
 
-  componentWillMount() {
-    firebase.auth().onAuthStateChanged(user => {
-      if (user) {
-        console.log(user);
-        const a = firebase.auth().currentUser;
-        console.log(a);
-        this.setState({ loggedIn: true });
-        console.log(this.state.loggedIn);
-        this.props.navigation.navigate("Main");
-      } else {
-        this.setState({ loggedIn: false });
-      }
-    });
-  }
+  _onPressOk = () => {
+    this.props.navigation.navigate("Main");
+  };
+
+  _onPressLogInAlert = () => {
+    return Alert.alert(
+      "ログインしました",
+      "",
+      [
+        {
+          text: "はい",
+          onPress: () => this._onPressOk()
+        }
+      ],
+      { cancelable: false }
+    );
+  };
 
   render() {
+    if (this.props.loggedIn) {
+      console.log(this.props.loggedIn);
+      this._onPressLogInAlert();
+    }
+    console.log(`loading${this.props.loading}`);
     return (
       <View style={styles.container}>
         <View
@@ -74,12 +99,12 @@ export default class GoogleLoginScreen extends React.Component {
             <Icon.Ionicons name="ios-close" size={50} />
           </TouchableOpacity>
         </View>
-
         <SocialIcon
           type="google-plus-official"
-          title="Google+でログイン"
+          title="Googleでログイン"
           button
           onPress={this.onLoginButtonPress.bind(this)}
+          loading={this.props.loading}
         />
       </View>
     );
@@ -88,6 +113,7 @@ export default class GoogleLoginScreen extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
+    position: "relative",
     flex: 1,
     backgroundColor: "#fff",
     alignItems: "stretch",
@@ -95,3 +121,21 @@ const styles = StyleSheet.create({
     paddingHorizontal: 25
   }
 });
+
+const mapStateToProps = state => {
+  return {
+    loading: state.auth.loading,
+    loggedIn: state.auth.loggedIn
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    ...bindActionCreators(Actions, dispatch)
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(GoogleLoginScreen);
