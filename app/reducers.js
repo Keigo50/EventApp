@@ -2,16 +2,14 @@ import { combineReducers } from "redux";
 const CREATE_INITIAL_STATE = {
   /*イベント*/
   arriving: "" /*参加者データ*/,
-  date: "" /*日付*/,
+  date: "" /*開催日時*/,
+  deadlineDate: "" /* 締切日*/,
   details: "" /*詳細*/,
   eimage: null /*イベント画像*/,
   ename: "" /*イベントタイトル*/,
   place: "" /*開催場所*/,
   rnumbers: "" /**/,
   smethod: ""
-  /*生徒*/
-
-  /*教師*/
 };
 
 const AUTH_INITIAL_STATE = {
@@ -44,20 +42,17 @@ const AuthReducer = (state = AUTH_INITIAL_STATE, action) => {
 const EventCreateReducer = (state = CREATE_INITIAL_STATE, action) => {
   switch (action.type) {
     case "return_submit":
-      return {
-        ...state,
-        date,
-        details,
-        eimage,
-        ename,
-        place,
-        rnumbers
-      };
-
+      return state
     case "return_date":
       return {
         ...state,
         date: action.payload
+      };
+
+    case "return_deadlineDate":
+      return {
+        ...state,
+        deadlineDate: action.payload
       };
 
     case "return_rnumbers":

@@ -22,6 +22,7 @@ import { Calendar } from "react-native-calendars";
 import { ImagePicker, Permissions } from "expo";
 import * as Actions from "../../app/actions";
 import PropTypes from "prop-types";
+import moment from "moment";
 import ActionSheet from "react-native-zhb-actionsheet";
 class EventCreateScreen extends Component {
   constructor(props) {
@@ -80,13 +81,28 @@ class EventCreateScreen extends Component {
     const settings = { timestampsInSnapshots: true };
     firestore.settings(settings);
 
-    const { date, details, eimage, ename, place, rnumbers } = this.props;
-    this.props.returnSubmit({ date, details, eimage, ename, place, rnumbers });
-
+    console.log(this.props);
+    const {
+      ename,
+      details,
+      eimage,
+      place,
+      rnumbers,
+      deadlineDate
+    } = this.props;
+    this.props.returnSubmit({
+      ename,
+      details,
+      eimage,
+      place,
+      rnumbers,
+      deadlineDate
+    });
     let docRef = firestore.collection("events");
     return docRef
       .add({
         date: this.props.date,
+        deadlineDate: this.props.deadlineDate,
         ename: this.props.ename,
         eimage: this.props.eimage,
         place: this.props.place,
@@ -154,6 +170,66 @@ class EventCreateScreen extends Component {
 
     console.log(result);
 
+    // /*firebase画像関連*/
+
+    // const strage = firebase.storage().ref();
+    // const ref = strage.child(`${result.uri}`);
+
+    // const metadate = { contentType: result.type };
+
+    // Create a root reference
+    const ref = firebase.storage().ref();
+
+    // const metadata = {
+    //   contentType: "image/jpeg"
+    // };
+
+    var file = result;
+    ref.put(file).then(function(snapshot) {
+      console.log("Uploaded a blob or file!");
+    });
+
+    // Upload the file and metadata
+    // const uploadTask = storageRef
+    //   .child("images/mountains.jpg")
+    //   .put(file, metadata);
+
+    // Create a reference to 'mountains.jpg'
+    // var ref = storageRef.child("images/a.jpg");
+
+    // While the file names are the same, the references point to different files
+    // mountainsRef.name === mountainImagesRef.name; // true
+    // mountainsRef.fullPath === mountainImagesRef.fullPath; // false
+
+    // Base64 formatted string
+    // var message = "5b6p5Y+344GX44G+44GX44Gf77yB44GK44KB44Gn44Go44GG77yB";
+    // ref.putString(message, "base64").then(function(snapshot) {
+    //   console.log("Uploaded a base64 string!");
+    // // });
+
+    // console.log(`result.base64の値${result.base64}`);
+    // ref.putString(result.base64, "base-64", metadate).then(snapshot => {
+    //   done();
+    //   console.log(`snapshotの値${snapshot}`);
+    // });
+
+    // const atob = require("base-64").decode;
+    // window.atob = atob;
+    // console.log(`atobの値${atob}`);
+    // // Create a reference to 'images/mountains.jpg'
+    // const mountainImagesRef = storageRef.child("images/mountains.jpg");
+
+    // // While the file names are the same, the references point to different files
+    // mountainsRef.name === mountainImagesRef.name; // true
+    // mountainsRef.fullPath === mountainImagesRef.fullPath; // false
+
+    // /*ここまで*/
+
+    // var file = result.uri;
+    // ref.put(file).then(function(snapshot) {
+    //   console.log("Uploaded a blob or file!");
+    // });
+
     if (!result.cancelled) {
       this.setState({ image: result.uri });
     }
@@ -161,12 +237,9 @@ class EventCreateScreen extends Component {
 
   render() {
     let { image } = this.state;
-    console.log(this.props);
-    const today = new Date();
-    let year = today.getFullYear();
-    let month = today.getMonth() + 1;
-    let dates = today.getDate() + 2;
-    const now = `${year}/${month}/${dates}`;
+    const now = moment()
+      .add({ days: 1 })
+      .format("YYYY/MM/DD");
 
     let calendar = this.state.calendarDecision;
     if (this.state.calendarDecision) {
@@ -174,18 +247,26 @@ class EventCreateScreen extends Component {
         <Calendar
           hideExtraDays={true}
           minDate={now}
-          onDayPress={day => this.props.returnDate(day.dateString)}
+          onDayPress={date => this.props.returnDate(date.dateString)}
         />
       );
     }
 
     let deadline = this.state.deadlineDecision;
     if (this.state.deadlineDecision) {
+      //締切日は現在日時から開催日時より一日前までの期間が選択可能
+      let period = moment(`${this.props.date}`)
+        .subtract({ days: 1 })
+        .format("YYYY/MM/DD");
+
       deadline = (
         <Calendar
           hideExtraDays={true}
           minDate={now}
-          onDayPress={day => this.props.returnDate(day.dateString)}
+          maxDate={period}
+          onDayPress={deadlineDate =>
+            this.props.returnDeadlineDate(deadlineDate.dateString)
+          }
         />
       );
     }
@@ -322,7 +403,9 @@ class EventCreateScreen extends Component {
                 }}
               >
                 <View>
-                  <RkText style={{ fontSize: 20 }}>{this.props.date}</RkText>
+                  <RkText style={{ fontSize: 20 }}>
+                    {this.props.deadlineDate}
+                  </RkText>
                 </View>
               </View>
               <View
@@ -372,15 +455,15 @@ class EventCreateScreen extends Component {
   }
 }
 
-EventCreateScreen.propTypes = {
-  member: PropTypes.string.isRequired,
-  date: PropTypes.string.isRequired,
-  ename: PropTypes.string.isRequired,
-  eimage: PropTypes.string.isRequired,
-  rnumbers: PropTypes.string.isRequired,
-  place: PropTypes.string.isRequired,
-  details: PropTypes.string.isRequired
-};
+// EventCreateScreen.propTypes = {
+//   member: PropTypes.string.isRequired,
+//   date: PropTypes.string.isRequired,
+//   ename: PropTypes.string.isRequired,
+//   eimage: PropTypes.string.isRequired,
+//   rnumbers: PropTypes.string.isRequired,
+//   place: PropTypes.string.isRequired,
+//   details: PropTypes.string.isRequired
+// };
 
 const styles = StyleSheet.create({
   container: {
@@ -398,6 +481,7 @@ const styles = StyleSheet.create({
   main: {
     flex: 1,
     backgroundColor: "#fff",
+    paddingTop: 20,
     paddingLeft: 25,
     paddingRight: 25
   }
@@ -471,6 +555,7 @@ RkTheme.setType("RkText", "text", {
 const mapStateToProps = state => {
   return {
     date: state.create.date,
+    deadlineDate: state.create.deadlineDate,
     details: state.create.details,
     eimage: state.create.eimage,
     ename: state.create.ename,

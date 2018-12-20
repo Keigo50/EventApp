@@ -45,12 +45,21 @@ export const returnEimage = eimage => {
   };
 };
 
-export const returnDate = day => {
+export const returnDate = date => {
   return {
     type: "return_date",
-    payload: day
+    payload: date
   };
 };
+
+
+export const returnDeadlineDate = deadlineDate => {
+  return {
+    type: "return_deadlineDate",
+    payload: deadlineDate
+  };
+};
+
 
 export const returnEname = ename => {
   return {
@@ -73,10 +82,11 @@ export const returnDetails = details => {
   };
 };
 
-export const returnSubmit = (date, details, eimage, ename, place, rnumbers) => {
+export const returnSubmit = (date, deadlineDate,details, eimage, ename, place, rnumbers) => {
   return {
     type: "return_submit",
     payload: date,
+    deadlineDate,
     details,
     eimage,
     ename,
@@ -84,3 +94,4 @@ export const returnSubmit = (date, details, eimage, ename, place, rnumbers) => {
     rnumbers
   };
 };
+
