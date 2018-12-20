@@ -55,7 +55,6 @@ class HomeScreen extends React.Component {
     console.log(this.props.loggedIn);
     let createbutton = this.props.loggedIn;
     let tabdisplay = this.props.loggedIn;
-    console.log(this.props.navigation.state.params);
     return (
       <View style={styles.container}>
         <View style={styles.sub3}>
@@ -79,7 +78,10 @@ class HomeScreen extends React.Component {
                 borderTopColor: "#fff",
                 backgroundColor: "#fff"
               }}
+              keyboardType="default"
               round
+              inputStyle={{ color: "black" }}
+              returnKeyType="search"
               lightTheme
               ref={search => (this.search = search)}
               // searchIcon={<CustomComponent />}
