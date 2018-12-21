@@ -36,6 +36,7 @@ class EventCreateScreen extends Component {
         title: "ライブラリー",
         action: this._pickImage
       },
+      //テスト
 
       {
         title: "キャンセル",
