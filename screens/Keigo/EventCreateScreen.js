@@ -10,7 +10,8 @@ import {
   Text,
   Image,
   CameraRoll,
-  KeyboardAvoidingView
+  KeyboardAvoidingView,
+  Alert
 } from "react-native";
 import firebase from "firebase";
 import "firebase/firestore";
@@ -27,6 +28,10 @@ import ActionSheet from "react-native-zhb-actionsheet";
 class EventCreateScreen extends Component {
   constructor(props) {
     super(props);
+
+    const atob = require("base-64").decode;
+    window.atob = atob;
+
     this.defaultTitles = [
       {
         title: "カメラ",
@@ -52,7 +57,8 @@ class EventCreateScreen extends Component {
       image: null,
       hasCameraRollPermission: null,
       hasCameraPermission: null,
-      titles: this.defaultTitles
+      titles: this.defaultTitles,
+      name: ""
     };
 
     this._onEditingImage = this._onEditingImage.bind(this);
@@ -60,10 +66,16 @@ class EventCreateScreen extends Component {
     this._onPressSubmit = this._onPressSubmit.bind(this);
     this._onDeadlinePress = this._onDeadlinePress.bind(this);
     this._takePhoto = this._takePhoto.bind(this);
+    this.uploadImage = this.uploadImage.bind(this);
   }
 
   static navigationOptions = ({ navigation }) => ({
-    title: "イベント作成"
+    title: "イベント作成",
+    headerLeft: (
+      <TouchableOpacity onPress={() => navigation.navigate("Home")}>
+        <Icon name="angle-left" size={40} style={{ paddingLeft: 20 }} />
+      </TouchableOpacity>
+    )
   });
 
   async componentWillMount() {
@@ -77,46 +89,85 @@ class EventCreateScreen extends Component {
     console.log("Pushされました。");
   };
 
-  _onPressSubmit = () => {
+  //firebaseに画像をアップロードする
+  uploadImage = async uri => {
+    const response = await fetch(uri);
+    const blob = await response.blob();
+
+    let time = String(new Date().getTime());
+    const name1 = `event_img${time}.jpg`;
+    console.log(this.state.name1);
+    this.setState({ name: name1 });
+    const ref = firebase
+      .storage()
+      .ref()
+      .child(`images/${name1}`);
+    return ref.put(blob);
+  };
+
+  //アップロードが完了した後にurlを取得する
+  uploadEnd = async () => {
+    const firestore = firebase.firestore();
+    const settings = { timestampsInSnapshots: true };
+    firestore.settings(settings);
+    const ref = firebase
+      .storage()
+      .ref()
+      .child(`images/${this.state.name}`);
+    ref.getDownloadURL().then(eimg => {
+      this.props.returnEimage(eimg);
+      const {
+        ename,
+        details,
+        eimage,
+        place,
+        rnumbers,
+        deadlineDate
+      } = this.props;
+      console.log(this.props);
+      this.props.returnSubmit({
+        ename,
+        details,
+        eimage,
+        place,
+        rnumbers,
+        deadlineDate
+      });
+      let docRef = firestore.collection("events");
+      return docRef
+        .add({
+          date: this.props.date,
+          deadlineDate: this.props.deadlineDate,
+          ename: this.props.ename,
+          eimage: this.props.eimage,
+          place: this.props.place,
+          details: this.props.details,
+          rnumbers: this.props.rnumbers
+        })
+
+        .then(() => {
+          console.log("firebaseにデータ到着！");
+          Alert.alert("作成しました！");
+        })
+        .catch(error => {
+          console.error("firebaseにデータ来てないぞ！！ ", error);
+          Alert.alert("作成に失敗しました。");
+        });
+    });
+  };
+
+  _onPressSubmit = async () => {
     const firestore = firebase.firestore();
     const settings = { timestampsInSnapshots: true };
     firestore.settings(settings);
 
-    console.log(this.props);
-    const {
-      ename,
-      details,
-      eimage,
-      place,
-      rnumbers,
-      deadlineDate
-    } = this.props;
-    this.props.returnSubmit({
-      ename,
-      details,
-      eimage,
-      place,
-      rnumbers,
-      deadlineDate
-    });
-    let docRef = firestore.collection("events");
-    return docRef
-      .add({
-        date: this.props.date,
-        deadlineDate: this.props.deadlineDate,
-        ename: this.props.ename,
-        eimage: this.props.eimage,
-        place: this.props.place,
-        details: this.props.details,
-        rnumbers: this.props.rnumbers
+    await this.uploadImage(this.state.image)
+      .then(() => {
+        // Alert.alert("アップロードに成功しました！");
+        this.uploadEnd();
       })
-
-      .then(function() {
-        console.log("firebaseにデータ到着！");
-      })
-      .catch(function(error) {
-        // The document probably doesn't exist.
-        console.error("firebaseにデータ来てないぞ！！ ", error);
+      .catch(error => {
+        Alert.alert(error);
       });
   };
 
@@ -158,79 +209,19 @@ class EventCreateScreen extends Component {
 
     if (!result.cancelled) {
       this.setState({ image: result.uri });
+      // this.uploadImage(result.uri, "test-image");
     }
+
     CameraRoll.saveToCameraRoll(result.uri);
   };
 
   // カメラロールから選択
   _pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
+      base64: true,
       allowsEditing: true,
       aspect: [16, 9]
     });
-
-    console.log(result);
-
-    // /*firebase画像関連*/
-
-    // const strage = firebase.storage().ref();
-    // const ref = strage.child(`${result.uri}`);
-
-    // const metadate = { contentType: result.type };
-
-    // Create a root reference
-    const ref = firebase.storage().ref();
-
-    // const metadata = {
-    //   contentType: "image/jpeg"
-    // };
-
-    var file = result;
-    ref.put(file).then(function(snapshot) {
-      console.log("Uploaded a blob or file!");
-    });
-
-    // Upload the file and metadata
-    // const uploadTask = storageRef
-    //   .child("images/mountains.jpg")
-    //   .put(file, metadata);
-
-    // Create a reference to 'mountains.jpg'
-    // var ref = storageRef.child("images/a.jpg");
-
-    // While the file names are the same, the references point to different files
-    // mountainsRef.name === mountainImagesRef.name; // true
-    // mountainsRef.fullPath === mountainImagesRef.fullPath; // false
-
-    // Base64 formatted string
-    // var message = "5b6p5Y+344GX44G+44GX44Gf77yB44GK44KB44Gn44Go44GG77yB";
-    // ref.putString(message, "base64").then(function(snapshot) {
-    //   console.log("Uploaded a base64 string!");
-    // // });
-
-    // console.log(`result.base64の値${result.base64}`);
-    // ref.putString(result.base64, "base-64", metadate).then(snapshot => {
-    //   done();
-    //   console.log(`snapshotの値${snapshot}`);
-    // });
-
-    // const atob = require("base-64").decode;
-    // window.atob = atob;
-    // console.log(`atobの値${atob}`);
-    // // Create a reference to 'images/mountains.jpg'
-    // const mountainImagesRef = storageRef.child("images/mountains.jpg");
-
-    // // While the file names are the same, the references point to different files
-    // mountainsRef.name === mountainImagesRef.name; // true
-    // mountainsRef.fullPath === mountainImagesRef.fullPath; // false
-
-    // /*ここまで*/
-
-    // var file = result.uri;
-    // ref.put(file).then(function(snapshot) {
-    //   console.log("Uploaded a blob or file!");
-    // });
-
     if (!result.cancelled) {
       this.setState({ image: result.uri });
     }
@@ -272,7 +263,7 @@ class EventCreateScreen extends Component {
       );
     }
 
-    console.log(this.props);
+    // console.log(this.props);
 
     return (
       <KeyboardAvoidingView
@@ -301,6 +292,8 @@ class EventCreateScreen extends Component {
               <RkTextInput
                 style={{ flex: 1 }}
                 rkType="member"
+                keyboardType="numeric"
+                maxLength={4}
                 multiline
                 onChangeText={rnumbers => this.props.returnRnumbers(rnumbers)}
               />

@@ -27,7 +27,7 @@ class NotificationHomeScreen extends React.Component {
     super(props);
     this.state = {
       isNow: moment().format("YYYY/MM/DD"),
-      isPast: "2018/12/10",
+      isPast: "2018-12-10",
       allData: new Array("foo", "bar", "piyo"),
       nowData: true,
       pastData: true
@@ -101,7 +101,8 @@ class NotificationHomeScreen extends React.Component {
           <FlatList
             style={{
               width: "100%",
-              paddingBottom: 50
+              paddingTop: 5,
+              paddingBottom: 5
             }}
             data={nowData}
             renderItem={({ item }) => (
@@ -166,7 +167,8 @@ class NotificationHomeScreen extends React.Component {
           <FlatList
             style={{
               width: "100%",
-              paddingBottom: 50
+              paddingTop: 5,
+              paddingBottom: 5
             }}
             data={pastData}
             renderItem={({ item }) => (
@@ -240,7 +242,8 @@ class NotificationHomeScreen extends React.Component {
           <FlatList
             style={{
               width: "100%",
-              paddingBottom: 50
+              paddingTop: 5,
+              paddingBottom: 5
             }}
             data={pastData}
             renderItem={({ item }) => (
@@ -310,7 +313,8 @@ class NotificationHomeScreen extends React.Component {
           <FlatList
             style={{
               width: "100%",
-              paddingBottom: 50
+              paddingTop: 5,
+              paddingBottom: 5
             }}
             data={nowData}
             renderItem={({ item }) => (
@@ -382,6 +386,8 @@ class NotificationHomeScreen extends React.Component {
                 borderTopColor: "#fff",
                 backgroundColor: "#fff"
               }}
+              inputStyle={{ color: "black" }}
+              returnKeyType="search"
               round
               lightTheme
               showLoading

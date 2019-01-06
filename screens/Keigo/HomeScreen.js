@@ -1,6 +1,5 @@
 import React from "react";
 import {
-  Image,
   Button,
   ScrollView,
   StyleSheet,
@@ -19,6 +18,7 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import ScrollableTabView from "react-native-scrollable-tab-view";
 import { Constants } from "expo";
 import firebase from "firebase";
+import { Image as ExpoImage } from "react-native-expo-image-cache";
 
 class HomeScreen extends React.Component {
   constructor(props) {
@@ -128,6 +128,7 @@ class Tab1 extends React.Component {
     this.state = {
       title: ["ジョビフェス", "いしがきMS", "よさこいさんさ", "町中ハロウィン"],
       date: ["2018/7/30", "2018/6/20", "2018/5/21", "2018/10/31"],
+      eimage: "",
       img: [
         require("../../assets/images/jyobifes.jpg"),
         require("../../assets/images/MSfes.png"),
@@ -139,15 +140,50 @@ class Tab1 extends React.Component {
         "いしがきMSに是非お越しください",
         "よさこいで地域を盛り上げましょう！！",
         "ハロウィンのボランティアメンバー募集中！"
-      ]
+      ],
+      uri: []
     };
   }
 
+  getFirebaseData = async () => {
+    const firestore = firebase.firestore();
+    const settings = { timestampsInSnapshots: true };
+    firestore.settings(settings);
+
+    let uriEimage = [];
+    await firestore
+      .collection("events")
+      .get()
+      .then(function(querySnapshot) {
+        querySnapshot.forEach(function(doc) {
+          // doc.data() is never undefined for query doc snapshots
+          // console.log(doc.id, " => ", doc.data());
+          uriEimage.push(doc.data().eimage);
+
+          // firestore
+          //   .collection("events")
+          //   .doc(`${doc.id}`)
+          //   .update({ grade: 4 });
+        });
+      });
+    this.setState({ uri: uriEimage });
+
+    // console.log(this.state.uri);
+  };
+
+  componentWillMount() {
+    this.getFirebaseData();
+  }
+
   render() {
-    console.log(this.props);
+    const preview = {
+      uri:
+        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
+    };
+
     let data = [];
-    for (let i = 0; i < 4; i++) {
-      let events;
+    for (let i = 0; i < this.state.uri.length; i++) {
+      const uri = this.state.uri[i];
       events = (
         <TouchableOpacity
           onPress={() => this.props.navigation.navigate("Details")}
@@ -162,7 +198,7 @@ class Tab1 extends React.Component {
                 height: 180
               }}
             >
-              <Image rkCardImg source={this.state.img[i]} />
+              <ExpoImage rkCardImg {...{ preview, uri }} />
             </View>
             <View rkCardContent>
               <Text>{this.state.details[i]}</Text>
