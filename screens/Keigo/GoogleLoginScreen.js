@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Button,
   Alert,
+  AlertIOS,
   ActivityIndicator
 } from "react-native";
 import { connect } from "react-redux";
@@ -15,6 +16,8 @@ import * as Expo from "expo";
 import { Icon } from "expo";
 import * as Actions from "../../app/actions";
 import { SocialIcon } from "react-native-elements";
+import "firebase/storage";
+
 class GoogleLoginScreen extends React.Component {
   constructor(props) {
     super(props);
@@ -23,7 +26,9 @@ class GoogleLoginScreen extends React.Component {
     this.state = {
       email: "",
       password: "",
-      loggedIn: null
+      loggedIn: null,
+      text: "",
+      result: null
     };
     this._onPressLogInAlert = this._onPressLogInAlert.bind(this);
   }
@@ -50,7 +55,9 @@ class GoogleLoginScreen extends React.Component {
           .auth()
           .signInAndRetrieveDataWithCredential(credential);
         // ログイン後の処理
-        this.props.checkLogin();
+        await this.props.checkLogin();
+
+        this.setState({ result: result });
         console.log(result.user.email);
       }
     } catch (err) {
@@ -59,8 +66,61 @@ class GoogleLoginScreen extends React.Component {
     }
   }
 
-  _onPressOk = () => {
+  //確定のボタンをした場合
+  _Decide = text => {
+    console.log(text);
+    this.setState({ text });
+    this.onLoginButtonPress();
+  };
+
+  _onPressOk = async () => {
+    const firestore = firebase.firestore();
+    const settings = { timestampsInSnapshots: true };
+    firestore.settings(settings);
+
+    let result = this.state.result;
+
+    let uid = firebase.auth().currentUser.uid;
+    //TODO:学籍番号から学科、コースなどを判定する。
+    await firestore
+      .collection("students")
+      .doc(uid)
+      .set({
+        email: result.user.email,
+        snumber: this.state.text,
+        course: "システムエンジニアコース",
+        department: "情報システム科",
+        firstname: result.user.familyName,
+        lastname: result.user.givenName,
+        name: result.user.name,
+        glade: 2,
+        fvevents: [],
+        madeevents: [],
+        paevents: []
+      });
+
     this.props.navigation.navigate("Main");
+  };
+
+  _onPressAlertIOS = () => {
+    AlertIOS.prompt(
+      "学籍番号を入力してください",
+      null,
+      [
+        {
+          text: "確定",
+          onPress: text => this._Decide(text)
+        },
+        {
+          text: "キャンセル",
+          onPress: () => console.log("キャンセルされました"),
+          style: "cancel"
+        }
+      ],
+      "plain-text",
+      "",
+      "numeric"
+    );
   };
 
   _onPressLogInAlert = () => {
@@ -103,7 +163,7 @@ class GoogleLoginScreen extends React.Component {
           type="google-plus-official"
           title="Googleでログイン"
           button
-          onPress={this.onLoginButtonPress.bind(this)}
+          onPress={this._onPressAlertIOS.bind(this)}
           loading={this.props.loading}
         />
       </View>

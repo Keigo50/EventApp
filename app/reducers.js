@@ -5,11 +5,11 @@ const CREATE_INITIAL_STATE = {
   date: "" /*開催日時*/,
   deadlineDate: "" /* 締切日*/,
   details: "" /*詳細*/,
-  eimage: null /*イベント画像*/,
+  eimage: "" /*イベント画像*/,
   ename: "" /*イベントタイトル*/,
   place: "" /*開催場所*/,
-  rnumbers: "" /**/,
-  smethod: ""
+  rnumbers: "" /*募集定員*/,
+  smethod: "" /*学籍番号*/
 };
 
 const AUTH_INITIAL_STATE = {
@@ -42,7 +42,7 @@ const AuthReducer = (state = AUTH_INITIAL_STATE, action) => {
 const EventCreateReducer = (state = CREATE_INITIAL_STATE, action) => {
   switch (action.type) {
     case "return_submit":
-      return state
+      return state;
     case "return_date":
       return {
         ...state,

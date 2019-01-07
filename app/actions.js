@@ -1,19 +1,5 @@
 import firebase from "firebase";
 
-export const changeEmail = text => {
-  return {
-    type: "change_email",
-    payload: text
-  };
-};
-
-export const changePassword = text => {
-  return {
-    type: "change_password",
-    payload: text
-  };
-};
-
 export const checkLogin = () => {
   return dispatch => {
     dispatch({ type: "login_start" });
@@ -27,6 +13,15 @@ export const checkLogin = () => {
         dispatch({ type: "login_end" });
       }
     });
+  };
+};
+
+/*ホーム画面*/
+
+export const returnFetchData = doc => {
+  return {
+    type: "return_fetchData",
+    payload: doc
   };
 };
 
@@ -52,14 +47,12 @@ export const returnDate = date => {
   };
 };
 
-
 export const returnDeadlineDate = deadlineDate => {
   return {
     type: "return_deadlineDate",
     payload: deadlineDate
   };
 };
-
 
 export const returnEname = ename => {
   return {
@@ -82,7 +75,15 @@ export const returnDetails = details => {
   };
 };
 
-export const returnSubmit = (date, deadlineDate,details, eimage, ename, place, rnumbers) => {
+export const returnSubmit = (
+  date,
+  deadlineDate,
+  details,
+  eimage,
+  ename,
+  place,
+  rnumbers
+) => {
   return {
     type: "return_submit",
     payload: date,
@@ -94,4 +95,3 @@ export const returnSubmit = (date, deadlineDate,details, eimage, ename, place, r
     rnumbers
   };
 };
-
