@@ -1,17 +1,18 @@
 import { createStore, applyMiddleware } from "redux";
 import ReduxThunk from "redux-thunk";
 import { composeWithDevTools } from "remote-redux-devtools";
-import { persistReducer, persistStore } from "redux-persist";
-import storage from "redux-persist/lib/storage";
+import { persistStore, persistCombineReducers } from "redux-persist";
+// import storage from "redux-persist/lib/storage";
 import reducer from "./reducers";
+import { AsyncStorage } from "react-native";
 
 const persistConfig = {
   key: "root", // Storageに保存されるキー名を指定する
-  storage, // 保存先としてlocalStorageがここで設定される
-  whitelist: ["ename"] // Stateは`todos`のみStorageに保存する
-  // blacklist: ['visibilityFilter'] // `visibilityFilter`は保存しない
+  storage: AsyncStorage, // 保存先としてlocalStorageがここで設定される
+  whitelist: ["auth"], // Stateは`todos`のみStorageに保存する
+  blacklist: ["create", "favorite"] // `visibilityFilter`は保存しない
 };
-const persistedReducer = persistReducer(persistConfig, reducer);
+const persistedReducer = persistCombineReducers(persistConfig, reducer);
 
 const store = createStore(
   persistedReducer,

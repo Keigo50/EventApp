@@ -82,6 +82,16 @@ class GoogleLoginScreen extends React.Component {
 
     let uid = firebase.auth().currentUser.uid;
     //TODO:学籍番号から学科、コースなどを判定する。
+
+    var user = firebase.auth().currentUser;
+
+    if (user != null) {
+      user.providerData.forEach(function(profile) {
+        this.props.change_Email(profile.email);
+        this.props.change_Name(profile.displayName);
+        this.props.change_Snumber(this.state.snumber);
+      });
+    }
     await firestore
       .collection("students")
       .doc(uid)
