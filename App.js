@@ -1,5 +1,11 @@
 import React from "react";
-import { Platform, StatusBar, StyleSheet, View } from "react-native";
+import {
+  Platform,
+  StatusBar,
+  StyleSheet,
+  View,
+  AsyncStorage
+} from "react-native";
 import { AppLoading, Asset, Font, Icon } from "expo";
 import AppNavigator from "./navigation/AppNavigator";
 import firebase from "firebase";
@@ -21,6 +27,15 @@ export default class App extends React.Component {
       storageBucket: "eventapp-888ac.appspot.com",
       messagingSenderId: "1067680483596"
     });
+  }
+
+  componentDidMount() {
+    getData = async () => {
+      const keys = await AsyncStorage.getAllKeys();
+      const value = await AsyncStorage.getItem("persist:root");
+      console.log(keys);
+      console.log(value);
+    };
   }
 
   render() {

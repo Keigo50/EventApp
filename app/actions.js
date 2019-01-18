@@ -75,6 +75,90 @@ export const returnDetails = details => {
   };
 };
 
+export const eventClearState = () => {
+  return {
+    type: "eventClear_state"
+  };
+};
+
+export const returnFocused_true = focused => {
+  return {
+    type: "return_focused_true",
+    payload: focused
+  };
+};
+
+export const returnFocused_false = focused => {
+  return {
+    type: "return_focused_false",
+    payload: focused
+  };
+};
+
+//Auth
+export const change_Course = course => {
+  return {
+    type: "change_course",
+    payload: course
+  };
+};
+
+export const change_Department = department => {
+  return {
+    type: "change_department",
+    payload: department
+  };
+};
+
+export const change_FirstName = firstName => {
+  return {
+    type: "change_firstName",
+    payload: firstName
+  };
+};
+
+export const change_LastName = lastName => {
+  return {
+    type: "change_lastName",
+    payload: lastName
+  };
+};
+
+export const change_FvEvents = fvEvents => {
+  return {
+    type: "change_fvEvents",
+    payload: fvEvents
+  };
+};
+
+export const change_MadeEvents = madeEvents => {
+  return {
+    type: "change_madeEvents",
+    payload: madeEvents
+  };
+};
+
+export const change_Glade = glade => {
+  return {
+    type: "change_glade",
+    payload: glade
+  };
+};
+
+export const change_Snumber = snumber => {
+  return {
+    type: "change_snumber",
+    payload: snumber
+  };
+};
+
+export const change_Email = email => {
+  return {
+    type: "change_email",
+    payload: email
+  };
+};
+
 export const returnSubmit = (
   date,
   deadlineDate,

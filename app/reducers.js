@@ -12,11 +12,33 @@ const CREATE_INITIAL_STATE = {
   smethod: "" /*学籍番号*/
 };
 
+const HOME_INITIAL_STATE = {
+  focused: false
+};
+
 const AUTH_INITIAL_STATE = {
   email: "",
   password: "",
   loading: false,
-  loggedIn: false
+  loggedIn: false,
+  firstName: "",
+  lastName: "",
+  glade: "",
+  fvEvents: null,
+  madeEvents: null,
+  name: "",
+  snumber: ""
+};
+
+const FavoriteEventReducer = (state = HOME_INITIAL_STATE, action) => {
+  switch (action.type) {
+    case "return_focused_true":
+      return { ...state, focused: true };
+    case "return_focused_false":
+      return { ...state, focused: false };
+    default:
+      return state;
+  }
 };
 
 const AuthReducer = (state = AUTH_INITIAL_STATE, action) => {
@@ -33,6 +55,23 @@ const AuthReducer = (state = AUTH_INITIAL_STATE, action) => {
       return { ...state, loggedIn: true };
     case "login_fail":
       return { ...state, loggedIn: false };
+    case "change_firstName":
+      return { ...state, firstName: action.payload };
+    case "change_lastName":
+      return { ...state, lastName: action.payload };
+    case "change_glade":
+      return { ...state, glade: action.payload };
+    case "change_fvEvents":
+      return { ...state, fvEvents: action.payload };
+
+    case "change_madeEvents":
+      return { ...state, madeEvents: action.payload };
+
+    case "change_name":
+      return { ...state, name: action.payload };
+
+    case "change_snumber":
+      return { ...state, snumber: action.payload };
     default:
       return state;
   }
@@ -85,12 +124,15 @@ const EventCreateReducer = (state = CREATE_INITIAL_STATE, action) => {
         details: action.payload
       };
 
+    case "eventClear_state":
+      return CREATE_INITIAL_STATE;
     default:
       return state;
   }
 };
 
-export default combineReducers({
+export default {
   auth: AuthReducer,
-  create: EventCreateReducer
-});
+  create: EventCreateReducer,
+  favorite: FavoriteEventReducer
+};

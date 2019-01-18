@@ -6,7 +6,8 @@ import {
   Image,
   FlatList,
   TouchableOpacity,
-  Platform
+  Platform,
+  Alert
 } from "react-native";
 import {
   RkButton,
@@ -21,6 +22,9 @@ import TabBarIcon from "../../components/TabBarIcon";
 import Colors from "../../constants/Colors";
 import Icon from "react-native-vector-icons/FontAwesome";
 import firebase from "firebase";
+import { Image as ExpoImage } from "react-native-expo-image-cache";
+import { Constants } from "expo";
+import "firebase/firestore";
 
 export default class EventMoreDetailScreen extends React.Component {
   static navigationOptions = {
@@ -29,13 +33,43 @@ export default class EventMoreDetailScreen extends React.Component {
 
   constructor(props) {
     super(props);
+
+    let initArray = [];
+    for (let i = 0; i < 10; i++) {
+      initArray[i] = "";
+    }
+
     this.state = {
       changeButton: false,
-      focused: false
+      focused: false,
+      userPhoto: "",
+      eventIdArray: initArray,
+      eventIdArray2: initArray
     };
     this._changeButton = this._changeButton.bind(this);
-    this._changeBtn = this._changeBtn.bind(this);
     this.onPressIcon = this.onPressIcon.bind(this);
+  }
+
+  componentWillMount() {
+    const firestore = firebase.firestore();
+    const settings = { timestampsInSnapshots: true };
+    firestore.settings(settings);
+    firebase.auth().onAuthStateChanged(user => {
+      if (!user) {
+        // サインインしていない状態
+      } else {
+        const userUid = firebase.auth().currentUser.uid;
+        const eventID = this.props.navigation.state.params.eventId;
+        console.log(eventID);
+
+        const docRef = firestore.collection("students").doc(userUid);
+        docRef.get().then(doc => {
+          if (-1 != doc.data().paevents.indexOf(eventID)) {
+            this.setState({ changeButton: true });
+          }
+        });
+      }
+    });
   }
 
   onPressIcon = () => {
@@ -64,6 +98,9 @@ export default class EventMoreDetailScreen extends React.Component {
   _changeButton = async () => {
     console.log(`参加するを押したとき${this.state.changeButton}`);
 
+    const firestore = firebase.firestore();
+    const settings = { timestampsInSnapshots: true };
+    firestore.settings(settings);
     this.state.changeButton
       ? this.setState({
           changeButton: false
@@ -72,28 +109,85 @@ export default class EventMoreDetailScreen extends React.Component {
           changeButton: true
         });
 
-    firebase.auth().onAuthStateChanged(user => {
+    firebase.auth().onAuthStateChanged(async user => {
       if (!user) {
         // サインインしていない状態
         console.log("サインインしてません");
         this.props.navigation.navigate("App");
       } else {
         // サインイン済
-        console.log("サインインしてます");
+        if (this.state.changeButton) {
+          console.log("サインインしてます");
+          const userUid = firebase.auth().currentUser.uid;
+          const eventID = this.props.navigation.state.params.eventId;
+          console.log(eventID);
+
+          const docRef = firestore.collection("students").doc(userUid);
+          await docRef.get().then(doc => {
+            this.setState({ eventIdArray: doc.data().paevents });
+            console.log("get" + this.state.eventIdArray);
+          });
+          const eventIdArray_copy = this.state.eventIdArray.slice();
+          for (let i = 0; i < 10; i++) {
+            if (
+              eventIdArray_copy[i] == "" &&
+              -1 == eventIdArray_copy.indexOf(eventID)
+            ) {
+              eventIdArray_copy[i] = eventID;
+              break;
+            }
+            if (eventIdArray_copy.length < 10) {
+              for (let i = 0; i < 10 - eventIdArray_copy.length; i++) {
+                eventIdArray_copy.push("");
+              }
+            }
+          }
+
+          this.setState({ eventIdArray: eventIdArray_copy });
+          return docRef
+            .update({
+              paevents: this.state.eventIdArray
+            })
+            .then(() => {
+              console.log("firebaseにデータ到着！");
+            })
+            .catch(error => {
+              console.error("firebaseにデータ来てないぞ！！ ", error);
+            });
+        } else {
+          const userUid = firebase.auth().currentUser.uid;
+          const eventID = this.props.navigation.state.params.eventId;
+          console.log(eventID);
+
+          const docRef = firestore.collection("students").doc(userUid);
+          const eventIdArray_copy = this.state.eventIdArray.slice();
+          let index = eventIdArray_copy.indexOf(eventID);
+          console.log(index);
+          eventIdArray_copy[index] = "";
+
+          this.setState({ eventIdArray: eventIdArray_copy });
+          return docRef
+            .update({
+              paevents: this.state.eventIdArray
+            })
+            .then(() => {
+              console.log("firebaseにデータ到着！");
+            })
+            .catch(error => {
+              console.error("firebaseにデータ来てないぞ！！ ", error);
+            });
+        }
       }
-    });
-  };
-  _changeBtn = () => {
-    console.log(`取り消すを押したとき${this.state.changeButton}`);
-    this.setState({
-      changeButton: false
     });
   };
 
   render() {
     console.log("最強");
+    console.log(this.props);
     const changeDecision = this.state.changeButton;
     let changeBtn;
+
+    const providerUser = firebase.auth().currentUser;
 
     if (changeDecision) {
       changeBtn = (
@@ -117,6 +211,13 @@ export default class EventMoreDetailScreen extends React.Component {
       data.push(`No.${i}`);
     }
 
+    const nav = this.props.navigation.state.params.event;
+    const preview = {
+      uri:
+        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
+    };
+    const uri = nav.eimage;
+
     return (
       <ScrollView>
         <View style={styles.container}>
@@ -125,22 +226,19 @@ export default class EventMoreDetailScreen extends React.Component {
               <TouchableOpacity
                 onPress={() => this.props.navigation.navigate("Home")}
               >
-                <Icon name="angle-left" size={40} />
+                <Icon name="angle-left" size={40} color="white" />
               </TouchableOpacity>
             </View>
-            <Image
-              style={{
-                width: "100%",
-                height: 180
-              }}
-              source={require("../../assets/images/MSfes.png")}
-            />
+            <ExpoImage width="100%" height={200} {...{ preview, uri }} />
           </View>
           <View style={styles.sub3}>
             <View style={styles.sub}>
-              <Text style={{ fontSize: 25 }}>いしがきMS </Text>
-              <Text style={{ fontSize: 25 }}>日時： 9 / 24(月) 9: 00 </Text>
-              <Text style={{ fontSize: 25 }}>場所： 盛岡城跡公園 </Text>
+              <Text style={{ fontSize: 25 }}>{nav.ename}</Text>
+              <Text style={{ fontSize: 20 }}>
+                締切日：{nav.deadlineDate} 9: 00
+              </Text>
+              <Text style={{ fontSize: 20 }}>開催日時：{nav.date} 9: 00 </Text>
+              <Text style={{ fontSize: 20 }}>場所：{nav.place}</Text>
             </View>
             <View style={styles.sub4}>
               <TouchableOpacity onPress={this.onPressIcon}>
@@ -163,9 +261,7 @@ export default class EventMoreDetailScreen extends React.Component {
           <View style={styles.detail}>
             <RkText rkType="common">詳細</RkText>
           </View>
-          <Text style={{ fontSize: 25 }}>
-            いしがきミュージックフェスティバルの設営・ 撤去
-          </Text>
+          <Text style={{ fontSize: 20 }}>{nav.details}</Text>
           <View style={styles.space} />
           <View style={styles.test}>
             <RkText rkType="common">参加者</RkText>
@@ -192,8 +288,10 @@ export default class EventMoreDetailScreen extends React.Component {
                     large
                     rounded
                     source={{
+                      // uri: providerUser.photoURL
+                      //TODO:firebaseとの接続
                       uri:
-                        "https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg"
+                        "https://firebasestorage.googleapis.com/v0/b/eventapp-888ac.appspot.com/o/images%2Fevent_img1547086874488.jpg?alt=media&token=62bf8ef5-4246-4c38-8083-22a16429fd6f"
                     }}
                     onPress={() => console.log("Works!")}
                     activeOpacity={0.7}
@@ -231,7 +329,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     alignItems: "stretch",
-    justifyContent: "center"
+    justifyContent: "center",
+    paddingTop: Constants.statusBarHeight
   },
   sub5: {
     position: "relative",

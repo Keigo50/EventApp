@@ -142,12 +142,14 @@ class EventCreateScreen extends Component {
           eimage: this.props.eimage,
           place: this.props.place,
           details: this.props.details,
-          rnumbers: this.props.rnumbers
+          rnumbers: this.props.rnumbers,
+          focused: this.props.focused
         })
-
         .then(() => {
           console.log("firebaseにデータ到着！");
           Alert.alert("作成しました！");
+          this.props.eventClearState();
+          this.props.navigation.navigate("Home");
         })
         .catch(error => {
           console.error("firebaseにデータ来てないぞ！！ ", error);
@@ -554,7 +556,8 @@ const mapStateToProps = state => {
     eimage: state.create.eimage,
     ename: state.create.ename,
     place: state.create.place,
-    rnumbers: state.create.rnumbers
+    rnumbers: state.create.rnumbers,
+    focused: state.favorite.focused
   };
 };
 
