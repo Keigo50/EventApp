@@ -26,11 +26,28 @@ class NotificationHomeScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      name: ["KS", "JH", "SH", "TN"],
       isNow: moment().format("YYYY/MM/DD"),
       isPast: "2018-12-10",
       allData: new Array("foo", "bar", "piyo"),
       nowData: true,
-      pastData: true
+      pastData: true,
+      nameData: [], //名前入ってるデータ
+      sendNowData: [
+        "佐藤 慶吾さんがハロウィンのイベントを作成しました！",
+        "平澤 惇哉さんがハロウィンのイベントに参加しました！",
+        "畑江 生也さんがハロウィンのイベントに参加しました！",
+        "沼田 大樹さんがハロウィンのイベントに参加しました！"
+      ], //今日送られてきたテキスト
+      sendPastData: [
+        "佐藤 慶吾さんがジョビフェスのイベントを編集しました。",
+        "平澤 惇哉さんがジョビフェスのイベントを辞退しました。",
+        "畑江 生也さんがジョビフェスのイベントに参加しました！",
+        "沼田 大樹さんがジョビフェスのイベントに参加しました！",
+        "平澤 惇哉さんがジョビフェスのイベントに参加しました！",
+        "佐藤 慶吾さんがジョビフェスのイベントを作成しました！"
+      ], //過去送られたテキスト
+      sendNow: ""
     };
   }
 
@@ -66,13 +83,13 @@ class NotificationHomeScreen extends React.Component {
     );
 
     let nowData = [];
-    for (let i = 0; i < 50; i++) {
-      nowData.push(`No.${i}`);
+    for (let i = 0; i < 4; i++) {
+      nowData.push(this.state.sendNowData[i]);
     }
 
     let pastData = [];
-    for (let i = 0; i < 25; i++) {
-      pastData.push(`No.${i}`);
+    for (let i = 0; i < 6; i++) {
+      pastData.push(this.state.sendPastData[i]);
     }
 
     let check =
@@ -120,27 +137,28 @@ class NotificationHomeScreen extends React.Component {
                 <Avatar
                   large
                   rounded
-                  source={{
-                    uri:
-                      "https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg"
-                  }}
-                  onPress={() => console.log("Works!")}
+                  // source={{
+                  //   uri:
+                  //     "https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg"
+                  // }}
+                  title={item}
+                  onPress={() => console.log(item)}
                   activeOpacity={0.7}
                 />
                 <View
                   style={{
                     flex: 2,
                     padding: 3,
-                    alignItems: "center",
-                    justifyContent: "center"
+                    alignItems: "flex-start",
+                    justifyContent: "flex-start"
                   }}
                 >
                   <Text
                     style={{
-                      fontSize: 30
+                      fontSize: 18
                     }}
                   >
-                    佐
+                    {item}
                   </Text>
                 </View>
               </View>
@@ -186,10 +204,11 @@ class NotificationHomeScreen extends React.Component {
                 <Avatar
                   large
                   rounded
-                  source={{
-                    uri:
-                      "https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg"
-                  }}
+                  // source={{
+                  //   uri:
+                  //     "https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg"
+                  // }}
+                  title={item}
                   onPress={() => console.log("Works!")}
                   activeOpacity={0.7}
                 />
@@ -197,16 +216,16 @@ class NotificationHomeScreen extends React.Component {
                   style={{
                     flex: 2,
                     padding: 3,
-                    alignItems: "center",
-                    justifyContent: "center"
+                    alignItems: "flex-start",
+                    justifyContent: "flex-start"
                   }}
                 >
                   <Text
                     style={{
-                      fontSize: 30
+                      fontSize: 18
                     }}
                   >
-                    佐藤慶吾
+                    {item}
                   </Text>
                 </View>
               </View>
