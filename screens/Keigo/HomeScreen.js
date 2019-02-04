@@ -15,7 +15,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import * as Actions from "../../app/actions";
 import { RkCard, RkTheme, RkButton } from "react-native-ui-kitten";
-import { SearchBar } from "react-native-elements";
+import { SearchBar, List, ListItem } from "react-native-elements";
 import Icon from "react-native-vector-icons/FontAwesome";
 import ScrollableTabView from "react-native-scrollable-tab-view";
 import { Constants } from "expo";
@@ -47,7 +47,16 @@ class HomeScreen extends React.Component {
       user: null,
       refreshing: false,
       todoText: "",
-      submitText: ""
+      submitText: "",
+      keyCheck: false,
+      listBox: [
+        {
+          keyword: "qqqq"
+        },
+        {
+          keyword: "Chris Jackson"
+        }
+      ]
     };
   }
   componentDidMount() {
@@ -61,12 +70,25 @@ class HomeScreen extends React.Component {
   componentWillMount() {
     this.props.checkLogin();
   }
-
+  displayHistry = () => {
+    this.setState({ keyCheck: true });
+  };
+  initText = someMethod => {
+    this.setState({ todoText: someMethod });
+    if (someMethod == "") {
+      this.setState({ keyCheck: false });
+    }
+  };
   render() {
+    let a = [];
+    console.log("配列" + typeof a);
+    console.log("ボックス" + typeof this.state.listBox);
     //TODO ログイン状態を確認し作成ボタンを表示・非表示する処理
     if (this.search) {
       console.log("search");
     }
+    console.log("キー" + this.state.keyCheck);
+    let authenticity = this.state.keyCheck;
     console.log(this.props.loggedIn);
     let createbutton = this.props.loggedIn;
     let tabdisplay = this.props.loggedIn;
@@ -100,11 +122,20 @@ class HomeScreen extends React.Component {
               lightTheme
               ref={search => (this.search = search)}
               // searchIcon={<CustomComponent />}
-              onChangeText={someMethod =>
-                this.setState({ todoText: someMethod })
-              }
+              onChangeText={someMethod => this.initText(someMethod)}
+              onKeyPress={e => {
+                if (e.nativeEvent.key) {
+                  this.displayHistry();
+                }
+              }}
               onSubmitEditing={event => {
                 if (event.nativeEvent.key === undefined) {
+                  this.state.listBox.push({
+                    keyword: this.state.todoText
+                  });
+                  // console.log("チェンジ" + chenge);
+                  // this.setState({ listBox: chenge });
+                  console.log(this.state.listBox);
                   this.props.navigation.navigate("Search", {
                     searchText: this.state.todoText
                   });
@@ -128,6 +159,27 @@ class HomeScreen extends React.Component {
             )}
           </View>
         </View>
+        {authenticity && (
+          <View style={styles.history}>
+            <List containerStyle={{ marginBottom: 20 }}>
+              {this.state.listBox.map(l => (
+                <TouchableOpacity
+                  onPress={() =>
+                    this.props.navigation.navigate("Search", {
+                      searchText: l.keyword
+                    })
+                  }
+                >
+                  <ListItem
+                    leftIcon={<Icon name="search" size={20} />}
+                    key={l.keyword}
+                    title={l.keyword}
+                  />
+                </TouchableOpacity>
+              ))}
+            </List>
+          </View>
+        )}
         {tabdisplay ? (
           <ScrollableTabView style={styles.main}>
             <Tab1 tabLabel="すべて" {...this.props} />
@@ -174,12 +226,24 @@ const styles = StyleSheet.create({
     flex: 9,
     flexDirection: "column",
     backgroundColor: "#fff",
-    justifyContent: "center"
+    justifyContent: "center",
+    position: "relative"
   },
   sub3: {
     flexDirection: "row",
     backgroundColor: "#fff",
     alignItems: "stretch"
+  },
+  history: {
+    position: "absolute",
+    top: 100,
+    left: 0,
+    zIndex: 100000,
+    backgroundColor: "#E6E6E6",
+    alignItems: "stretch",
+    flex: 1,
+    width: "100%",
+    height: "100%"
   }
 });
 
