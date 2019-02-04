@@ -32,6 +32,11 @@ class EventCreateScreen extends Component {
     const atob = require("base-64").decode;
     window.atob = atob;
 
+    let initArray = [];
+    for (let i = 0; i < 10; i++) {
+      initArray[i] = "";
+    }
+
     this.defaultTitles = [
       {
         title: "カメラ",
@@ -58,6 +63,7 @@ class EventCreateScreen extends Component {
       hasCameraRollPermission: null,
       hasCameraPermission: null,
       titles: this.defaultTitles,
+      eventIdArray: initArray,
       name: ""
     };
 
@@ -145,11 +151,46 @@ class EventCreateScreen extends Component {
           rnumbers: this.props.rnumbers,
           focused: this.props.focused
         })
-        .then(() => {
+        .then(async event => {
           console.log("firebaseにデータ到着！");
-          Alert.alert("作成しました！");
-          this.props.eventClearState();
-          this.props.navigation.navigate("Home");
+          const userUid = firebase.auth().currentUser.uid;
+
+          const docRef = firestore.collection("students").doc(userUid);
+          await docRef.get().then(doc => {
+            this.setState({ eventIdArray: doc.data().madeevents });
+            console.log("get" + this.state.eventIdArray);
+          });
+          const eventIdArray_copy = this.state.eventIdArray.slice();
+          for (let i = 0; i < 10; i++) {
+            if (
+              eventIdArray_copy[i] == "" &&
+              -1 == eventIdArray_copy.indexOf(event.id)
+            ) {
+              eventIdArray_copy[i] = event.id;
+              break;
+            }
+            if (eventIdArray_copy.length < 10) {
+              for (let i = 0; i < 10 - eventIdArray_copy.length; i++) {
+                eventIdArray_copy.push("");
+              }
+            }
+          }
+
+          this.setState({ eventIdArray: eventIdArray_copy });
+          return docRef
+            .update({
+              madeevents: this.state.eventIdArray
+            })
+            .then(() => {
+              console.log("firebaseにデータ到着！");
+
+              Alert.alert("作成しました！");
+              this.props.eventClearState();
+              this.props.navigation.navigate("Home");
+            })
+            .catch(error => {
+              console.error("firebaseにデータ来てないぞ！！ ", error);
+            });
         })
         .catch(error => {
           console.error("firebaseにデータ来てないぞ！！ ", error);

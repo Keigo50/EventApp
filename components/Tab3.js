@@ -18,7 +18,7 @@ class Tab3 extends React.Component {
       eventIdName: [],
       fveventsArray: [],
       refreshing: false,
-      focused: null
+      focused: false
     };
   }
 
@@ -114,32 +114,39 @@ class Tab3 extends React.Component {
   //   });
 
   onPressIcon = () => {
-    let fv = this.props.fvEvents;
-    const fvEventsID = "5GqBimGuEw1vqdp5nBrs";
-    //イベントのIDが存在するならば
-    console.log(this.state.focused);
-    if (-1 != fv.indexOf(fvEventsID) && !this.state.focused) {
-      console.log("IDあるよ");
-      this.setState({
-        focused: true
-      });
+    console.log("発動");
+    console.log(this.props.fvEvents);
+    if (this.state.focused) {
+      this.setState({ focused: false });
     } else {
-      if (-1 != fv.indexOf(fvEventsID) && this.state.focused) {
-        let fvIndex = fv.indexOf(fvEventsID);
-        fv.splice(fvIndex, fvIndex);
-        this.props.change_FvEvents(fv);
-        console.log("fv" + fv);
-      } else if (-1 == fv.indexOf(fvEventsID) && !this.state.focused) {
-        fv.push(fvEventsID);
-        this.props.change_FvEvents(fv);
-        this.setState({
-          focused: true
-        });
-      }
-      this.setState({
-        focused: false
-      });
+      this.setState({ focused: true });
     }
+    // let fv = this.props.fvEvents;
+    // const fvEventsID = "5GqBimGuEw1vqdp5nBrs";
+    // //イベントのIDが存在するならば
+    // console.log(this.state.focused);
+    // if (-1 != fv.indexOf(fvEventsID) && !this.state.focused) {
+    //   console.log("IDあるよ");
+    //   this.setState({
+    //     focused: true
+    //   });
+    // } else {
+    //   if (-1 != fv.indexOf(fvEventsID) && this.state.focused) {
+    //     let fvIndex = fv.indexOf(fvEventsID);
+    //     fv.splice(fvIndex, fvIndex);
+    //     this.props.change_FvEvents(fv);
+    //     console.log("fv" + fv);
+    //   } else if (-1 == fv.indexOf(fvEventsID) && !this.state.focused) {
+    //     fv.push(fvEventsID);
+    //     this.props.change_FvEvents(fv);
+    //     this.setState({
+    //       focused: true
+    //     });
+    //   }
+    //   this.setState({
+    //     focused: false
+    //   });
+    // }
   };
 
   render() {
@@ -151,6 +158,19 @@ class Tab3 extends React.Component {
     for (let i = 0; i < this.state.eventData.length; i++) {
       const uri = this.state.eventData[i].eimage;
 
+      star = (
+        <TabBarIcon
+          size={35}
+          name={
+            Platform.OS === "ios"
+              ? `ios-star${this.state.focused ? "" : "-outline"}`
+              : "ios-star"
+          }
+          color={
+            this.state.focused ? Colors.tabIconSelected2 : Colors.tabIconDefault
+          }
+        />
+      );
       events = (
         <TouchableOpacity
           onPress={() =>
@@ -179,24 +199,8 @@ class Tab3 extends React.Component {
             </View>
             <View rkCardFooter>
               <Text>{this.state.eventData[i].date}</Text>
-              <TouchableOpacity
-                onPress={() =>
-                  this.onPressIcon((ID = this.state.eventIdName[1]))
-                }
-              >
-                <TabBarIcon
-                  size={35}
-                  name={
-                    Platform.OS === "ios"
-                      ? `ios-star${this.state.focused ? "" : "-outline"}`
-                      : "ios-star"
-                  }
-                  color={
-                    this.state.focused
-                      ? Colors.tabIconSelected2
-                      : Colors.tabIconDefault
-                  }
-                />
+              <TouchableOpacity onPress={this.onPressIcon}>
+                {star}
               </TouchableOpacity>
             </View>
           </RkCard>
@@ -204,6 +208,7 @@ class Tab3 extends React.Component {
       );
       data.push(events);
     }
+
     return (
       <FlatList
         refreshing={this.state.refreshing}

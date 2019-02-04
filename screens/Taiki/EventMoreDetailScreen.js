@@ -7,7 +7,8 @@ import {
   FlatList,
   TouchableOpacity,
   Platform,
-  Alert
+  Alert,
+  Button
 } from "react-native";
 import {
   RkButton,
@@ -39,12 +40,19 @@ export default class EventMoreDetailScreen extends React.Component {
       initArray[i] = "";
     }
 
+    let initArray2 = [];
+    for (let i = 0; i < 5; i++) {
+      initArray2[i] = "";
+    }
     this.state = {
       changeButton: false,
       focused: false,
       userPhoto: "",
       eventIdArray: initArray,
-      eventIdArray2: initArray
+      eventIdArray2: initArray,
+      madeEventIdArray: initArray2,
+      name: ["佐藤 慶吾", "平澤 惇哉", "畑江 生也", "沼田 大樹"],
+      madeCheck: false
     };
     this._changeButton = this._changeButton.bind(this);
     this.onPressIcon = this.onPressIcon.bind(this);
@@ -63,6 +71,13 @@ export default class EventMoreDetailScreen extends React.Component {
         console.log(eventID);
 
         const docRef = firestore.collection("students").doc(userUid);
+
+        docRef.get().then(doc => {
+          if (-1 != doc.data().madeevents.indexOf(eventID)) {
+            this.setState({ madeCheck: true });
+          }
+        });
+
         docRef.get().then(doc => {
           if (-1 != doc.data().paevents.indexOf(eventID)) {
             this.setState({ changeButton: true });
@@ -117,10 +132,23 @@ export default class EventMoreDetailScreen extends React.Component {
       } else {
         // サインイン済
         if (this.state.changeButton) {
-          console.log("サインインしてます");
-          const userUid = firebase.auth().currentUser.uid;
+          const photoURL = firebase.auth().currentUser.photoURL;
+          const myName = firebase.auth().currentUser.displayName;
           const eventID = this.props.navigation.state.params.eventId;
           console.log(eventID);
+
+          firestore
+            .collection("events")
+            .doc(eventID)
+            .update({
+              paevents: {
+                participant: myName,
+                photoURL
+              }
+            });
+
+          console.log("サインインしてます");
+          const userUid = firebase.auth().currentUser.uid;
 
           const docRef = firestore.collection("students").doc(userUid);
           await docRef.get().then(doc => {
@@ -155,6 +183,13 @@ export default class EventMoreDetailScreen extends React.Component {
               console.error("firebaseにデータ来てないぞ！！ ", error);
             });
         } else {
+          firestore
+            .collection("events")
+            .doc(eventID)
+            .update({
+              paevents: firebase.firestore.paevents.delete()
+            });
+
           const userUid = firebase.auth().currentUser.uid;
           const eventID = this.props.navigation.state.params.eventId;
           console.log(eventID);
@@ -179,6 +214,66 @@ export default class EventMoreDetailScreen extends React.Component {
         }
       }
     });
+  };
+
+  _onPressOk = async () => {
+    const firestore = firebase.firestore();
+    const settings = { timestampsInSnapshots: true };
+    firestore.settings(settings);
+
+    let madeEventID = this.props.navigation.state.params.eventId;
+
+    await firestore
+      .collection("events")
+      .doc(madeEventID)
+      .delete();
+
+    let uid = firebase.auth().currentUser.uid;
+
+    const docRef2 = firestore.collection("students").doc(uid);
+
+    await docRef2.get().then(doc => {
+      this.setState({ madeEventIdArray: doc.data().madeevents });
+      console.log("get" + this.state.madeEventIdArray);
+    });
+    const eventIdArray_copy2 = this.state.madeEventIdArray.slice();
+    if (eventIdArray_copy2.indexOf(madeEventID) !== -1) {
+      console.log("ここです！" + eventIdArray_copy2.indexOf(madeEventID));
+      console.log("イベントID" + madeEventID);
+      let index = eventIdArray_copy2.indexOf(madeEventID);
+      eventIdArray_copy2[index] = "";
+    }
+    if (eventIdArray_copy2.length < 5) {
+      for (let i = 0; i < 5 - eventIdArray_copy2.length; i++) {
+        eventIdArray_copy2.push("");
+      }
+    }
+
+    await this.setState({ madeEventIdArray: eventIdArray_copy2 });
+    return docRef2
+      .update({
+        madeevents: this.state.madeEventIdArray
+      })
+      .then(() => {
+        console.log("firebaseにデータ到着！");
+        this.props.navigation.navigate("Home");
+      })
+      .catch(error => {
+        console.error("firebaseにデータ来てないぞ！！ ", error);
+      });
+  };
+
+  deleteButton = () => {
+    return Alert.alert("本当に削除しますがよろしいですか？", "", [
+      {
+        text: "はい",
+        onPress: () => this._onPressOk()
+      },
+      {
+        text: "いいえ",
+        style: "cancel"
+      }
+    ]);
   };
 
   render() {
@@ -207,8 +302,17 @@ export default class EventMoreDetailScreen extends React.Component {
       );
     }
     let data = [];
-    for (let i = 1; i < 50; i++) {
-      data.push(`No.${i}`);
+
+    for (var i = this.state.name.length - 1; i > 0; i--) {
+      var r = Math.floor(Math.random() * (i + 1));
+      var tmp = this.state.name[i];
+      this.state.name[i] = this.state.name[r];
+      this.state.name[r] = tmp;
+    }
+    let val = Math.round(Math.random() * (5 - 1) + 1);
+    console.log(val);
+    for (let i = 1; i < val; i++) {
+      data.push(this.state.name[i - 1]);
     }
 
     const nav = this.props.navigation.state.params.event;
@@ -217,6 +321,7 @@ export default class EventMoreDetailScreen extends React.Component {
         "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
     };
     const uri = nav.eimage;
+    let check = this.state.madeCheck;
 
     return (
       <ScrollView>
@@ -240,7 +345,22 @@ export default class EventMoreDetailScreen extends React.Component {
               <Text style={{ fontSize: 20 }}>開催日時：{nav.date} 9: 00 </Text>
               <Text style={{ fontSize: 20 }}>場所：{nav.place}</Text>
             </View>
+
             <View style={styles.sub4}>
+              {check && (
+                <View
+                  style={{
+                    justifyContent: "flex-start",
+                    alignItems: "flex-start"
+                  }}
+                >
+                  <Button
+                    title="削除"
+                    color="red"
+                    onPress={this.deleteButton}
+                  />
+                </View>
+              )}
               <TouchableOpacity onPress={this.onPressIcon}>
                 <TabBarIcon
                   size={35}
@@ -287,12 +407,12 @@ export default class EventMoreDetailScreen extends React.Component {
                   <Avatar
                     large
                     rounded
-                    source={{
-                      // uri: providerUser.photoURL
-                      //TODO:firebaseとの接続
-                      uri:
-                        "https://firebasestorage.googleapis.com/v0/b/eventapp-888ac.appspot.com/o/images%2Fevent_img1547086874488.jpg?alt=media&token=62bf8ef5-4246-4c38-8083-22a16429fd6f"
-                    }}
+                    title={item}
+                    // source={{
+                    //   // uri: providerUser.photoURL
+                    //   //TODO:firebaseとの接続
+                    //   uri: providerUser.photoURL
+                    // }}
                     onPress={() => console.log("Works!")}
                     activeOpacity={0.7}
                   />
@@ -309,7 +429,7 @@ export default class EventMoreDetailScreen extends React.Component {
                         fontSize: 30
                       }}
                     >
-                      佐藤慶吾
+                      {item}
                     </Text>
                   </View>
                 </View>
@@ -349,9 +469,12 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff"
   },
   sub4: {
-    flex: 1,
-    flexDirection: "column",
-    backgroundColor: "#fff"
+    flex: 3,
+    flexDirection: "row",
+    alignItems: "flex-end",
+    justifyContent: "space-around",
+    backgroundColor: "#fff",
+    padding: 5
   },
   sub3: {
     flexDirection: "row",

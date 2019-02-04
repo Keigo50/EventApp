@@ -23,13 +23,9 @@ import firebase from "firebase";
 import { Image as ExpoImage } from "react-native-expo-image-cache";
 import TabBarIcon from "../../components/TabBarIcon";
 import Colors from "../../constants/Colors";
-import Tab1 from "../../components/Tab1";
-import Tab2 from "../../components/Tab2";
-import Tab3 from "../../components/Tab3";
-import Tab4 from "../../components/Tab4";
-import { underline } from "ansi-colors";
+import SearchTab from "../../components/SearchTab";
 
-class HomeScreen extends React.Component {
+class SearchResultsScreen extends React.Component {
   constructor(props) {
     super(props);
 
@@ -46,8 +42,7 @@ class HomeScreen extends React.Component {
       date: ["2018/7/30", "2018/6/20", "2018/5/21", "2018/10/31"],
       user: null,
       refreshing: false,
-      todoText: "",
-      submitText: ""
+      todoText: ""
     };
   }
   componentDidMount() {
@@ -63,13 +58,10 @@ class HomeScreen extends React.Component {
   }
 
   render() {
+    console.log(this.state.todoText);
     //TODO ログイン状態を確認し作成ボタンを表示・非表示する処理
-    if (this.search) {
-      console.log("search");
-    }
     console.log(this.props.loggedIn);
     let createbutton = this.props.loggedIn;
-    let tabdisplay = this.props.loggedIn;
     return (
       <View style={styles.container}>
         <View style={styles.sub3}>
@@ -77,10 +69,10 @@ class HomeScreen extends React.Component {
             {createbutton && (
               <TouchableOpacity
                 onPress={() => {
-                  this.props.navigation.navigate("Create");
+                  this.props.navigation.navigate("Home");
                 }}
               >
-                <Icon name="plus-circle" size={30} />
+                <Icon name="angle-left" size={40} style={{ paddingLeft: 10 }} />
               </TouchableOpacity>
             )}
           </View>
@@ -128,18 +120,9 @@ class HomeScreen extends React.Component {
             )}
           </View>
         </View>
-        {tabdisplay ? (
-          <ScrollableTabView style={styles.main}>
-            <Tab1 tabLabel="すべて" {...this.props} />
-            <Tab2 tabLabel="参加中" {...this.props} />
-            <Tab3 tabLabel="お気に入り" {...this.props} />
-            <Tab4 tabLabel="作成済み" {...this.props} />
-          </ScrollableTabView>
-        ) : (
-          <ScrollableTabView style={styles.main}>
-            <Tab1 tabLabel="すべて" {...this.props} />
-          </ScrollableTabView>
-        )}
+        <ScrollableTabView style={styles.main}>
+          <SearchTab tabLabel="検索結果" {...this.props} />
+        </ScrollableTabView>
       </View>
     );
   }
@@ -156,7 +139,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff"
   },
   sub: {
-    flex: 1,
+    flex: 2,
     flexDirection: "column",
     backgroundColor: "#fff",
     alignItems: "flex-start",
@@ -164,7 +147,7 @@ const styles = StyleSheet.create({
     paddingLeft: 10
   },
   sub2: {
-    flex: 3,
+    flex: 2,
     flexDirection: "column",
     backgroundColor: "#fff",
     alignItems: "flex-start",
@@ -213,4 +196,4 @@ const mapDispatchToProps = dispatch => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(HomeScreen);
+)(SearchResultsScreen);
