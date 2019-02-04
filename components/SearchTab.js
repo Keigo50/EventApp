@@ -1,22 +1,30 @@
 import React from "react";
-import { Text, View, TouchableOpacity, FlatList, Platform } from "react-native";
+import {
+  Text,
+  View,
+  TouchableOpacity,
+  FlatList,
+  Platform,
+  Alert
+} from "react-native";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import * as Actions from "../app/actions";
-import { RkCard } from "react-native-ui-kitten";
+import { RkCard, RkTheme, RkButton } from "react-native-ui-kitten";
+import Icon from "react-native-vector-icons/FontAwesome";
 import firebase from "firebase";
 import { Image as ExpoImage } from "react-native-expo-image-cache";
 import TabBarIcon from "../components/TabBarIcon";
 import Colors from "../constants/Colors";
 
-class Tab4 extends React.Component {
+class SearchTab extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       eimage: "",
       eventData: [],
       eventIdName: [],
-      paeventsArray: [],
+      starArray: [],
       refreshing: false
     };
   }
@@ -26,24 +34,17 @@ class Tab4 extends React.Component {
     const settings = { timestampsInSnapshots: true };
     firestore.settings(settings);
 
-    const userUid = firebase.auth().currentUser.uid;
-    const madeeventRef = firestore.collection("students").doc(userUid);
-    let madeeventsID = [];
-    await madeeventRef.get().then(doc => {
-      madeeventsID.push(doc.data().madeevents);
-    });
-
+    let search = this.props.navigation.state.params.searchText;
     let uriEimage = [];
     let docId = [];
     await firestore
       .collection("events")
+      .where("ename", "==", search)
       .get()
       .then(function(querySnapshot) {
         querySnapshot.forEach(function(doc) {
-          if (-1 != madeeventsID[0].indexOf(doc.id)) {
-            uriEimage.push(doc.data());
-            docId.push(doc.id);
-          }
+          uriEimage.push(doc.data());
+          docId.push(doc.id);
         });
       });
     this.setState({ eventData: uriEimage });
@@ -109,18 +110,25 @@ class Tab4 extends React.Component {
       }
     });
   };
+  // componentWillMount() {
+  //   const fs = new ActiveXObject("Scripting.FileSystemObject");
+  //   const file = fs.OpenTextFile("../../base64.txt");
 
+  //   /* 1行目のみ読み込む */
+  //   text[0] = file.ReadLine();
+  // }
   render() {
     const preview = {
       uri:
-        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
+        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJYAAABkCAIAAADrOV6nAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAABPVJREFUeNrsndlW4kAQhiGGJGwBjuj7P503gqxCEiGZ37TDQWfGEaWqq9P1X3iEg5L017X1km4/PDy0VO91PB53u93z83NZlngZBO1utxdHUdLtCrzaUIF90KbW+TtlWT3X6uV5mqZBEIi64ECZnWu5XH7gdy6Y5nw+N6apCCUKdgZIn3/m5eXlE8aK0HL8+yKbr5BWhBaU5/nXPWRRFIpQnOAhiT6sCCWqqipFKJGLo9etCE/pzAWlws3NjZb2UoTcMq91UbXXlTRME/pqc69DaBB+udhxBUGv11OENjPPnxR27XZ7MBiIuqPQH3LAtt/vfzI8Bn7T6bTT6ShC7mi3XCzQ/D/8P3Ecp2kqjV+TER7gME9m911+w+HQBL8kSURloQ1ECE5FUcBbHmohSbnKfIJBKFxuIwQ22BnIiRq0VIT/F7CBWZZl3ygJLtJyuYw6nV6/rwivVsyZeoBt0nVXFx/rzaZfS9p8vUsIAW+73YKfrUC72Wzw7aAoMDpKR4jmM+tWrC93MCBhlpPJOIpiRfglgdx6vRY1swN/MJvNoyiaTCZCygyhMxVIMh8fH1erlSh+55kwLk9IGiwRYZ7naCBRM+N/9auz2cxWeJbrSE27oDZ3JUmGn4AtwqmqFb7xm8/nDvE7FakoHxXhGz/hzvOT8tEiRRGOFOQErpK+lCISVCtVo30rhOd0nZ+RqRq9Qwhyi8WiAfyM4E75Y0Fgl5+78e9f4s/IAt/6LEO/3KzXXiBE2MiyrNVE7bOMs2vaQXg8HuFwWs3V09MTW4APbN2h2KUo1+qjbGNvFhAuF4vmhcA/" +
+        "BYQ8t8mNsCiK3X7f8kBmprOBCCUM7fPlNSydlRUhHMveDxM0qqqKIetmRbjmLZgkaLVaNQchomCe574hNFuoGoLQQxM89d0mICxq+YmQeuFroCbIINKkhgdh5fOeB2pfGrD0wbzlt0jzOA6E2+3Wc4TX2ixnByEu3blFaRSiawRyhAgDjVlXIdOXkiNs6rzupaKbtVCEXAjJktKAuuupF33LaMqSqCloEXpeDvJkNLQIqffCazgkR6jlxIf6Sh2p8wW+YwhLyiEJRciBsFJoDXCkKrfTGZlPOmieKGNhqRWF4whVirBpInocLSHCdlv7x/u2pnkKX+DcFavUkVpT5JwjbfYOwu+FFvesUH2p2+lMS9jBONaVJIl7CAWe6mBLdGcEBdT9Tn2pEd2zvchjYV/24+V5hIBCl9yRmwgQln4vvzgcDmmaOlwXwhDv7u99RjidTknrK45AFcexqAP/OAUnRH3vTLnGeDz2kCIS8tFoRO7n2O7HN4rgd3t7y/BFrBk/KPb9oGj48RRU3EXbaDymDu/WFUURG7+WlZkK3OHd3R3ifJtm2NeigG0wGKCPcg5ohLZuFXF+OBwKOY/pWl1zMOgnCfewcGi3z4IizNF1kIh8SS0rY8L2DzkwIKEsy/I8ZzhY8rrwkGZ3u12LQ8GCDvwxHRkO1jxtD5LMMo5jdDs4T+tXEsrs2lCapkBo7BJQheCUYHYOIDwJtUevVqtezQ6cVfX6FCLzk+cCgArYYG34PQxDgeWQM2f5GtP88Ca4mmX/sFGzlxEvz7cunHaKw+99Ho+B561FfnMyb+LPhU95un0oOkMGKH/KWqfU3R9P0CZQhCpFqFKEilClCFWKUKUIFaFKEaos6pcAAwCkSvWwNLIPbwAAAABJRU5ErkJggg=="
+      // "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
     };
+
     console.log(this.state.eventIdName);
     let data = [];
     for (let i = 0; i < this.state.eventData.length; i++) {
-      console.log("focused" + this.state.eventData[i].focused);
       const uri = this.state.eventData[i].eimage;
-
       events = (
         <TouchableOpacity
           onPress={() =>
@@ -218,4 +226,4 @@ const mapDispatchToProps = dispatch => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Tab4);
+)(SearchTab);

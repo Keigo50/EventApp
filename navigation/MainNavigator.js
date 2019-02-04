@@ -12,6 +12,7 @@ import EventCreateScreen from "../screens/Keigo/EventCreateScreen";
 import EventMoreDetailScreen from "../screens/Taiki/EventMoreDetailScreen";
 import MyEventEditingScreen from "../screens/Seiya/MyEventEditingScreen";
 import NotificationHomeScreen from "../screens/Keigo/NotificationHomeScreen";
+import SearchResultsScreen from "../screens/Keigo/SearchResultsScreen";
 
 import Colors from "../constants/Colors";
 
@@ -19,6 +20,7 @@ import Colors from "../constants/Colors";
 const HomeStack = createStackNavigator({
   Home: HomeScreen,
   Details: EventMoreDetailScreen,
+  Search: SearchResultsScreen,
   Create: EventCreateScreen,
   Editing: MyEventEditingScreen
 });
