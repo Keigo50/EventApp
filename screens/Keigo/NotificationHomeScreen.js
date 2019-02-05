@@ -11,7 +11,7 @@ import {
   Button,
   FlatList
 } from "react-native";
-import { SearchBar, Avatar } from "react-native-elements";
+import { SearchBar, Avatar, List, ListItem } from "react-native-elements";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { Constants } from "expo";
 import { ScrollView } from "react-native-gesture-handler";
@@ -47,7 +47,19 @@ class NotificationHomeScreen extends React.Component {
         "平澤 惇哉さんがジョビフェスのイベントに参加しました！",
         "佐藤 慶吾さんがジョビフェスのイベントを作成しました！"
       ], //過去送られたテキスト
-      sendNow: ""
+      sendNow: "",
+
+      todoText: "",
+      submitText: "",
+      keyCheck: false,
+      listBox: [
+        {
+          keyword: "佐藤"
+        },
+        {
+          keyword: "平澤"
+        }
+      ]
     };
   }
 
@@ -65,14 +77,25 @@ class NotificationHomeScreen extends React.Component {
     });
   }
 
+  displayHistry = () => {
+    this.setState({ keyCheck: true });
+  };
+  initText = someMethod => {
+    this.setState({ todoText: someMethod });
+    if (someMethod == "") {
+      this.setState({ keyCheck: false });
+    }
+  };
   render() {
     /*
     moment().format("YYYY/MM/DD");
     今日の日付けがとれる
     */
 
+    let authenticity = this.state.keyCheck;
     let createbutton = this.props.loggedIn;
 
+    console.log("keyCheck" + authenticity);
     //両方
     console.log(
       this.state.nowData &
@@ -141,7 +164,7 @@ class NotificationHomeScreen extends React.Component {
                   //   uri:
                   //     "https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg"
                   // }}
-                  title={item}
+                  title={item.slice().substr(0, 2)}
                   onPress={() => console.log(item)}
                   activeOpacity={0.7}
                 />
@@ -208,7 +231,7 @@ class NotificationHomeScreen extends React.Component {
                   //   uri:
                   //     "https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg"
                   // }}
-                  title={item}
+                  title={item.slice().substr(0, 2)}
                   onPress={() => console.log("Works!")}
                   activeOpacity={0.7}
                 />
@@ -389,7 +412,7 @@ class NotificationHomeScreen extends React.Component {
             {createbutton && (
               <TouchableOpacity
                 onPress={() => {
-                  this.props.navigation.navigate("Details");
+                  this.props.navigation.navigate("Create");
                 }}
               >
                 <Icon name="plus-circle" size={30} />
@@ -405,20 +428,40 @@ class NotificationHomeScreen extends React.Component {
                 borderTopColor: "#fff",
                 backgroundColor: "#fff"
               }}
+              keyboardType="default"
+              round
               inputStyle={{ color: "black" }}
               returnKeyType="search"
-              round
               lightTheme
-              showLoading
-              platform="ios"
-              cancelButtonTitle="Cancel"
-              onChangeText={someMethod =>
-                this.setState({ todoText: someMethod })
-              }
-              onClearText={someMethod =>
-                this.setState({ todoText: someMethod })
-              }
-              placeholder="Search"
+              ref={search => (this.search = search)}
+              // searchIcon={<CustomComponent />}
+              onChangeText={someMethod => this.initText(someMethod)}
+              onKeyPress={e => {
+                if (e.nativeEvent.key) {
+                  this.displayHistry();
+                }
+              }}
+              onSubmitEditing={event => {
+                if (event.nativeEvent.key === undefined) {
+                  this.state.listBox.push({
+                    keyword: this.state.todoText
+                  });
+                  // console.log("チェンジ" + chenge);
+                  // this.setState({ listBox: chenge });
+                  console.log(this.state.listBox);
+                  this.props.navigation.navigate("SearchNf", {
+                    searchText: this.state.todoText,
+                    nfData: this.state.nfDataArray,
+                    sendNowData: this.state.sendNowData,
+                    sendPastData: this.state.sendPastData
+                  });
+                }
+                console.log(event.nativeEvent.key);
+              }}
+              // onClearText={someMethod =>
+              //   this.setState({ todoText: someMethod })
+              // }
+              placeholder="苗字を入力　例）平澤"
             />
           </View>
           <View style={styles.searchLogin}>
@@ -432,6 +475,30 @@ class NotificationHomeScreen extends React.Component {
             )}
           </View>
         </View>
+        {authenticity && (
+          <View style={styles.history2}>
+            <List containerStyle={{ marginBottom: 20 }}>
+              {this.state.listBox.map(l => (
+                <TouchableOpacity
+                  onPress={() =>
+                    this.props.navigation.navigate("SearchNf", {
+                      searchText: l.keyword,
+                      nfData: this.state.nfDataArray,
+                      sendNowData: this.state.sendNowData,
+                      sendPastData: this.state.sendPastData
+                    })
+                  }
+                >
+                  <ListItem
+                    leftIcon={<Icon name="search" size={20} />}
+                    key={l.keyword}
+                    title={l.keyword}
+                  />
+                </TouchableOpacity>
+              ))}
+            </List>
+          </View>
+        )}
         {check}
       </View>
     );
@@ -468,7 +535,8 @@ const styles = StyleSheet.create({
   searchContainer: {
     flexDirection: "row",
     backgroundColor: "#fff",
-    alignItems: "stretch"
+    alignItems: "stretch",
+    position: "relative"
   },
 
   button: {
@@ -494,6 +562,17 @@ const styles = StyleSheet.create({
     fontSize: 30,
     textAlign: "left",
     paddingLeft: 30
+  },
+  history2: {
+    position: "absolute",
+    top: 68,
+    left: 0,
+    zIndex: 100000,
+    backgroundColor: "#E6E6E6",
+    alignItems: "stretch",
+    flex: 1,
+    width: "100%",
+    height: "100%"
   }
 });
 
