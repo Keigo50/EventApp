@@ -15,7 +15,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import * as Actions from "../../app/actions";
 import { RkCard, RkTheme, RkButton } from "react-native-ui-kitten";
-import { SearchBar, List, ListItem } from "react-native-elements";
+import { SearchBar } from "react-native-elements";
 import Icon from "react-native-vector-icons/FontAwesome";
 import ScrollableTabView from "react-native-scrollable-tab-view";
 import { Constants } from "expo";
@@ -23,13 +23,9 @@ import firebase from "firebase";
 import { Image as ExpoImage } from "react-native-expo-image-cache";
 import TabBarIcon from "../../components/TabBarIcon";
 import Colors from "../../constants/Colors";
-import Tab1 from "../../components/Tab1";
-import Tab2 from "../../components/Tab2";
-import Tab3 from "../../components/Tab3";
-import Tab4 from "../../components/Tab4";
-import { underline } from "ansi-colors";
+import SearchNfTab from "../../components/SearchNfTab";
 
-class HomeScreen extends React.Component {
+class SearchNotificationResultsScreen extends React.Component {
   constructor(props) {
     super(props);
 
@@ -46,17 +42,7 @@ class HomeScreen extends React.Component {
       date: ["2018/7/30", "2018/6/20", "2018/5/21", "2018/10/31"],
       user: null,
       refreshing: false,
-      todoText: "",
-      submitText: "",
-      keyCheck: false,
-      listBox: [
-        {
-          keyword: "街中ハロウィン"
-        },
-        {
-          keyword: "ジョビフェス"
-        }
-      ]
+      todoText: ""
     };
   }
   componentDidMount() {
@@ -70,28 +56,12 @@ class HomeScreen extends React.Component {
   componentWillMount() {
     this.props.checkLogin();
   }
-  displayHistry = () => {
-    this.setState({ keyCheck: true });
-  };
-  initText = someMethod => {
-    this.setState({ todoText: someMethod });
-    if (someMethod == "") {
-      this.setState({ keyCheck: false });
-    }
-  };
+
   render() {
-    let a = [];
-    console.log("配列" + typeof a);
-    console.log("ボックス" + typeof this.state.listBox);
+    console.log(this.state.todoText);
     //TODO ログイン状態を確認し作成ボタンを表示・非表示する処理
-    if (this.search) {
-      console.log("search");
-    }
-    console.log("キー" + this.state.keyCheck);
-    let authenticity = this.state.keyCheck;
     console.log(this.props.loggedIn);
     let createbutton = this.props.loggedIn;
-    let tabdisplay = this.props.loggedIn;
     return (
       <View style={styles.container}>
         <View style={styles.sub3}>
@@ -99,10 +69,10 @@ class HomeScreen extends React.Component {
             {createbutton && (
               <TouchableOpacity
                 onPress={() => {
-                  this.props.navigation.navigate("Create");
+                  this.props.navigation.navigate("Home");
                 }}
               >
-                <Icon name="plus-circle" size={30} />
+                <Icon name="angle-left" size={40} style={{ paddingLeft: 10 }} />
               </TouchableOpacity>
             )}
           </View>
@@ -122,21 +92,12 @@ class HomeScreen extends React.Component {
               lightTheme
               ref={search => (this.search = search)}
               // searchIcon={<CustomComponent />}
-              onChangeText={someMethod => this.initText(someMethod)}
-              onKeyPress={e => {
-                if (e.nativeEvent.key) {
-                  this.displayHistry();
-                }
-              }}
+              onChangeText={someMethod =>
+                this.setState({ todoText: someMethod })
+              }
               onSubmitEditing={event => {
                 if (event.nativeEvent.key === undefined) {
-                  this.state.listBox.push({
-                    keyword: this.state.todoText
-                  });
-                  // console.log("チェンジ" + chenge);
-                  // this.setState({ listBox: chenge });
-                  console.log(this.state.listBox);
-                  this.props.navigation.navigate("Search", {
+                  this.props.navigation.navigate("SearchNf", {
                     searchText: this.state.todoText
                   });
                 }
@@ -145,7 +106,7 @@ class HomeScreen extends React.Component {
               // onClearText={someMethod =>
               //   this.setState({ todoText: someMethod })
               // }
-              placeholder="例）ジョビフェス"
+              placeholder="Search"
             />
           </View>
           <View style={styles.sub2}>
@@ -159,39 +120,9 @@ class HomeScreen extends React.Component {
             )}
           </View>
         </View>
-        {authenticity && (
-          <View style={styles.history}>
-            <List containerStyle={{ marginBottom: 20 }}>
-              {this.state.listBox.map(l => (
-                <TouchableOpacity
-                  onPress={() =>
-                    this.props.navigation.navigate("Search", {
-                      searchText: l.keyword
-                    })
-                  }
-                >
-                  <ListItem
-                    leftIcon={<Icon name="search" size={20} />}
-                    key={l.keyword}
-                    title={l.keyword}
-                  />
-                </TouchableOpacity>
-              ))}
-            </List>
-          </View>
-        )}
-        {tabdisplay ? (
-          <ScrollableTabView style={styles.main}>
-            <Tab1 tabLabel="すべて" {...this.props} />
-            <Tab2 tabLabel="参加中" {...this.props} />
-            <Tab3 tabLabel="お気に入り" {...this.props} />
-            <Tab4 tabLabel="作成済み" {...this.props} />
-          </ScrollableTabView>
-        ) : (
-          <ScrollableTabView style={styles.main}>
-            <Tab1 tabLabel="すべて" {...this.props} />
-          </ScrollableTabView>
-        )}
+        <ScrollableTabView style={styles.main}>
+          <SearchNfTab tabLabel="検索結果" {...this.props} />
+        </ScrollableTabView>
       </View>
     );
   }
@@ -208,7 +139,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff"
   },
   sub: {
-    flex: 1,
+    flex: 2,
     flexDirection: "column",
     backgroundColor: "#fff",
     alignItems: "flex-start",
@@ -216,7 +147,7 @@ const styles = StyleSheet.create({
     paddingLeft: 10
   },
   sub2: {
-    flex: 3,
+    flex: 2,
     flexDirection: "column",
     backgroundColor: "#fff",
     alignItems: "flex-start",
@@ -226,24 +157,12 @@ const styles = StyleSheet.create({
     flex: 9,
     flexDirection: "column",
     backgroundColor: "#fff",
-    justifyContent: "center",
-    position: "relative"
+    justifyContent: "center"
   },
   sub3: {
     flexDirection: "row",
     backgroundColor: "#fff",
     alignItems: "stretch"
-  },
-  history: {
-    position: "absolute",
-    top: 80,
-    left: 0,
-    zIndex: 100000,
-    backgroundColor: "#E6E6E6",
-    alignItems: "stretch",
-    flex: 1,
-    width: "100%",
-    height: "100%"
   }
 });
 
@@ -277,4 +196,4 @@ const mapDispatchToProps = dispatch => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(HomeScreen);
+)(SearchNotificationResultsScreen);
