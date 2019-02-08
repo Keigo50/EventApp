@@ -119,7 +119,7 @@ class SearchNfTab extends React.Component {
               //   uri:
               //     "https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg"
               // }}
-              title={item}
+              title={item.slice().substr(0, 2)}
               onPress={() => console.log(item)}
               activeOpacity={0.7}
             />
