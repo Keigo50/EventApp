@@ -407,7 +407,7 @@ export default class EventMoreDetailScreen extends React.Component {
                   <Avatar
                     large
                     rounded
-                    title={item}
+                    title={item.slice().substr(0, 2)}
                     // source={{
                     //   // uri: providerUser.photoURL
                     //   //TODO:firebaseとの接続
@@ -461,7 +461,7 @@ const styles = StyleSheet.create({
   sub: {
     flex: 7,
     width: "100%",
-    height: 100
+    height: "100%"
   },
   sub2: {
     flex: 1,
@@ -477,6 +477,7 @@ const styles = StyleSheet.create({
     padding: 5
   },
   sub3: {
+    flex: 1,
     flexDirection: "row",
     backgroundColor: "#fff",
     alignItems: "stretch"

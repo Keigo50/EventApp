@@ -8,6 +8,7 @@ import {
   Button,
   Alert,
   AlertIOS,
+  Platform,
   ActivityIndicator
 } from "react-native";
 import { connect } from "react-redux";
@@ -17,6 +18,7 @@ import { Icon } from "expo";
 import * as Actions from "../../app/actions";
 import { SocialIcon } from "react-native-elements";
 import "firebase/storage";
+import Dialog from "react-native-dialog";
 
 class GoogleLoginScreen extends React.Component {
   constructor(props) {
@@ -28,7 +30,12 @@ class GoogleLoginScreen extends React.Component {
       password: "",
       loggedIn: null,
       text: "",
-      result: null
+      result: null,
+      box: [],
+      promptValue: "",
+      visiblePrompt: false,
+      promptUser: "",
+      pushCheck: false
     };
     this._onPressLogInAlert = this._onPressLogInAlert.bind(this);
   }
@@ -57,8 +64,9 @@ class GoogleLoginScreen extends React.Component {
         // ログイン後の処理
         await this.props.checkLogin();
 
-        this.setState({ result: result });
+        await this.setState({ result: result });
         console.log(result.user.email);
+        this.props.navigation.navigate("Main");
       }
     } catch (err) {
       console.log("Googleトークン取得エラー");
@@ -109,30 +117,36 @@ class GoogleLoginScreen extends React.Component {
         paevents: []
       });
 
-    this.props.navigation.navigate("Main");
+    await this.props.navigation.navigate("Main");
   };
 
-  _onPressAlertIOS = () => {
-    AlertIOS.prompt(
-      "学籍番号を入力してください",
-      null,
-      [
-        {
-          text: "確定",
-          onPress: text => this._Decide(text)
-        },
-        {
-          text: "キャンセル",
-          onPress: () => console.log("キャンセルされました"),
-          style: "cancel"
-        }
-      ],
-      "plain-text",
-      "",
-      "numeric"
-    );
-  };
-
+  _onPressAlertAll() {
+    console.log("Android");
+    if (Platform.OS === "ios") {
+      AlertIOS.prompt(
+        "学籍番号を入力してください",
+        null,
+        [
+          {
+            text: "確定",
+            onPress: text => this._Decide(text)
+          },
+          {
+            text: "キャンセル",
+            onPress: () => console.log("キャンセルされました"),
+            style: "cancel"
+          }
+        ],
+        "plain-text",
+        "",
+        "numeric"
+      );
+    } else {
+      this.setState({
+        pushCheck: true
+      });
+    }
+  }
   _onPressLogInAlert = () => {
     return Alert.alert(
       "ログインしました",
@@ -155,6 +169,25 @@ class GoogleLoginScreen extends React.Component {
     console.log(`loading${this.props.loading}`);
     return (
       <View style={styles.container}>
+        {this.state.pushCheck && (
+          <Dialog.Container visible={true}>
+            <Dialog.Title>学籍番号</Dialog.Title>
+            <Dialog.Description>学籍番号を入力してください</Dialog.Description>
+            <Dialog.Input
+              label="例）4174201"
+              onChangeText={text => this.setState({ text })}
+            />
+            <Dialog.Button
+              label="確定"
+              onPress={() => {
+                console.log(this.state.username);
+                this.setState({ promptUser: false });
+                this.setState({ pushCheck: false });
+                this._Decide(this.state.text);
+              }}
+            />
+          </Dialog.Container>
+        )}
         <View
           style={{
             justifyContent: "flex-start",
@@ -173,7 +206,7 @@ class GoogleLoginScreen extends React.Component {
           type="google-plus-official"
           title="Googleでログイン"
           button
-          onPress={this._onPressAlertIOS.bind(this)}
+          onPress={() => this._onPressAlertAll()}
           loading={this.props.loading}
         />
       </View>

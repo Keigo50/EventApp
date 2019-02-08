@@ -15,7 +15,7 @@ import {
 } from "react-native";
 import firebase from "firebase";
 import "firebase/firestore";
-import { RkButton, RkTextInput, RkTheme, RkText } from "react-native-ui-kitten";
+import { RkButton, RkTextInput, RkTheme } from "react-native-ui-kitten";
 import Entypo from "react-native-vector-icons/Entypo";
 import { ScrollView } from "react-native-gesture-handler";
 import Icon from "react-native-vector-icons/FontAwesome";
@@ -318,7 +318,7 @@ class EventCreateScreen extends Component {
         <ScrollView>
           <View style={styles.main}>
             <View>
-              <RkText rkType="text">イベントタイトル</RkText>
+              <Text style={styles.text}>イベントタイトル</Text>
             </View>
 
             <RkTextInput
@@ -329,7 +329,7 @@ class EventCreateScreen extends Component {
             />
 
             <View>
-              <RkText rkType="text">募集定員</RkText>
+              <Text style={styles.text}>募集定員</Text>
             </View>
             <View style={{ flexDirection: "row" }}>
               <RkTextInput
@@ -349,11 +349,14 @@ class EventCreateScreen extends Component {
                   marginLeft: 9
                 }}
               >
-                <RkText style={{ fontSize: 25 }}>人</RkText>
+                <View>
+                  <Text style={{ fontSize: 25 }}>人</Text>
+                </View>
               </View>
             </View>
-
-            <RkText rkType="text">画像</RkText>
+            <View>
+              <Text style={styles.text}>画像</Text>
+            </View>
 
             <View
               style={{
@@ -379,7 +382,6 @@ class EventCreateScreen extends Component {
                   );
                 }}
               />
-              ;
               {image && (
                 <Image
                   source={{ uri: image }}
@@ -398,7 +400,7 @@ class EventCreateScreen extends Component {
             </View>
 
             <View>
-              <RkText rkType="text">開催日時</RkText>
+              <Text style={styles.text}>開催日時</Text>
             </View>
 
             <View style={{ flex: 1, flexDirection: "row", marginVertical: 30 }}>
@@ -410,7 +412,7 @@ class EventCreateScreen extends Component {
                 }}
               >
                 <View>
-                  <RkText style={{ fontSize: 20 }}>{this.props.date}</RkText>
+                  <Text style={{ fontSize: 20 }}>{this.props.date}</Text>
                 </View>
               </View>
               <View
@@ -426,9 +428,8 @@ class EventCreateScreen extends Component {
               </View>
             </View>
             {calendar}
-
             <View>
-              <RkText rkType="text">締切日</RkText>
+              <Text style={styles.text}>締切日</Text>
             </View>
 
             <View style={{ flex: 1, flexDirection: "row", marginVertical: 30 }}>
@@ -440,9 +441,9 @@ class EventCreateScreen extends Component {
                 }}
               >
                 <View>
-                  <RkText style={{ fontSize: 20 }}>
+                  <Text style={{ fontSize: 20 }}>
                     {this.props.deadlineDate}
-                  </RkText>
+                  </Text>
                 </View>
               </View>
               <View
@@ -457,10 +458,9 @@ class EventCreateScreen extends Component {
                 </TouchableOpacity>
               </View>
             </View>
-            {deadline}
-
+            <View>{deadline}</View>
             <View>
-              <RkText rkType="text">開催場所</RkText>
+              <Text style={styles.text}>開催場所</Text>
             </View>
             <RkTextInput
               rkType="textInput"
@@ -470,7 +470,7 @@ class EventCreateScreen extends Component {
             />
 
             <View>
-              <RkText rkType="text">詳細</RkText>
+              <Text style={styles.text}>詳細</Text>
             </View>
             <RkTextInput
               rkType="details"
@@ -483,7 +483,7 @@ class EventCreateScreen extends Component {
               onPress={this._onPressSubmit}
               style={{ backgroundColor: "#5cb85c" }}
             >
-              作成
+              <Text>作成</Text>
             </RkButton>
           </View>
         </ScrollView>
@@ -565,6 +565,9 @@ RkTheme.setType("RkTextInput", "textInput", {
     marginLeft: 5,
     fontSize: 20,
     height: 25
+  },
+  text: {
+    fontSize: 25
   }
 });
 
@@ -583,10 +586,6 @@ RkTheme.setType("RkTextInput", "member", {
     fontSize: 20,
     height: 25
   }
-});
-
-RkTheme.setType("RkText", "text", {
-  fontSize: 25
 });
 
 const mapStateToProps = state => {

@@ -8,7 +8,7 @@
     "platforms": ["ios", "android"],
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/IconImages/1024.png",
     "splash": {
       "image": "./assets/images/IconImages/1024.png",
       "resizeMode": "contain",
@@ -19,7 +19,11 @@
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "app.conact.eventapp"
+    },
+    "android": {
+      "package": "app.conact.eventapp"
     }
   }
 }
