@@ -25,7 +25,7 @@ import TabBarIcon from "../../components/TabBarIcon";
 import Colors from "../../constants/Colors";
 import Tab1 from "../../components/Tab1";
 import Tab2 from "../../components/Tab2";
-import Tab3 from "../../components/Tab3";
+// import Tab3 from "../../components/Tab3";
 import Tab4 from "../../components/Tab4";
 import { underline } from "ansi-colors";
 
@@ -184,7 +184,7 @@ class HomeScreen extends React.Component {
           <ScrollableTabView style={styles.main}>
             <Tab1 tabLabel="すべて" {...this.props} />
             <Tab2 tabLabel="参加中" {...this.props} />
-            <Tab3 tabLabel="お気に入り" {...this.props} />
+            {/* <Tab3 tabLabel="お気に入り" {...this.props} /> */}
             <Tab4 tabLabel="作成済み" {...this.props} />
           </ScrollableTabView>
         ) : (

@@ -10,9 +10,19 @@ import { Image as ExpoImage } from "react-native-expo-image-cache";
 import TabBarIcon from "../components/TabBarIcon";
 import Colors from "../constants/Colors";
 
+// import { YellowBox } from "react-native";
+// import _ from "lodash";
 class Tab1 extends React.Component {
   constructor(props) {
     super(props);
+
+    // YellowBox.ignoreWarnings(["Setting a timer"]);
+    // const _console = _.clone(console);
+    // console.warn = message => {
+    //   if (message.indexOf("Setting a timer") <= -1) {
+    //     _console.warn(message);
+    //   }
+    // };
     this.state = {
       eimage: "",
       eventData: [],
@@ -117,6 +127,7 @@ class Tab1 extends React.Component {
     };
 
     console.log(this.state.eventIdName);
+
     let data = [];
     for (let i = 0; i < this.state.eventData.length; i++) {
       const uri = this.state.eventData[i].eimage;
@@ -148,7 +159,7 @@ class Tab1 extends React.Component {
             </View>
             <View rkCardFooter>
               <Text>{this.state.eventData[i].date}</Text>
-              <TouchableOpacity
+              {/* <TouchableOpacity
                 onPress={() =>
                   this.onPressIcon(
                     (focusedBool = this.state.eventData[i].focused),
@@ -171,7 +182,7 @@ class Tab1 extends React.Component {
                       : Colors.tabIconDefault
                   }
                 />
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </View>
           </RkCard>
         </TouchableOpacity>
@@ -180,6 +191,7 @@ class Tab1 extends React.Component {
     }
     return (
       <FlatList
+        pmethod={this._onRefresh}
         refreshing={this.state.refreshing}
         onRefresh={this._onRefresh}
         style={{ backgroundColor: "#ccc", paddingTop: 10 }}
