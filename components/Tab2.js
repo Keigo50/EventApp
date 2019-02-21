@@ -66,11 +66,11 @@ class Tab2 extends React.Component {
     const settings = { timestampsInSnapshots: true };
     firestore.settings(settings);
 
-    // const paeventRef = firestore.collection("students").doc(userUid);
-    // let paeventsID = [];
-    // await paeventRef.get().then(doc => {
-    //   paeventsID.push(doc.data().paevents);
-    // });
+    const paeventRef = firestore.collection("students").doc(userUid);
+    let paeventsID = [];
+    await paeventRef.get().then(doc => {
+      paeventsID.push(doc.data().paevents);
+    });
     const { focused = focusedBool } = this.props;
 
     console.log("eventID  " + eventId);
@@ -149,15 +149,15 @@ class Tab2 extends React.Component {
             </View>
             <View rkCardFooter>
               <Text>{this.state.eventData[i].date}</Text>
-              <TouchableOpacity
+              {/* <TouchableOpacity
                 onPress={() =>
                   this.onPressIcon(
                     (focusedBool = this.state.eventData[i].focused),
                     (eventId = this.state.eventIdName[i])
                   )
                 }
-              >
-                <TabBarIcon
+              > */}
+              {/* <TabBarIcon
                   size={35}
                   name={
                     Platform.OS === "ios"
@@ -171,8 +171,8 @@ class Tab2 extends React.Component {
                       ? Colors.tabIconSelected2
                       : Colors.tabIconDefault
                   }
-                />
-              </TouchableOpacity>
+                /> */}
+              {/* </TouchableOpacity> */}
             </View>
           </RkCard>
         </TouchableOpacity>

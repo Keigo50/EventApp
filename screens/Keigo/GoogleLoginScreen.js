@@ -75,10 +75,11 @@ class GoogleLoginScreen extends React.Component {
   }
 
   //確定のボタンをした場合
-  _Decide = text => {
+  _Decide = async text => {
     console.log(text);
-    this.setState({ text });
-    this.onLoginButtonPress();
+    await this.setState({ text });
+    await this.onLoginButtonPress();
+    await this._onPressLogInAlert();
   };
 
   _onPressOk = async () => {
@@ -94,11 +95,12 @@ class GoogleLoginScreen extends React.Component {
     var user = firebase.auth().currentUser;
 
     if (user != null) {
-      user.providerData.forEach(function(profile) {
-        this.props.change_Email(profile.email);
-        this.props.change_Name(profile.displayName);
-        this.props.change_Snumber(this.state.snumber);
-      });
+      // user.providerData.forEach(function(profile) {
+      //   console.log(profile.email);
+      //   this.props.change_Email(String(profile.email));
+      //   this.props.change_Name(String(profile.displayName));
+      //   this.props.change_Snumber(String(this.state.snumber));
+      // });
     }
     await firestore
       .collection("students")

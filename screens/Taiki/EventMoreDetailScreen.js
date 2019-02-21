@@ -51,8 +51,10 @@ export default class EventMoreDetailScreen extends React.Component {
       eventIdArray: initArray,
       eventIdArray2: initArray,
       madeEventIdArray: initArray2,
-      name: ["佐藤 慶吾", "平澤 惇哉", "畑江 生也", "沼田 大樹"],
-      madeCheck: false
+      name: "",
+      madeCheck: false,
+      photo: "",
+      mix: ""
     };
     this._changeButton = this._changeButton.bind(this);
     this.onPressIcon = this.onPressIcon.bind(this);
@@ -66,6 +68,20 @@ export default class EventMoreDetailScreen extends React.Component {
       if (!user) {
         // サインインしていない状態
       } else {
+        const providerUser = firebase.auth().currentUser;
+
+        let userName = providerUser.displayName;
+        this.setState({ name: userName });
+        let userP = providerUser.photoURL;
+        this.setState({ photo: userP });
+        console.log(userName);
+
+        let mixArray = [];
+        mixArray.push(userName);
+
+        this.setState({ mix: mixArray });
+        console.log("mix" + this.state.mix);
+
         const userUid = firebase.auth().currentUser.uid;
         const eventID = this.props.navigation.state.params.eventId;
         console.log(eventID);
@@ -116,6 +132,9 @@ export default class EventMoreDetailScreen extends React.Component {
     const firestore = firebase.firestore();
     const settings = { timestampsInSnapshots: true };
     firestore.settings(settings);
+
+    let funcT = this.props.navigation.state.params.func;
+    console.log(funcT);
     this.state.changeButton
       ? this.setState({
           changeButton: false
@@ -132,26 +151,26 @@ export default class EventMoreDetailScreen extends React.Component {
       } else {
         // サインイン済
         if (this.state.changeButton) {
-          const photoURL = firebase.auth().currentUser.photoURL;
-          const myName = firebase.auth().currentUser.displayName;
+          // const photoURL = firebase.auth().currentUser.photoURL;
+          // const myName = firebase.auth().currentUser.displayName;
           const eventID = this.props.navigation.state.params.eventId;
           console.log(eventID);
 
-          firestore
-            .collection("events")
-            .doc(eventID)
-            .update({
-              paevents: {
-                participant: myName,
-                photoURL
-              }
-            });
+          // firestore
+          //   .collection("events")
+          //   .doc(eventID)
+          //   .update({
+          //     paevents: {
+          //       participant: myName,
+          //       photoURL
+          //     }
+          //   });
 
           console.log("サインインしてます");
-          const userUid = firebase.auth().currentUser.uid;
+          const userUid = await firebase.auth().currentUser.uid;
 
-          const docRef = firestore.collection("students").doc(userUid);
-          await docRef.get().then(doc => {
+          const docR = firestore.collection("students").doc(userUid);
+          await docR.get().then(doc => {
             this.setState({ eventIdArray: doc.data().paevents });
             console.log("get" + this.state.eventIdArray);
           });
@@ -172,41 +191,46 @@ export default class EventMoreDetailScreen extends React.Component {
           }
 
           this.setState({ eventIdArray: eventIdArray_copy });
-          return docRef
+          return docR
             .update({
               paevents: this.state.eventIdArray
             })
             .then(() => {
               console.log("firebaseにデータ到着！");
+              console.log(this.props.pmethod);
             })
             .catch(error => {
               console.error("firebaseにデータ来てないぞ！！ ", error);
             });
         } else {
-          firestore
-            .collection("events")
-            .doc(eventID)
-            .update({
-              paevents: firebase.firestore.paevents.delete()
-            });
+          const eventID = this.props.navigation.state.params.eventId;
+          console.log("e" + eventID);
+          // const refC = firestore.collection("events").doc(eventID);
+          // await refC.update({
+          //   paevents: firebase.firestore.paevents.delete()
+          // });
 
           const userUid = firebase.auth().currentUser.uid;
-          const eventID = this.props.navigation.state.params.eventId;
-          console.log(eventID);
 
-          const docRef = firestore.collection("students").doc(userUid);
+          const docB = firestore.collection("students").doc(userUid);
+
+          await docB.get().then(doc => {
+            this.setState({ eventIdArray: doc.data().paevents });
+            console.log("get" + this.state.eventIdArray);
+          });
+
           const eventIdArray_copy = this.state.eventIdArray.slice();
           let index = eventIdArray_copy.indexOf(eventID);
-          console.log(index);
           eventIdArray_copy[index] = "";
 
           this.setState({ eventIdArray: eventIdArray_copy });
-          return docRef
+          return docB
             .update({
               paevents: this.state.eventIdArray
             })
             .then(() => {
               console.log("firebaseにデータ到着！");
+              console.log(this.props);
             })
             .catch(error => {
               console.error("firebaseにデータ来てないぞ！！ ", error);
@@ -282,8 +306,6 @@ export default class EventMoreDetailScreen extends React.Component {
     const changeDecision = this.state.changeButton;
     let changeBtn;
 
-    const providerUser = firebase.auth().currentUser;
-
     if (changeDecision) {
       changeBtn = (
         <RkButton onPress={this._changeButton} rkType="rounded">
@@ -301,19 +323,18 @@ export default class EventMoreDetailScreen extends React.Component {
         </RkButton>
       );
     }
-    let data = [];
 
-    for (var i = this.state.name.length - 1; i > 0; i--) {
-      var r = Math.floor(Math.random() * (i + 1));
-      var tmp = this.state.name[i];
-      this.state.name[i] = this.state.name[r];
-      this.state.name[r] = tmp;
-    }
-    let val = Math.round(Math.random() * (5 - 1) + 1);
-    console.log(val);
-    for (let i = 1; i < val; i++) {
-      data.push(this.state.name[i - 1]);
-    }
+    // for (var i = this.state.name.length - 1; i > 0; i--) {
+    //   var r = Math.floor(Math.random() * (i + 1));
+    //   var tmp = this.state.name[i];
+    //   this.state.name[i] = this.state.name[r];
+    //   this.state.name[r] = tmp;
+    // }
+    // let val = Math.round(Math.random() * (5 - 1) + 1);
+    // console.log(val);
+    // for (let i = 1; i < val; i++) {
+    //   data.push(this.state.name[i - 1]);
+    // }
 
     const nav = this.props.navigation.state.params.event;
     const preview = {
@@ -361,7 +382,7 @@ export default class EventMoreDetailScreen extends React.Component {
                   />
                 </View>
               )}
-              <TouchableOpacity onPress={this.onPressIcon}>
+              {/* <TouchableOpacity onPress={this.onPressIcon}>
                 <TabBarIcon
                   size={35}
                   name={
@@ -375,7 +396,7 @@ export default class EventMoreDetailScreen extends React.Component {
                       : Colors.tabIconDefault
                   }
                 />
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </View>
           </View>
           <View style={styles.detail}>
@@ -387,55 +408,59 @@ export default class EventMoreDetailScreen extends React.Component {
             <RkText rkType="common">参加者</RkText>
           </View>
           <View style={styles.main}>
-            <FlatList
-              style={{
-                width: "100%"
-              }}
-              data={data}
-              renderItem={({ item }) => (
-                <View
-                  style={{
-                    marginBottom: 5,
-                    flex: 2,
-                    flexDirection: "row",
-                    borderWidth: 1,
-                    height: 90,
-                    borderColor: "gray"
-                  }}
-                >
-                  {/* アイコンを以下に配置*/}
-                  <Avatar
-                    large
-                    rounded
-                    title={item.slice().substr(0, 2)}
-                    // source={{
-                    //   // uri: providerUser.photoURL
-                    //   //TODO:firebaseとの接続
-                    //   uri: providerUser.photoURL
-                    // }}
-                    onPress={() => console.log("Works!")}
-                    activeOpacity={0.7}
-                  />
+            {changeDecision && (
+              <FlatList
+                style={{
+                  width: "100%"
+                }}
+                data={this.state.mix}
+                renderItem={({ item }) => (
                   <View
                     style={{
+                      marginBottom: 5,
                       flex: 2,
-                      padding: 3,
-                      alignItems: "center",
-                      justifyContent: "center"
+                      flexDirection: "row",
+                      borderWidth: 1,
+                      height: 90,
+                      borderColor: "gray"
                     }}
                   >
-                    <Text
+                    {/* アイコンを以下に配置*/}
+                    <Avatar
+                      large
+                      rounded
+                      // title={item.slice().substr(0, 2)}
+
+                      source={{
+                        // uri: providerUser.photoURL
+                        //TODO:firebaseとの接続
+                        uri: this.state.photo
+                      }}
+                      onPress={() => console.log("Works!")}
+                      activeOpacity={0.7}
+                    />
+
+                    <View
                       style={{
-                        fontSize: 30
+                        flex: 2,
+                        padding: 3,
+                        alignItems: "center",
+                        justifyContent: "center"
                       }}
                     >
-                      {item}
-                    </Text>
+                      <Text
+                        style={{
+                          fontSize: 30
+                        }}
+                      >
+                        {item}
+                      </Text>
+                    </View>
                   </View>
-                </View>
-              )}
-              keyExtractor={(item, index) => `list-${index}`}
-            />
+                )}
+                keyExtractor={(item, index) => `list-${index}`}
+              />
+            )}
             {changeBtn}
           </View>
         </View>
@@ -469,7 +494,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff"
   },
   sub4: {
-    flex: 3,
+    flex: 1,
     flexDirection: "row",
     alignItems: "flex-end",
     justifyContent: "space-around",
@@ -500,7 +525,7 @@ const styles = StyleSheet.create({
   },
   main: {
     width: "100%",
-    height: 350
+    height: "auto"
   },
   back: {
     position: "absolute",

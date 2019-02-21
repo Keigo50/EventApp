@@ -25,10 +25,20 @@ import * as Actions from "../../app/actions";
 import PropTypes from "prop-types";
 import moment from "moment";
 import ActionSheet from "react-native-zhb-actionsheet";
+import { YellowBox } from "react-native";
+import _ from "lodash";
+
 class EventCreateScreen extends Component {
   constructor(props) {
     super(props);
 
+    YellowBox.ignoreWarnings(["Setting a timer"]);
+    const _console = _.clone(console);
+    console.warn = message => {
+      if (message.indexOf("Setting a timer") <= -1) {
+        _console.warn(message);
+      }
+    };
     const atob = require("base-64").decode;
     window.atob = atob;
 

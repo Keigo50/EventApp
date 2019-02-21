@@ -149,7 +149,7 @@ class Tab4 extends React.Component {
             </View>
             <View rkCardFooter>
               <Text>{this.state.eventData[i].date}</Text>
-              <TouchableOpacity
+              {/* <TouchableOpacity
                 onPress={() =>
                   this.onPressIcon(
                     (focusedBool = this.state.eventData[i].focused),
@@ -172,7 +172,7 @@ class Tab4 extends React.Component {
                       : Colors.tabIconDefault
                   }
                 />
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </View>
           </RkCard>
         </TouchableOpacity>

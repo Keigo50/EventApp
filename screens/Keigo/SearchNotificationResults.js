@@ -24,7 +24,7 @@ import { Image as ExpoImage } from "react-native-expo-image-cache";
 import TabBarIcon from "../../components/TabBarIcon";
 import Colors from "../../constants/Colors";
 import SearchNfTab from "../../components/SearchNfTab";
-
+import RIcon from "react-native-elements";
 class SearchNotificationResultsScreen extends React.Component {
   constructor(props) {
     super(props);
@@ -85,6 +85,7 @@ class SearchNotificationResultsScreen extends React.Component {
                 borderTopColor: "#fff",
                 backgroundColor: "#fff"
               }}
+              clearIcon={<RIcon name="rowing" />}
               keyboardType="default"
               round
               inputStyle={{ color: "black" }}
