@@ -24,6 +24,7 @@ import { Image as ExpoImage } from "react-native-expo-image-cache";
 import TabBarIcon from "../../components/TabBarIcon";
 import Colors from "../../constants/Colors";
 import SearchTab from "../../components/SearchTab";
+import RIcon from "react-native-elements";
 
 class SearchResultsScreen extends React.Component {
   constructor(props) {
@@ -66,15 +67,13 @@ class SearchResultsScreen extends React.Component {
       <View style={styles.container}>
         <View style={styles.sub3}>
           <View style={styles.sub}>
-            {createbutton && (
-              <TouchableOpacity
-                onPress={() => {
-                  this.props.navigation.navigate("Home");
-                }}
-              >
-                <Icon name="angle-left" size={40} style={{ paddingLeft: 10 }} />
-              </TouchableOpacity>
-            )}
+            <TouchableOpacity
+              onPress={() => {
+                this.props.navigation.navigate("Home");
+              }}
+            >
+              <Icon name="angle-left" size={40} style={{ paddingLeft: 10 }} />
+            </TouchableOpacity>
           </View>
           <View style={styles.sub4}>
             <SearchBar
@@ -85,6 +84,7 @@ class SearchResultsScreen extends React.Component {
                 borderTopColor: "#fff",
                 backgroundColor: "#fff"
               }}
+              clearIcon={<RIcon name="rowing" />}
               keyboardType="default"
               round
               inputStyle={{ color: "black" }}
@@ -110,14 +110,14 @@ class SearchResultsScreen extends React.Component {
             />
           </View>
           <View style={styles.sub2}>
-            {!createbutton && (
+            {/* {!createbutton && (
               <Button
                 onPress={() => {
                   this.props.navigation.navigate("App");
                 }}
                 title="ログイン"
               />
-            )}
+            )} */}
           </View>
         </View>
         <ScrollableTabView style={styles.main}>

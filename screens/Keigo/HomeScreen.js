@@ -9,7 +9,8 @@ import {
   FlatList,
   RefreshControl,
   AsyncStorage,
-  Platform
+  Platform,
+  Alert
 } from "react-native";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -27,7 +28,7 @@ import Tab1 from "../../components/Tab1";
 import Tab2 from "../../components/Tab2";
 // import Tab3 from "../../components/Tab3";
 import Tab4 from "../../components/Tab4";
-import { underline } from "ansi-colors";
+import RIcon from "react-native-elements";
 
 class HomeScreen extends React.Component {
   constructor(props) {
@@ -67,6 +68,29 @@ class HomeScreen extends React.Component {
     header: null
   });
 
+  onPressOk = () => {
+    firebase.auth().signOut();
+  };
+
+  _onPressLogoutAlert = () => {
+    return Alert.alert(
+      "ログアウトしますか？",
+      "",
+      [
+        {
+          text: "はい",
+          onPress: () => this.onPressOk()
+        },
+        {
+          text: "いいえ",
+          style: "cancel",
+          onPress: () => console.log("キャンセル")
+        }
+      ],
+      { cancelable: false }
+    );
+  };
+
   componentWillMount() {
     this.props.checkLogin();
   }
@@ -78,6 +102,10 @@ class HomeScreen extends React.Component {
     if (someMethod == "") {
       this.setState({ keyCheck: false });
     }
+  };
+
+  handleSearchClear = () => {
+    this.search.clearText;
   };
   render() {
     let a = [];
@@ -92,6 +120,25 @@ class HomeScreen extends React.Component {
     console.log(this.props.loggedIn);
     let createbutton = this.props.loggedIn;
     let tabdisplay = this.props.loggedIn;
+
+    if (createbutton) {
+      Log = (
+        <View>
+          <Button title="ログアウト" onPress={this._onPressLogoutAlert} />
+        </View>
+      );
+    } else {
+      Log = (
+        <View>
+          <Button
+            onPress={() => {
+              this.props.navigation.navigate("App");
+            }}
+            title="ログイン"
+          />
+        </View>
+      );
+    }
     return (
       <View style={styles.container}>
         <View style={styles.sub3}>
@@ -115,13 +162,14 @@ class HomeScreen extends React.Component {
                 borderTopColor: "#fff",
                 backgroundColor: "#fff"
               }}
+              clearIcon={<RIcon name="rowing" />}
               keyboardType="default"
               round
               inputStyle={{ color: "black" }}
               returnKeyType="search"
               lightTheme
               ref={search => (this.search = search)}
-              // searchIcon={<CustomComponent />}
+              onClear={this.handleSearchClear}
               onChangeText={someMethod => this.initText(someMethod)}
               onKeyPress={e => {
                 if (e.nativeEvent.key) {
@@ -149,14 +197,15 @@ class HomeScreen extends React.Component {
             />
           </View>
           <View style={styles.sub2}>
-            {!createbutton && (
+            {/* {!createbutton && (
               <Button
                 onPress={() => {
                   this.props.navigation.navigate("App");
                 }}
                 title="ログイン"
               />
-            )}
+            )} */}
+            {Log}
           </View>
         </View>
         {authenticity && (

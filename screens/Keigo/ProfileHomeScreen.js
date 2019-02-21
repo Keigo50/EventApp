@@ -178,7 +178,7 @@ export default class ProfileHomeScreen extends React.Component {
           </TouchableOpacity>
         </View>
 
-        <View
+        {/* <View
           style={{
             paddingVertical: 5,
             width: "100%",
@@ -190,12 +190,12 @@ export default class ProfileHomeScreen extends React.Component {
             borderLeftWidth: 0,
             borderRightWidth: 0
           }}
-        >
-          <TouchableOpacity onPress={this._onPressLogoutAlert}>
+        > */}
+        {/* <TouchableOpacity onPress={this._onPressLogoutAlert}>
             <Text style={styles.logoutFont}>ログアウト</Text>
-          </TouchableOpacity>
-        </View>
+          </TouchableOpacity> */}
       </View>
+      // </View>
     );
   }
 }

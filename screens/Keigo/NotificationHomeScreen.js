@@ -17,6 +17,8 @@ import { Constants } from "expo";
 import { ScrollView } from "react-native-gesture-handler";
 import moment from "moment";
 
+import RIcon from "react-native-elements";
+
 class NotificationHomeScreen extends React.Component {
   //正式版ではAppをNotificationHomeScreenに
   static navigationOptions = {
@@ -428,6 +430,7 @@ class NotificationHomeScreen extends React.Component {
                 borderTopColor: "#fff",
                 backgroundColor: "#fff"
               }}
+              clearIcon={<RIcon name="rowing" />}
               keyboardType="default"
               round
               inputStyle={{ color: "black" }}
